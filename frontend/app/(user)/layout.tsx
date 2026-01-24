@@ -3,7 +3,7 @@
 import React from "react";
 import { Breadcrumb, Layout, Menu, theme, Button } from "antd";
 import { SunOutlined, MoonOutlined } from "@ant-design/icons";
-import { useTheme } from "../providers/ThemeProvider";
+import { useTheme } from "../providers/theme-provider";
 
 const { Header, Content, Footer } = Layout;
 

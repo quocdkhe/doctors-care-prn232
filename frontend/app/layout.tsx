@@ -1,6 +1,6 @@
 import React from "react";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
-import { ThemeProvider } from "./providers/ThemeProvider";
+import { ThemeProvider } from "./providers/theme-provider";
 import "./index.css";
 
 const RootLayout = ({ children }: React.PropsWithChildren) => (
