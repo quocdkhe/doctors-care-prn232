@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+@theme {
+  --color-*: initial;
+  --radius-*: initial;
+}
+
+@variant dark (&:where(.dark, .dark *));
