@@ -1,6 +1,6 @@
 "use client";
 
-import { Divider, Typography } from "antd";
+import { DatePicker, Divider, Typography } from "antd";
 
 const { Title, Paragraph, Text, Link } = Typography;
 
@@ -57,6 +57,8 @@ export default function UserPage() {
 
         <Divider />
       </Typography>
+
+      <DatePicker />
     </div>
   );
 }
