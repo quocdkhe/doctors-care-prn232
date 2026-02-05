@@ -37,3 +37,7 @@ publish/
 *.bak
 *.tmp
 *.swp
+
+# Configuration files
+appsettings.json
+

@@ -1,4 +1,6 @@
 
+using backend.Configurations;
+using backend.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend
@@ -10,17 +12,31 @@ namespace backend
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddDbContext<DoctorsCareContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("MyCnn")));
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddStorageConfig(builder.Configuration); // Storage configuration  
+            builder.Services.AddHttpClient(); // HttpClient for external API calls
 
-            builder.Services.AddDbContext<Models.DoctorsCareContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("MyCnn")));
+            // Add services to the container.
+            builder.Services.AddProjectServices();
+            builder.Services.AddJwtConfig(builder.Configuration); // JWT and CORS configuration
+            builder.Services.AddCorsConfig(builder.Configuration); // CORS configuration
 
-            builder.Services.AddScoped<Models.DoctorsCareContext>();
 
             var app = builder.Build();
+
+            // Run migration
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var context = services.GetRequiredService<DoctorsCareContext>();
+                context.Database.Migrate();
+            }
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
