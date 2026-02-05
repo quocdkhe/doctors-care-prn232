@@ -1,5 +1,6 @@
 
 using backend.Configurations;
+using backend.Exceptions;
 using backend.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,7 +16,11 @@ namespace backend
             builder.Services.AddDbContext<DoctorsCareContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("MyCnn")));
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers(options =>
+            {
+                options.Filters.Add<GlobalExceptionFilter>();
+            });
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddStorageConfig(builder.Configuration); // Storage configuration  
