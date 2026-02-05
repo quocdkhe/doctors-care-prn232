@@ -1,4 +1,6 @@
 
+using Microsoft.EntityFrameworkCore;
+
 namespace backend
 {
     public class Program
@@ -12,6 +14,11 @@ namespace backend
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddDbContext<Models.DoctorsCareContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("MyCnn")));
+
+            builder.Services.AddScoped<Models.DoctorsCareContext>();
 
             var app = builder.Build();
 
