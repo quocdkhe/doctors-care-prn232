@@ -23,7 +23,9 @@ namespace backend.Models
                 entity.ToTable("refresh_tokens");
 
                 entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                      .HasColumnName("id")
+                      .UseIdentityColumn(1, 1);
 
                 entity.Property(e => e.UserId)
                       .HasColumnName("user_id");
@@ -60,7 +62,9 @@ namespace backend.Models
                 entity.ToTable("users");
 
                 entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                      .HasColumnName("id")
+                      .HasDefaultValueSql("NEWID()");
 
                 entity.Property(e => e.FullName)
                       .HasColumnName("full_name")

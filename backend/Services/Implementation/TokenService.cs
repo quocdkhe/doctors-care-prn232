@@ -1,5 +1,7 @@
 ﻿using backend.Exceptions;
+using backend.Models;
 using backend.Services.Authentication;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -11,6 +13,7 @@ namespace backend.Services.Implementation
     {
 
         private readonly IConfiguration _configuration;
+        private readonly DoctorsCareContext _context;
         public TokenService(IConfiguration configuration)
         {
             _configuration = configuration;
@@ -75,5 +78,48 @@ namespace backend.Services.Implementation
                 throw new UnauthorizedException($"Lỗi xác thực token: {ex.Message}");
             }
         }
+
+        public string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[64];
+            using (var rng = System.Security.Cryptography.RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomNumber);
+                return Convert.ToBase64String(randomNumber);
+            }
+        }
+
+        public async Task SaveRefreshToken(Guid userId, string refreshToken)
+        {
+            var refreshTokenExpirationDays = int.TryParse(_configuration["Jwt:RefreshTokenExpirationDays"], out var days) ? days : 7;
+            var newRefreshToken = new RefreshToken
+            {
+                UserId = userId,
+                Token = refreshToken,
+                ExpiresAt = DateTime.UtcNow.AddDays(refreshTokenExpirationDays), // Long-lived refresh token
+                CreatedAt = DateTime.UtcNow
+            };
+            await _context.RefreshTokens.AddAsync(newRefreshToken);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RevokeToken(int tokenId)
+        {
+            var token = await _context.RefreshTokens.FindAsync(tokenId);
+            if (token == null)
+            {
+                throw new NotFoundException("Refresh token not found");
+            }
+            _context.RefreshTokens.Remove(token);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<RefreshToken?> GetValidRefreshToken(string refreshToken)
+        {
+            return await _context.RefreshTokens
+                .FirstOrDefaultAsync(rt => rt.Token == refreshToken && rt.ExpiresAt >= DateTime.UtcNow);
+        }
+        
+
     }
 }

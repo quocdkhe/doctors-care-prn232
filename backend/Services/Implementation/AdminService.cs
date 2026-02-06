@@ -28,7 +28,6 @@ namespace backend.Services.Implementation
 
             var user = new User
             {
-                Id = Guid.NewGuid(),
                 FullName = dto.Name,
                 Phone = dto.Phone,
                 Email = dto.Email,
