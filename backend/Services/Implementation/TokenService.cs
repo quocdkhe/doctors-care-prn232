@@ -14,9 +14,10 @@ namespace backend.Services.Implementation
 
         private readonly IConfiguration _configuration;
         private readonly DoctorsCareContext _context;
-        public TokenService(IConfiguration configuration)
+        public TokenService(IConfiguration configuration, DoctorsCareContext context)
         {
             _configuration = configuration;
+            _context = context;
         }
 
         public string GenerateAccessToken(Models.User user)
@@ -119,7 +120,6 @@ namespace backend.Services.Implementation
             return await _context.RefreshTokens
                 .FirstOrDefaultAsync(rt => rt.Token == refreshToken && rt.ExpiresAt >= DateTime.UtcNow);
         }
-        
 
     }
 }
