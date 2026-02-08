@@ -11,7 +11,7 @@ import {
   VideoCameraOutlined,
 } from "@ant-design/icons";
 import { Button, Layout, Menu, theme } from "antd";
-import { useTheme } from "../providers/theme-provider";
+import { useTheme } from "../../providers/theme-provider";
 
 const { Header, Sider, Content } = Layout;
 
