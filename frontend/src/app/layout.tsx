@@ -1,6 +1,7 @@
 import React from "react";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { ThemeProvider } from "../providers/theme-provider";
+import { QueryProvider } from "../providers/query-provider";
 
 const RootLayout = ({ children }: React.PropsWithChildren) => (
   <html
@@ -12,7 +13,9 @@ const RootLayout = ({ children }: React.PropsWithChildren) => (
       style={{ margin: 0, padding: 0, width: "100%", height: "100%" }}
     >
       <ThemeProvider>
-        <AntdRegistry>{children}</AntdRegistry>
+        <QueryProvider>
+          <AntdRegistry>{children}</AntdRegistry>
+        </QueryProvider>
       </ThemeProvider>
     </body>
   </html>
