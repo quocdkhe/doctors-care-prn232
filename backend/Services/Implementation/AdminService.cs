@@ -28,10 +28,9 @@ namespace backend.Services.Implementation
 
             var user = new User
             {
-                FullName = dto.Name,
+                FullName = dto.FullName,
                 Phone = dto.Phone,
                 Email = dto.Email,
-                Avatar = dto.Avatar,
                 Role = dto.Role ?? UserRoleEnum.Patient,
                 Password = PasswordHashing.HashPassword("123456"), // default password
                 CreatedAt = DateTime.UtcNow,

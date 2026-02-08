@@ -10,7 +10,7 @@
                 options.AddPolicy("CorsPolicy", policy =>
                 {
                     policy
-                        .WithOrigins("http://localhost:5173", "http://localhost:4173") // your frontend URL
+                        .WithOrigins("http://localhost:3000") // your frontend URL
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials(); // allow cookies

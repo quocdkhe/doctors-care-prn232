@@ -8,7 +8,7 @@ interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
 
 // Create a custom Axios instance
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL, // your backend URL
+  baseURL: `${process.env.NEXT_PUBLIC_API_URL}/api`, // your backend URL
   withCredentials: true, // send cookies automatically
   headers: {
     "Content-Type": "application/json",
@@ -51,7 +51,7 @@ api.interceptors.response.use(
 
     // If it's a 401 WITH a message, or any other error, just reject
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;

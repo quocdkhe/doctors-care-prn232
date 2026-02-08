@@ -2,6 +2,7 @@ import React from "react";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { ThemeProvider } from "../providers/theme-provider";
 import { QueryProvider } from "../providers/query-provider";
+import { StoreProvider } from "../providers/store-provider";
 
 const RootLayout = ({ children }: React.PropsWithChildren) => (
   <html
@@ -12,11 +13,13 @@ const RootLayout = ({ children }: React.PropsWithChildren) => (
       className="m-0 p-0 w-full h-full"
       style={{ margin: 0, padding: 0, width: "100%", height: "100%" }}
     >
-      <ThemeProvider>
+      <StoreProvider>
         <QueryProvider>
-          <AntdRegistry>{children}</AntdRegistry>
+          <ThemeProvider>
+            <AntdRegistry>{children}</AntdRegistry>
+          </ThemeProvider>
         </QueryProvider>
-      </ThemeProvider>
+      </StoreProvider>
     </body>
   </html>
 );

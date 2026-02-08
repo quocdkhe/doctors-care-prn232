@@ -1,8 +1,5 @@
-export interface CurrentUserInfo {
+export interface UserInfo extends UserRegister {
   id: number;
-  fullName: string;
-  phone?: string;
-  email: string;
   role: UserRoleEnum;
   avatar?: string;
 }
@@ -11,4 +8,15 @@ export enum UserRoleEnum {
   Admin = "Admin",
   Doctor = "Doctor",
   Patient = "Patient",
+}
+
+export interface UserRegister {
+  fullName: string;
+  phone?: string;
+  email: string;
+  password: string;
+}
+
+export interface AdminCreateUser extends Omit<UserRegister, "password"> {
+  role: UserRoleEnum;
 }

@@ -33,7 +33,8 @@ namespace backend
             
 
             var app = builder.Build();
-
+            // Use cors configuration
+            app.UseCors("CorsPolicy");
             // Run migration
             using (var scope = app.Services.CreateScope())
             {

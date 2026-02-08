@@ -3,12 +3,12 @@ import {
   createAsyncThunk,
   type PayloadAction,
 } from "@reduxjs/toolkit";
-import type { CurrentUserInfo } from "../types/user";
+import type { UserInfo } from "../types/user";
 import api from "../lib/client-fetcher";
 import type { AxiosError } from "axios";
 
 interface AuthState {
-  user: CurrentUserInfo | null;
+  user: UserInfo | null;
   isLoading: boolean;
   error: string | null;
 }
@@ -20,13 +20,13 @@ const initialState: AuthState = {
 };
 
 export const fetchCurrentUser = createAsyncThunk<
-  CurrentUserInfo,
+  UserInfo,
   void,
   { rejectValue: string }
 >("auth/fetchUser", async (_, { rejectWithValue }) => {
   try {
     // Use the imported 'api' instance instead of browser fetch
-    const response = await api.get<CurrentUserInfo>("/users/self");
+    const response = await api.get<UserInfo>("/users/self");
 
     // Axios automatically handles response.ok and throws an error on 4xx/5xx
     return response.data; // Axios response places the data in the 'data' property
@@ -49,7 +49,7 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     // Utility reducer to manually set a user (e.g., after successful login)
-    setUser: (state, action: PayloadAction<CurrentUserInfo | null>) => {
+    setUser: (state, action: PayloadAction<UserInfo | null>) => {
       state.user = action.payload;
       state.isLoading = false;
       state.error = null;
