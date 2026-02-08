@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import api from "../lib/client-fetcher";
-import { Message } from "../types/common";
+import { Error, Message } from "../types/common";
 import { AdminCreateUser, UserInfo } from "../types/user";
 
 export function useGetUserList() {
@@ -14,7 +14,7 @@ export function useGetUserList() {
 }
 
 export function useCreateUser() {
-  return useMutation<Message, AxiosError<Message>, AdminCreateUser>({
+  return useMutation<Message, AxiosError<Error>, AdminCreateUser>({
     mutationFn: async (user: AdminCreateUser) =>
       await api.post<Message>("/admin/users", user).then((res) => res.data),
   });
