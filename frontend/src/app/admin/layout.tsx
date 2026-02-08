@@ -6,49 +6,82 @@ import {
   MenuUnfoldOutlined,
   MoonOutlined,
   SunOutlined,
-  UploadOutlined,
   UserOutlined,
-  VideoCameraOutlined,
 } from "@ant-design/icons";
 import { Button, Layout, Menu, theme } from "antd";
 import { useTheme } from "../../providers/theme-provider";
+import { useRouter, usePathname } from "next/navigation";
+import type { MenuProps } from "antd";
+import { UserProfileDropdown } from "../../components/user-profile-dropdown";
 
 const { Header, Sider, Content } = Layout;
 
-const AdminLayout: React.FC = ({ children }: React.PropsWithChildren) => {
+const AdminLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
   const { isDarkMode, toggleTheme } = useTheme();
 
+  const getSelectedKey = () => {
+    if (pathname?.includes("/admin/user-management")) return "user-management";
+    return "dashboard"; // Better default than "1"
+  };
+
+  // Define menu items with proper typing
+  const menuItems: MenuProps["items"] = [
+    {
+      key: "user-management",
+      icon: <UserOutlined />,
+      label: "Quản lí người dùng",
+    },
+  ];
+
+  // Better approach: use a routing map
+  const routeMap: Record<string, string> = {
+    "user-management": "/admin/user-management",
+    // Add more routes here as needed
+  };
+
+  const handleMenuClick: MenuProps["onClick"] = ({ key }) => {
+    const route = routeMap[key];
+    if (route) {
+      router.push(route);
+    }
+  };
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider trigger={null} collapsible collapsed={collapsed}>
-        <div className="demo-logo-vertical" />
-        <Menu
-          theme="dark"
-          mode="inline"
-          defaultSelectedKeys={["1"]}
-          items={[
-            {
-              key: "1",
-              icon: <UserOutlined />,
-              label: "nav 1",
-            },
-            {
-              key: "2",
-              icon: <VideoCameraOutlined />,
-              label: "nav 2",
-            },
-            {
-              key: "3",
-              icon: <UploadOutlined />,
-              label: "nav 3",
-            },
-          ]}
-        />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+          }}
+        >
+          <div className="demo-logo-vertical" />
+          <Menu
+            theme="dark"
+            mode="inline"
+            selectedKeys={[getSelectedKey()]}
+            onClick={handleMenuClick}
+            items={menuItems}
+            style={{ flex: 1 }}
+          />
+          <div
+            style={{
+              padding: collapsed ? "16px 8px" : "16px",
+              borderTop: "1px solid rgba(255, 255, 255, 0.1)",
+              background: "#001529",
+            }}
+          >
+            {!collapsed && <UserProfileDropdown />}
+          </div>
+        </div>
       </Sider>
       <Layout>
         <Header style={{ padding: 0, background: colorBgContainer }}>

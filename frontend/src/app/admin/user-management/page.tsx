@@ -12,7 +12,7 @@ import {
   Form,
   Input,
   Select,
-  message,
+  App,
 } from "antd";
 import { PlusOutlined, UserOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
@@ -26,6 +26,7 @@ const UserListPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
   const queryClient = useQueryClient();
+  const { message } = App.useApp();
 
   const { data: users, isLoading, error } = useGetUserList();
   const createUserMutation = useCreateUser();
@@ -206,15 +207,14 @@ const UserListPage = () => {
             name="role"
             rules={[{ required: true, message: "Vui lòng chọn vai trò!" }]}
           >
-            <Select placeholder="Chọn vai trò">
-              <Select.Option value={UserRoleEnum.Admin}>
-                Quản trị viên
-              </Select.Option>
-              <Select.Option value={UserRoleEnum.Doctor}>Bác sĩ</Select.Option>
-              <Select.Option value={UserRoleEnum.Patient}>
-                Bệnh nhân
-              </Select.Option>
-            </Select>
+            <Select
+              placeholder="Chọn vai trò"
+              options={[
+                { label: "Quản trị viên", value: UserRoleEnum.Admin },
+                { label: "Bác sĩ", value: UserRoleEnum.Doctor },
+                { label: "Bệnh nhân", value: UserRoleEnum.Patient },
+              ]}
+            />
           </Form.Item>
         </Form>
       </Modal>

@@ -1,7 +1,8 @@
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode } from "react";
-import { ConfigProvider, theme } from "antd";
+import { createContext, useContext, useState, ReactNode } from "react";
+import { App, ConfigProvider, theme } from "antd";
+import viVN from "antd/locale/vi_VN";
 
 interface ThemeContextType {
   isDarkMode: boolean;
@@ -28,11 +29,12 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   return (
     <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
       <ConfigProvider
+        locale={viVN}
         theme={{
           algorithm: isDarkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
         }}
       >
-        {children}
+        <App>{children}</App>
       </ConfigProvider>
     </ThemeContext.Provider>
   );

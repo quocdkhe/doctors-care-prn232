@@ -3,6 +3,8 @@ import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { ThemeProvider } from "../providers/theme-provider";
 import { QueryProvider } from "../providers/query-provider";
 import { StoreProvider } from "../providers/store-provider";
+import { App } from "antd";
+import { AuthInitializer } from "../components/auth-initializer";
 
 const RootLayout = ({ children }: React.PropsWithChildren) => (
   <html
@@ -14,6 +16,7 @@ const RootLayout = ({ children }: React.PropsWithChildren) => (
       style={{ margin: 0, padding: 0, width: "100%", height: "100%" }}
     >
       <StoreProvider>
+        <AuthInitializer />
         <QueryProvider>
           <ThemeProvider>
             <AntdRegistry>{children}</AntdRegistry>
