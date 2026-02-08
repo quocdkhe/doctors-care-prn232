@@ -41,5 +41,20 @@ namespace backend.Services.Implementation
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<List<UserResponseDto>> GetAllUsers()
+        {
+            return await _context.Users
+                .Select(u => new UserResponseDto
+                {
+                    Id = u.Id,
+                    FullName = u.FullName,
+                    Phone = u.Phone,
+                    Email = u.Email,
+                    Avatar = u.Avatar,
+                    Role = u.Role
+                })
+                .ToListAsync();
+        }
     }
 }

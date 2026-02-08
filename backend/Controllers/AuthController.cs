@@ -50,7 +50,7 @@ namespace backend.Controllers
             return Ok(new UserResponseDto
             {
                 Id = currentUser.Id,
-                Name = currentUser.FullName,
+                FullName = currentUser.FullName,
                 Phone = currentUser.Phone,
                 Email = currentUser.Email,
                 Avatar = currentUser.Avatar,
@@ -128,7 +128,7 @@ namespace backend.Controllers
             return Ok(new UserResponseDto
             {
                 Id = newUser.Id,
-                Name = newUser.FullName,
+                FullName = newUser.FullName,
                 Phone = newUser.Phone,
                 Email = newUser.Email,
                 Avatar = newUser.Avatar,
@@ -152,7 +152,7 @@ namespace backend.Controllers
             return Ok(new UserResponseDto
             {
                 Id = currentUser.Id,
-                Name = currentUser.FullName,
+                FullName = currentUser.FullName,
                 Phone = currentUser.Phone,
                 Email = currentUser.Email,
                 Avatar = currentUser.Avatar,
