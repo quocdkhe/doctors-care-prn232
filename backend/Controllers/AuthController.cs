@@ -125,6 +125,17 @@ namespace backend.Controllers
             }
             // 2. Register new user
             var newUser = await _patientService.Register(registerDto);
+
+            // 3. Generate tokens
+            var accessToken = _tokenService.GenerateAccessToken(newUser);
+            var refreshToken = _tokenService.GenerateRefreshToken();
+
+            // 4. Save refresh token to database
+            await _tokenService.SaveRefreshToken(newUser.Id, refreshToken);
+
+            // 5. Set HTTP-only cookies
+            SetTokenCookies.SetTokenCookiesToResponse(Response, accessToken, refreshToken);
+
             return Ok(new UserResponseDto
             {
                 Id = newUser.Id,

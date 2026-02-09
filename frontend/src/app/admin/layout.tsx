@@ -65,7 +65,7 @@ const AdminLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
         >
           <div className="demo-logo-vertical" />
           <Menu
-            theme="dark"
+            theme={isDarkMode ? "dark" : "light"}
             mode="inline"
             selectedKeys={[getSelectedKey()]}
             onClick={handleMenuClick}
@@ -76,7 +76,7 @@ const AdminLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
             style={{
               padding: collapsed ? "16px 8px" : "16px",
               borderTop: "1px solid rgba(255, 255, 255, 0.1)",
-              background: "#001529",
+              backgroundColor: !isDarkMode ? "#fff" : "",
             }}
           >
             {!collapsed && <UserProfileDropdown />}

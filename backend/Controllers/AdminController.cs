@@ -34,6 +34,5 @@ namespace backend.Controllers
             return Ok(users);
         }
 
-
     }
 }

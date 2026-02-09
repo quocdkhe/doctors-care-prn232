@@ -1,22 +1,32 @@
 "use client";
 
-import { Avatar, Dropdown, Skeleton, Space, Typography } from "antd";
-import { LogoutOutlined, UserOutlined } from "@ant-design/icons";
+import { Avatar, Dropdown, App, Skeleton, Space, Typography } from "antd";
+import { HomeOutlined, LogoutOutlined, UserOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { logout } from "../store/auth.slice";
+import { useLogout } from "../queries/user.queries";
 import { useRouter } from "next/navigation";
 
 const { Text } = Typography;
 
 export const UserProfileDropdown = () => {
-  const dispatch = useAppDispatch();
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const { message } = App.useApp();
   const { user, isLoading } = useAppSelector((state) => state.auth);
-
+  const logoutMutation = useLogout();
   const handleLogout = () => {
-    dispatch(logout());
-    router.push("/login");
+    logoutMutation.mutate(undefined, {
+      onSuccess: () => {
+        dispatch(logout());
+        message.success("Đăng xuất thành công!");
+        router.push("/");
+      },
+      onError: (error) => {
+        message.error(error.response?.data?.error || "Đăng xuất thất bại!");
+      },
+    });
   };
 
   const menuItems: MenuProps["items"] = [
@@ -26,7 +36,22 @@ export const UserProfileDropdown = () => {
       label: "Đăng xuất",
       onClick: handleLogout,
     },
+    {
+      key: "home",
+      icon: <HomeOutlined />,
+      label: "Trang chủ",
+      onClick: () => router.push("/"),
+    },
   ];
+
+  if (user?.role === "Admin") {
+    menuItems.unshift({
+      key: "admin",
+      icon: <UserOutlined />,
+      label: "Admin",
+      onClick: () => router.push("/admin"),
+    });
+  }
 
   if (isLoading) {
     return (
@@ -56,15 +81,17 @@ export const UserProfileDropdown = () => {
     >
       <Space size="middle" style={{ cursor: "pointer" }}>
         <Avatar src={user.avatar || undefined} icon={<UserOutlined />} />
-        <div style={{ textAlign: "left" }}>
-          <div>
-            <Text strong>{user.fullName}</Text>
-          </div>
-          <div>
-            <Text type="secondary" style={{ fontSize: "12px" }}>
-              {user.email}
-            </Text>
-          </div>
+        <div
+          style={{
+            textAlign: "left",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <Text strong>{user.fullName}</Text>
+          <Text type="secondary" style={{ fontSize: "12px" }}>
+            {user.email}
+          </Text>
         </div>
       </Space>
     </Dropdown>

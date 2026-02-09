@@ -21,17 +21,25 @@ api.interceptors.response.use(
   async (error: AxiosError<Message>) => {
     const originalRequest = error.config as CustomAxiosRequestConfig;
 
+    // Don't retry if the failing request is /auth/refresh or /auth/me itself
+    // This prevents infinite loops
+    const isAuthEndpoint =
+      originalRequest.url?.includes("/auth/refresh") ||
+      originalRequest.url?.includes("/auth/me");
+
     // Check if:
     // 1. Status is 401
     // 2. We haven't already tried to retry this specific request (prevent infinite loop)
     // 3. The specific condition: The error response specifically lacks a 'message' field
     //    (checking both for no data, or data exists but message is falsy)
+    // 4. It's not an auth endpoint itself
     const hasMessage = error.response?.data && error.response.data.message;
 
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      !hasMessage
+      !hasMessage &&
+      !isAuthEndpoint
     ) {
       originalRequest._retry = true;
 
