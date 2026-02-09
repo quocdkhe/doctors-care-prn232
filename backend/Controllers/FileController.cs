@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
 {
+    [Route("api/[controller]")]
     [ApiController]
-    [Route("[controller]")]
     public class FileController : ControllerBase
     {
         private readonly IFileService _fileService;

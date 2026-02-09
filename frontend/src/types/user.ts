@@ -25,3 +25,10 @@ export interface Login {
   email: string;
   password: string;
 }
+
+export interface UserUpdateProfile {
+  fullName: string;
+  phone: string;
+  avatar?: string;
+  password?: string;
+}

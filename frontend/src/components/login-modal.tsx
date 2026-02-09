@@ -42,15 +42,18 @@ export const LoginModal = ({ open, onClose }: LoginModalProps) => {
       open={open}
       onCancel={handleCancel}
       onOk={() => form.submit()}
+      destroyOnHidden
       confirmLoading={loginMutation.isPending}
       okText="Đăng nhập"
       cancelText="Hủy"
+      afterClose={() => form.resetFields()}
     >
       <Form
         form={form}
         layout="vertical"
         onFinish={handleLogin}
-        autoComplete="on"
+        autoComplete="off"
+        preserve={false}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
             form.submit();
@@ -65,7 +68,7 @@ export const LoginModal = ({ open, onClose }: LoginModalProps) => {
             { type: "email", message: "Email không hợp lệ!" },
           ]}
         >
-          <Input placeholder="Nhập email" />
+          <Input placeholder="Nhập email" autoComplete="email" />
         </Form.Item>
 
         <Form.Item
@@ -76,7 +79,10 @@ export const LoginModal = ({ open, onClose }: LoginModalProps) => {
             { min: 6, message: "Mật khẩu phải có ít nhất 6 ký tự!" },
           ]}
         >
-          <Input.Password placeholder="Nhập mật khẩu" />
+          <Input.Password
+            placeholder="Nhập mật khẩu"
+            autoComplete="current-password"
+          />
         </Form.Item>
       </Form>
     </Modal>

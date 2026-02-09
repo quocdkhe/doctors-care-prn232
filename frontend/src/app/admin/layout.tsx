@@ -6,6 +6,7 @@ import {
   MenuUnfoldOutlined,
   MoonOutlined,
   SunOutlined,
+  UsergroupAddOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import { Button, Layout, Menu, theme } from "antd";
@@ -28,6 +29,7 @@ const AdminLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
 
   const getSelectedKey = () => {
     if (pathname?.includes("/admin/user-management")) return "user-management";
+    if (pathname?.includes("/admin/profile")) return "profile";
     return "dashboard"; // Better default than "1"
   };
 
@@ -35,14 +37,20 @@ const AdminLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
   const menuItems: MenuProps["items"] = [
     {
       key: "user-management",
-      icon: <UserOutlined />,
+      icon: <UsergroupAddOutlined />,
       label: "Quản lí người dùng",
+    },
+    {
+      key: "profile",
+      icon: <UserOutlined />,
+      label: "Thông tin cá nhân",
     },
   ];
 
   // Better approach: use a routing map
   const routeMap: Record<string, string> = {
     "user-management": "/admin/user-management",
+    profile: "/admin/profile",
     // Add more routes here as needed
   };
 

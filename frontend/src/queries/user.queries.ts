@@ -2,7 +2,12 @@ import { Register, useMutation, useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import api from "../lib/client-fetcher";
 import { Error, Message } from "../types/common";
-import { AdminCreateUser, Login, UserInfo } from "../types/user";
+import {
+  AdminCreateUser,
+  Login,
+  UserInfo,
+  UserUpdateProfile,
+} from "../types/user";
 
 export function useGetUserList() {
   return useQuery<UserInfo[], AxiosError<Message>>({
@@ -37,6 +42,15 @@ export function useLogout() {
 export function useRegister() {
   return useMutation<UserInfo, AxiosError<Error>, Register>({
     mutationFn: async (user: Register) =>
-      await api.post<UserInfo>("/auth/register", user).then((res) => res.data),
+      await api
+        .post<UserInfo>("/accounts/register", user)
+        .then((res) => res.data),
+  });
+}
+
+export function useUpdateProfile() {
+  return useMutation<UserInfo, AxiosError<Error>, UserUpdateProfile>({
+    mutationFn: async (user: UserUpdateProfile) =>
+      await api.put<UserInfo>("/accounts/me", user).then((res) => res.data),
   });
 }

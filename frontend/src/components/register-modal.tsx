@@ -1,6 +1,9 @@
 "use client";
 
 import { Modal, Form, Input, App } from "antd";
+import { useRegister } from "../queries/user.queries";
+import { useAppDispatch } from "../store/hooks";
+import { fetchCurrentUser } from "../store/auth.slice";
 
 interface RegisterModalProps {
   open: boolean;
@@ -10,12 +13,21 @@ interface RegisterModalProps {
 export const RegisterModal = ({ open, onClose }: RegisterModalProps) => {
   const [form] = Form.useForm();
   const { message } = App.useApp();
+  const registerMutation = useRegister();
+  const dispatch = useAppDispatch();
 
   const handleRegister = (values: any) => {
-    console.log("Register:", values);
-    message.success("Đăng ký thành công!");
-    form.resetFields();
-    onClose();
+    registerMutation.mutate(values, {
+      onSuccess: () => {
+        message.success("Đăng ký thành công!");
+        dispatch(fetchCurrentUser());
+        form.resetFields();
+        onClose();
+      },
+      onError: (error) => {
+        message.error(error.response?.data?.error || "Đăng ký thất bại!");
+      },
+    });
   };
 
   const handleCancel = () => {
@@ -29,6 +41,7 @@ export const RegisterModal = ({ open, onClose }: RegisterModalProps) => {
       open={open}
       onCancel={handleCancel}
       onOk={() => form.submit()}
+      confirmLoading={registerMutation.isPending}
       okText="Đăng ký"
       cancelText="Hủy"
     >
@@ -51,7 +64,7 @@ export const RegisterModal = ({ open, onClose }: RegisterModalProps) => {
             { min: 2, message: "Họ và tên phải có ít nhất 2 ký tự!" },
           ]}
         >
-          <Input placeholder="Nhập họ và tên" />
+          <Input placeholder="Nhập họ và tên" autoComplete="full-name" />
         </Form.Item>
 
         <Form.Item
@@ -62,7 +75,7 @@ export const RegisterModal = ({ open, onClose }: RegisterModalProps) => {
             { type: "email", message: "Email không hợp lệ!" },
           ]}
         >
-          <Input placeholder="Nhập email" />
+          <Input placeholder="Nhập email" autoComplete="email" />
         </Form.Item>
 
         <Form.Item
@@ -75,7 +88,10 @@ export const RegisterModal = ({ open, onClose }: RegisterModalProps) => {
             },
           ]}
         >
-          <Input placeholder="Nhập số điện thoại (không bắt buộc)" />
+          <Input
+            placeholder="Nhập số điện thoại (không bắt buộc)"
+            autoComplete="phone"
+          />
         </Form.Item>
 
         <Form.Item
@@ -86,7 +102,10 @@ export const RegisterModal = ({ open, onClose }: RegisterModalProps) => {
             { min: 6, message: "Mật khẩu phải có ít nhất 6 ký tự!" },
           ]}
         >
-          <Input.Password placeholder="Nhập mật khẩu" />
+          <Input.Password
+            placeholder="Nhập mật khẩu"
+            autoComplete="new-password"
+          />
         </Form.Item>
 
         <Form.Item
@@ -105,7 +124,10 @@ export const RegisterModal = ({ open, onClose }: RegisterModalProps) => {
             }),
           ]}
         >
-          <Input.Password placeholder="Nhập lại mật khẩu" />
+          <Input.Password
+            placeholder="Nhập lại mật khẩu"
+            autoComplete="new-password"
+          />
         </Form.Item>
       </Form>
     </Modal>

@@ -1,4 +1,5 @@
-﻿using backend.Services.Admin;
+﻿using backend.Services.Account;
+using backend.Services.Admin;
 using backend.Services.Authentication;
 using backend.Services.FileUpload;
 using backend.Services.Implementation;
@@ -16,6 +17,7 @@ namespace backend.Configurations
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IPatientService, PatientService>();
+            services.AddScoped<IAccountService, AccountService>();
             return services;
         }
     }
