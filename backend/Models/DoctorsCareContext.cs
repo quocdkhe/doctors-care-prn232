@@ -15,6 +15,7 @@ namespace backend.Models
         }
         public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Specialty> Specialties { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -111,6 +112,46 @@ namespace backend.Models
                       .WithOne(rt => rt.User)
                       .HasForeignKey(rt => rt.UserId)
                       .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<Specialty>(entity =>
+            {
+                entity.ToTable("specialties");
+
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                      .HasColumnName("id")
+                      .HasDefaultValueSql("NEWID()");
+
+                entity.Property(e => e.Name)
+                      .HasColumnName("name")
+                      .IsRequired()
+                      .HasMaxLength(255);
+
+                entity.Property(e => e.Slug)
+                      .HasColumnName("slug")
+                      .IsRequired()
+                      .HasMaxLength(255);
+
+                entity.Property(e => e.Description)
+                      .HasColumnName("description")
+                      .IsRequired();
+
+                entity.Property(e => e.ImageUrl)
+                      .HasColumnName("image_url");
+
+                entity.Property(e => e.CreatedAt)
+                      .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                      .HasColumnName("created_at");
+
+                entity.Property(e => e.UpdatedAt)
+                      .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                      .HasColumnName("updated_at");
+
+                // Indexes
+                entity.HasIndex(e => e.Slug)
+                      .HasDatabaseName("idx_specialties_slug")
+                      .IsUnique();
             });
         }
 
