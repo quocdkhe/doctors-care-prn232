@@ -1,56 +1,73 @@
 "use client";
 
-import { Button, Form, Input, message } from "antd";
-import { useCreateSpecialty } from "../../../../queries/specialty.queries";
+import React from "react";
+import {
+  SpecialtyForm,
+  SpecialtyFormData,
+} from "@/src/components/specialty-form";
 import { useRouter } from "next/navigation";
+import { Typography, App } from "antd";
+import { useCreateSpecialty } from "@/src/queries/specialty.queries";
+import { useUploadFile } from "@/src/queries/file.queries";
+import { useQueryClient } from "@tanstack/react-query";
 
-export default function AddNewSpecialtyPage() {
+const { Title } = Typography;
+
+const AddNewSpecialtyPage = () => {
   const router = useRouter();
+  const { message } = App.useApp();
+  const queryClient = useQueryClient();
   const createMutation = useCreateSpecialty();
+  const uploadFileMutation = useUploadFile();
 
-  const onFinish = async (values: { name: string; description: string }) => {
-    createMutation.mutate(
-      {
-        name: values.name,
-        description: values.description,
-        imageUrl: "",
-      },
-      {
-        onSuccess: () => {
-          message.success("Đã thêm chuyên khoa thành công!");
-          router.push("/admin/specialty");
-        },
-        onError: (error) => {
-          message.error(error.response?.data?.error || "Đã có lỗi xảy ra");
-        },
+  const handleSubmit = async (data: SpecialtyFormData) => {
+    try {
+      let imageUrl = data.imageUrl;
+
+      // Handle image upload if there's a new file
+      if (data.imageFile) {
+        const uploadResponse = await uploadFileMutation.mutateAsync(
+          data.imageFile,
+        );
+        imageUrl = uploadResponse.message; // API returns URL in message
       }
-    );
+
+      await createMutation.mutateAsync(
+        {
+          name: data.name,
+          description: data.description,
+          imageUrl: imageUrl,
+        },
+        {
+          onSuccess: () => {
+            message.success("Tạo chuyên khoa mới thành công!");
+            queryClient.invalidateQueries({ queryKey: ["specialties"] });
+            router.push("/admin/specialty");
+          },
+          onError: (error) => {
+            message.error(
+              error.response?.data?.error || "Tạo chuyên khoa thất bại!",
+            );
+          },
+        },
+      );
+    } catch (error) {
+      console.error("Error creating specialty:", error);
+      message.error("Có lỗi xảy ra khi tạo chuyên khoa!");
+    }
   };
 
   return (
-    <div>
-      <h1>Thêm chuyên khoa mới</h1>
-      <Form onFinish={onFinish} layout="vertical">
-        <Form.Item
-          name="name"
-          label="Tên chuyên khoa"
-          rules={[{ required: true, message: "Vui lòng nhập tên chuyên khoa" }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          name="description"
-          label="Mô tả"
-          rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
-        >
-          <Input.TextArea rows={4} />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit" loading={createMutation.isPending}>
-            Thêm mới
-          </Button>
-        </Form.Item>
-      </Form>
+    <div style={{ padding: "24px" }}>
+      <Title level={2} style={{ marginBottom: 24 }}>
+        Thêm mới chuyên khoa
+      </Title>
+      <SpecialtyForm
+        onSubmit={handleSubmit}
+        isLoading={createMutation.isPending || uploadFileMutation.isPending}
+      />
     </div>
   );
-}
+};
+
+export default AddNewSpecialtyPage;

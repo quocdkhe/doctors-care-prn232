@@ -17,31 +17,36 @@ import {
   EditOutlined,
   DeleteOutlined,
   EyeOutlined,
+  PlusOutlined,
 } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
 import {
   useGetSpecialtyList,
-  useGetSpecialtyById,
   useDeleteSpecialty,
 } from "@/src/queries/specialty.queries";
 import { Specialty } from "@/src/types/specialty";
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
+import { useRouter } from "next/navigation";
 
 const { Title } = Typography;
 
 export default function SpecialtyPage() {
-  const [selectedSpecialtyId, setSelectedSpecialtyId] = useState<
-    number | null
-  >(null);
+  const router = useRouter();
+  const [selectedSpecialtyId, setSelectedSpecialtyId] = useState<number | null>(
+    null,
+  );
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const queryClient = useQueryClient();
   const { message } = App.useApp();
 
   const { data: specialties, isLoading, error } = useGetSpecialtyList();
-  const { data: selectedSpecialty, isLoading: isLoadingDetail } =
-    useGetSpecialtyById(selectedSpecialtyId || 0);
   const deleteMutation = useDeleteSpecialty();
+
+  // Find selected specialty from the specialties array
+  const selectedSpecialty = specialties?.find(
+    (specialty) => specialty.id === selectedSpecialtyId,
+  );
 
   const handleViewDetail = (id: number) => {
     setSelectedSpecialtyId(id);
@@ -53,20 +58,17 @@ export default function SpecialtyPage() {
   };
 
   const handleDelete = async (id: number, name: string) => {
-    deleteMutation.mutate(
-      id,
-      {
-        onSuccess: () => {
-          message.success(`Đã xóa chuyên khoa "${name}" thành công!`);
-          queryClient.invalidateQueries({ queryKey: ["specialties"] });
-        },
-        onError: (error) => {
-          message.error(
-            error.response?.data?.error || `Xóa chuyên khoa "${name}" thất bại!`
-          );
-        },
-      }
-    );
+    deleteMutation.mutate(id, {
+      onSuccess: () => {
+        message.success(`Đã xóa chuyên khoa "${name}" thành công!`);
+        queryClient.invalidateQueries({ queryKey: ["specialties"] });
+      },
+      onError: (error) => {
+        message.error(
+          error.response?.data?.error || `Xóa chuyên khoa "${name}" thất bại!`,
+        );
+      },
+    });
   };
 
   const columns: ColumnsType<Specialty> = [
@@ -77,7 +79,7 @@ export default function SpecialtyPage() {
       width: 100,
       render: (imageUrl: string) => (
         <Image
-          src={imageUrl}
+          src={imageUrl || undefined}
           alt="Specialty"
           width={60}
           height={60}
@@ -97,8 +99,7 @@ export default function SpecialtyPage() {
       key: "createdAt",
       width: 150,
       render: (createdAt: string) => dayjs(createdAt).format("DD/MM/YYYY"),
-      sorter: (a, b) =>
-        dayjs(a.createdAt).unix() - dayjs(b.createdAt).unix(),
+      sorter: (a, b) => dayjs(a.createdAt).unix() - dayjs(b.createdAt).unix(),
     },
     {
       title: "Thao tác",
@@ -139,8 +140,7 @@ export default function SpecialtyPage() {
         <Alert
           title="Lỗi"
           description={
-            error.response?.data?.error ||
-            "Không thể tải danh sách chuyên khoa"
+            error.response?.data?.error || "Không thể tải danh sách chuyên khoa"
           }
           type="error"
           showIcon
@@ -162,6 +162,15 @@ export default function SpecialtyPage() {
         <Title level={3} style={{ margin: 0 }}>
           Quản lý chuyên khoa
         </Title>
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={() => {
+            router.push("/admin/specialty/add-new");
+          }}
+        >
+          Thêm mới
+        </Button>
       </div>
 
       <Table
@@ -182,13 +191,12 @@ export default function SpecialtyPage() {
         placement="right"
         onClose={handleCloseDrawer}
         open={isDrawerOpen}
-        loading={isLoadingDetail}
         size={"large"}
       >
         {selectedSpecialty ? (
           <>
             <Image
-              src={selectedSpecialty.imageUrl}
+              src={selectedSpecialty.imageUrl || undefined}
               alt={selectedSpecialty.name}
               style={{
                 width: "100%",
@@ -201,16 +209,20 @@ export default function SpecialtyPage() {
                 {selectedSpecialty.name}
               </Descriptions.Item>
               <Descriptions.Item label="Mô tả">
-                {selectedSpecialty.description}
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: selectedSpecialty.description,
+                  }}
+                />
               </Descriptions.Item>
               <Descriptions.Item label="Ngày tạo">
                 {dayjs(selectedSpecialty.createdAt).format(
-                  "DD/MM/YYYY HH:mm:ss"
+                  "DD/MM/YYYY HH:mm:ss",
                 )}
               </Descriptions.Item>
               <Descriptions.Item label="Ngày cập nhật">
                 {dayjs(selectedSpecialty.updatedAt).format(
-                  "DD/MM/YYYY HH:mm:ss"
+                  "DD/MM/YYYY HH:mm:ss",
                 )}
               </Descriptions.Item>
             </Descriptions>
