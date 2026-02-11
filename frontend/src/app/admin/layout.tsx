@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import {
+  MedicineBoxOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   MoonOutlined,
@@ -30,7 +31,8 @@ const AdminLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
   const getSelectedKey = () => {
     if (pathname?.includes("/admin/user-management")) return "user-management";
     if (pathname?.includes("/admin/profile")) return "profile";
-    return "dashboard"; // Better default than "1"
+    if (pathname?.includes("/admin/specialty")) return "specialty";
+    return "dashboard";
   };
 
   // Define menu items with proper typing
@@ -39,6 +41,11 @@ const AdminLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
       key: "user-management",
       icon: <UsergroupAddOutlined />,
       label: "Quản lí người dùng",
+    },
+    {
+      key: "specialty",
+      icon: <MedicineBoxOutlined />,
+      label: "Quản lí chuyên khoa",
     },
     {
       key: "profile",
@@ -51,6 +58,7 @@ const AdminLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
   const routeMap: Record<string, string> = {
     "user-management": "/admin/user-management",
     profile: "/admin/profile",
+    specialty: "/admin/specialty",
     // Add more routes here as needed
   };
 
