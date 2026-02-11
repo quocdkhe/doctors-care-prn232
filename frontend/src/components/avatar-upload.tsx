@@ -45,12 +45,6 @@ export const AvatarUpload = ({
     }
   };
 
-  const handleRemovePreview = () => {
-    setAvatarPreview(currentAvatar);
-    setFileList([]);
-    onFileChange?.(null);
-  };
-
   return (
     <div
       style={{
@@ -60,7 +54,7 @@ export const AvatarUpload = ({
         gap: 16,
       }}
     >
-      <Title level={4}>Ảnh đại diện</Title>
+      <Title level={4}>Ảnh</Title>
 
       <Avatar
         size={size}
@@ -70,8 +64,9 @@ export const AvatarUpload = ({
       />
 
       <Text type="secondary" style={{ textAlign: "center" }}>
-        Tải lên ảnh định dạng JPG, PNG hoặc GIF. Kích thước tối đa 5MB
+        Tải lên ảnh. Kích thước tối đa 5MB
       </Text>
+
 
       <Upload
         listType="picture"
@@ -80,15 +75,11 @@ export const AvatarUpload = ({
         beforeUpload={() => false} // Prevent auto upload
         maxCount={1}
         accept="image/*"
+        style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
       >
         <Button icon={<UploadOutlined />}>Tải ảnh mới lên</Button>
       </Upload>
 
-      {avatarPreview && avatarPreview !== currentAvatar && (
-        <Button type="link" danger onClick={handleRemovePreview}>
-          Gỡ ảnh hiện tại
-        </Button>
-      )}
     </div>
   );
 };

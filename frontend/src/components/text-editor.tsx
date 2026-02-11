@@ -41,9 +41,7 @@ const TextEditor = forwardRef<TextEditorHandle, TextEditorProps>(
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              height: 250,
-              border: "1px solid #d9d9d9",
-              borderRadius: "4px",
+              height: 300,
             }}
           >
             <Spin size="large" description="Đang tải trình soạn thảo..." />
@@ -59,7 +57,7 @@ const TextEditor = forwardRef<TextEditorHandle, TextEditorProps>(
             }}
             initialValue={initialValue}
             init={{
-              height: 500,
+              height: 300,
               menubar: false,
               plugins: [
                 "advlist",

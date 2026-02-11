@@ -68,7 +68,6 @@ export const SpecialtyForm = ({
         <Col sm={24} md={8}>
           <AvatarUpload
             currentAvatar={imageUrl}
-            size={200}
             onFileChange={handleImageChange}
           />
         </Col>
@@ -82,23 +81,10 @@ export const SpecialtyForm = ({
               { required: true, message: "Vui lòng nhập tên chuyên khoa!" },
             ]}
           >
-            <Input placeholder="Nhập tên chuyên khoa" size="large" />
+            <Input placeholder="Nhập tên chuyên khoa" />
           </Form.Item>
 
-          <Form.Item
-            label="Mô tả chuyên khoa"
-            name="description"
-            rules={[
-              {
-                validator: async () => {
-                  const content = editorRef.current?.getContent() || "";
-                  if (!content || content === "<p></p>") {
-                    throw new Error("Vui lòng nhập mô tả chuyên khoa!");
-                  }
-                },
-              },
-            ]}
-          >
+          <Form.Item label="Mô tả chuyên khoa" name="description">
             <TextEditor ref={editorRef} initialValue={description} />
           </Form.Item>
 
@@ -106,10 +92,8 @@ export const SpecialtyForm = ({
             <Button
               type="primary"
               htmlType="submit"
-              size="large"
               icon={<SaveOutlined />}
               loading={isLoading}
-              block
             >
               {submitButtonText}
             </Button>

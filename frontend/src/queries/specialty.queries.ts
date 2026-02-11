@@ -13,7 +13,7 @@ export function useGetSpecialtyList() {
   });
 }
 
-export function useGetSpecialtyById(id: number) {
+export function useGetSpecialtyById(id: string) {
   return useQuery<Specialty, AxiosError<Error>>({
     queryKey: ["specialties", id],
     queryFn: async () =>
@@ -29,7 +29,7 @@ export function useCreateSpecialty() {
   });
 }
 
-export function useUpdateSpecialty(id: number) {
+export function useUpdateSpecialty(id: string) {
   return useMutation<Specialty, AxiosError<Error>, UpdateSpecialtyDto>({
     mutationFn: async (specialty: UpdateSpecialtyDto) =>
       await api.put<Specialty>(`/specialties/${id}`, specialty).then((res) => res.data),
@@ -37,8 +37,8 @@ export function useUpdateSpecialty(id: number) {
 }
 
 export function useDeleteSpecialty() {
-  return useMutation<void, AxiosError<Error>, number>({
-    mutationFn: async (id: number) =>
+  return useMutation<void, AxiosError<Error>, string>({
+    mutationFn: async (id: string) =>
       await api.delete<void>(`/specialties/${id}`).then((res) => res.data),
   });
 } 

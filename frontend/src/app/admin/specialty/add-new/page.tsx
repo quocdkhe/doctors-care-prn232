@@ -30,6 +30,9 @@ const AddNewSpecialtyPage = () => {
           data.imageFile,
         );
         imageUrl = uploadResponse.message; // API returns URL in message
+      } else {
+        message.error("Vui lòng tải lên ảnh!");
+        return;
       }
 
       await createMutation.mutateAsync(
@@ -44,29 +47,29 @@ const AddNewSpecialtyPage = () => {
             queryClient.invalidateQueries({ queryKey: ["specialties"] });
             router.push("/admin/specialty");
           },
-          onError: (error) => {
+          onError: (error: any) => {
             message.error(
               error.response?.data?.error || "Tạo chuyên khoa thất bại!",
             );
           },
         },
       );
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error creating specialty:", error);
       message.error("Có lỗi xảy ra khi tạo chuyên khoa!");
     }
   };
 
   return (
-    <div style={{ padding: "24px" }}>
-      <Title level={2} style={{ marginBottom: 24 }}>
+    <>
+      <Title level={4} style={{ margin: 0 }}>
         Thêm mới chuyên khoa
       </Title>
       <SpecialtyForm
         onSubmit={handleSubmit}
         isLoading={createMutation.isPending || uploadFileMutation.isPending}
       />
-    </div>
+    </>
   );
 };
 

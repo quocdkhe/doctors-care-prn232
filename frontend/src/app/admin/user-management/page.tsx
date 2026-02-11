@@ -81,17 +81,15 @@ const UserListPage = () => {
 
   if (error) {
     return (
-      <div style={{ padding: "24px" }}>
-        <Alert
-          title="Lỗi"
-          description={
-            error.response?.data?.message ||
-            "Không thể tải danh sách người dùng"
-          }
-          type="error"
-          showIcon
-        />
-      </div>
+      <Alert
+        title="Lỗi"
+        description={
+          error.response?.data?.message ||
+          "Không thể tải danh sách người dùng"
+        }
+        type="error"
+        showIcon
+      />
     );
   }
 
@@ -127,7 +125,7 @@ const UserListPage = () => {
           marginBottom: 16,
         }}
       >
-        <Title level={3} style={{ margin: 0 }}>
+        <Title level={4} style={{ margin: 0 }}>
           Quản lý người dùng
         </Title>
         <Button

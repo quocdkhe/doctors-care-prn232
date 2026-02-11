@@ -28,12 +28,14 @@ import { Specialty } from "@/src/types/specialty";
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
+import { AxiosError } from "axios";
+import { Error } from "@/src/types/common";
 
 const { Title } = Typography;
 
 export default function SpecialtyPage() {
   const router = useRouter();
-  const [selectedSpecialtyId, setSelectedSpecialtyId] = useState<number | null>(
+  const [selectedSpecialtyId, setSelectedSpecialtyId] = useState<string | null>(
     null,
   );
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -45,10 +47,10 @@ export default function SpecialtyPage() {
 
   // Find selected specialty from the specialties array
   const selectedSpecialty = specialties?.find(
-    (specialty) => specialty.id === selectedSpecialtyId,
+    (specialty: Specialty) => specialty.id === selectedSpecialtyId,
   );
 
-  const handleViewDetail = (id: number) => {
+  const handleViewDetail = (id: string) => {
     setSelectedSpecialtyId(id);
     setIsDrawerOpen(true);
   };
@@ -57,13 +59,13 @@ export default function SpecialtyPage() {
     setIsDrawerOpen(false);
   };
 
-  const handleDelete = async (id: number, name: string) => {
+  const handleDelete = async (id: string, name: string) => {
     deleteMutation.mutate(id, {
       onSuccess: () => {
         message.success(`Đã xóa chuyên khoa "${name}" thành công!`);
         queryClient.invalidateQueries({ queryKey: ["specialties"] });
       },
-      onError: (error) => {
+      onError: (error: AxiosError<Error>) => {
         message.error(
           error.response?.data?.error || `Xóa chuyên khoa "${name}" thất bại!`,
         );
@@ -111,7 +113,7 @@ export default function SpecialtyPage() {
             type="text"
             icon={<EditOutlined />}
             onClick={() => {
-              // Edit functionality - ignore for now
+              router.push(`/admin/specialty/${record.id}`);
             }}
           />
           <Popconfirm
@@ -136,16 +138,14 @@ export default function SpecialtyPage() {
 
   if (error) {
     return (
-      <div style={{ padding: "24px" }}>
-        <Alert
-          title="Lỗi"
-          description={
-            error.response?.data?.error || "Không thể tải danh sách chuyên khoa"
-          }
-          type="error"
-          showIcon
-        />
-      </div>
+      <Alert
+        title="Lỗi"
+        description={
+          error.response?.data?.error || "Không thể tải danh sách chuyên khoa"
+        }
+        type="error"
+        showIcon
+      />
     );
   }
 
@@ -159,7 +159,7 @@ export default function SpecialtyPage() {
           marginBottom: 16,
         }}
       >
-        <Title level={3} style={{ margin: 0 }}>
+        <Title level={4} style={{ margin: 0 }}>
           Quản lý chuyên khoa
         </Title>
         <Button
@@ -181,7 +181,7 @@ export default function SpecialtyPage() {
         pagination={{
           pageSize: 10,
           showSizeChanger: true,
-          showTotal: (total) => `Tổng cộng ${total} chuyên khoa`,
+          showTotal: (total: number) => `Tổng cộng ${total} chuyên khoa`,
         }}
         bordered
       />

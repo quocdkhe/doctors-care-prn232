@@ -1,5 +1,5 @@
 export interface Specialty {
-  id: number;
+  id: string;
   name: string;
   description: string;
   imageUrl: string | null;
@@ -13,4 +13,4 @@ export interface CreateSpecialtyDto {
   imageUrl: string | null;
 }
 
-export interface UpdateSpecialtyDto extends CreateSpecialtyDto {}
+export interface UpdateSpecialtyDto extends CreateSpecialtyDto { }
