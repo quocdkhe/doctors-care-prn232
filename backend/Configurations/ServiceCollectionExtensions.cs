@@ -19,6 +19,7 @@ namespace backend.Configurations
             services.AddScoped<IPatientService, PatientService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ISpecialtyService, SpecialtyService>();
+            services.AddScoped<IClinicService, ClinicService>();
             return services;
         }
     }

@@ -32,6 +32,7 @@ const AdminLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
     if (pathname?.includes("/admin/user-management")) return "user-management";
     if (pathname?.includes("/admin/profile")) return "profile";
     if (pathname?.includes("/admin/specialty")) return "specialty";
+    if (pathname?.includes("/admin/clinic")) return "clinic";
     return "dashboard";
   };
 
@@ -52,6 +53,11 @@ const AdminLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
       icon: <UserOutlined />,
       label: "Thông tin cá nhân",
     },
+    {
+      key: "clinic",
+      icon: <MedicineBoxOutlined />,
+      label: "Quản lí phòng khám",
+    },
   ];
 
   // Better approach: use a routing map
@@ -59,6 +65,7 @@ const AdminLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
     "user-management": "/admin/user-management",
     profile: "/admin/profile",
     specialty: "/admin/specialty",
+    clinic: "/admin/clinic",
     // Add more routes here as needed
   };
 
