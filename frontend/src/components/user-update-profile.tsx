@@ -196,7 +196,6 @@ export const UserUpdateProfile = () => {
                 uploadFileMutation.isPending ||
                 updateFileMutation.isPending
               }
-              size="large"
             >
               Lưu thay đổi
             </Button>
@@ -204,10 +203,7 @@ export const UserUpdateProfile = () => {
               style={{ marginLeft: 16 }}
               onClick={() => {
                 form.resetFields();
-                // setAvatarPreview(user.avatar);
-                // setFileList([]);
               }}
-              size="large"
             >
               Hủy
             </Button>
