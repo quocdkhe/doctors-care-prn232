@@ -83,9 +83,8 @@ export default function SpecialtyPage() {
         <Image
           src={imageUrl || undefined}
           alt="Specialty"
-          width={60}
           height={60}
-          style={{ objectFit: "cover", borderRadius: 4 }}
+          style={{ objectFit: "contain", borderRadius: 4 }}
         />
       ),
     },
@@ -195,16 +194,14 @@ export default function SpecialtyPage() {
       >
         {selectedSpecialty ? (
           <>
-            <Image
-              src={selectedSpecialty.imageUrl || undefined}
-              alt={selectedSpecialty.name}
-              style={{
-                width: "100%",
-                marginBottom: 24,
-                borderRadius: 8,
-              }}
-            />
             <Descriptions column={1} bordered>
+              <Descriptions.Item label="Hình ảnh">
+                <Image
+                  src={selectedSpecialty.imageUrl || undefined}
+                  alt={selectedSpecialty.name}
+                  height={100}
+                />
+              </Descriptions.Item>
               <Descriptions.Item label="Tên chuyên khoa">
                 {selectedSpecialty.name}
               </Descriptions.Item>

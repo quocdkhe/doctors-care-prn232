@@ -18,7 +18,7 @@ import { UserProfileDropdown } from "@/src/components/user-profile-dropdown";
 
 const { Header, Sider, Content } = Layout;
 
-const AdminLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
+const DoctorLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
@@ -29,30 +29,12 @@ const AdminLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
   const { isDarkMode, toggleTheme } = useTheme();
 
   const getSelectedKey = () => {
-    if (pathname?.includes("/admin/user-management")) return "user-management";
-    if (pathname?.includes("/admin/profile")) return "profile";
-    if (pathname?.includes("/admin/specialty")) return "specialty";
-    if (pathname?.includes("/admin/clinic")) return "clinic";
+    if (pathname?.includes("/doctor/profile")) return "profile";
     return "dashboard";
   };
 
   // Define menu items with proper typing
   const menuItems: MenuProps["items"] = [
-    {
-      key: "user-management",
-      icon: <UsergroupAddOutlined />,
-      label: "Quản lí người dùng",
-    },
-    {
-      key: "specialty",
-      icon: <MedicineBoxOutlined />,
-      label: "Quản lí chuyên khoa",
-    },
-    {
-      key: "clinic",
-      icon: <MedicineBoxOutlined />,
-      label: "Quản lí phòng khám",
-    },
     {
       key: "profile",
       icon: <UserOutlined />,
@@ -62,11 +44,7 @@ const AdminLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
 
   // Better approach: use a routing map
   const routeMap: Record<string, string> = {
-    "user-management": "/admin/user-management",
-    profile: "/admin/profile",
-    specialty: "/admin/specialty",
-    clinic: "/admin/clinic",
-    // Add more routes here as needed
+    profile: "/doctor/profile",
   };
 
   const handleMenuClick: MenuProps["onClick"] = ({ key }) => {
@@ -151,4 +129,4 @@ const AdminLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
   );
 };
 
-export default AdminLayout;
+export default DoctorLayout;

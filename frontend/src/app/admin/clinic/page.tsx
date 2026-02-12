@@ -20,7 +20,10 @@ import {
   PlusOutlined,
 } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
-import { useGetClinicList, useDeleteClinic } from "@/src/queries/clinic.queries";
+import {
+  useGetClinicList,
+  useDeleteClinic,
+} from "@/src/queries/clinic.queries";
 import { Clinic } from "@/src/types/clinic";
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
@@ -32,9 +35,7 @@ const { Title } = Typography;
 
 export default function ClinicPage() {
   const router = useRouter();
-  const [selectedClinicId, setSelectedClinicId] = useState<string | null>(
-    null,
-  );
+  const [selectedClinicId, setSelectedClinicId] = useState<string | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const queryClient = useQueryClient();
   const { message } = App.useApp();
@@ -80,9 +81,8 @@ export default function ClinicPage() {
         <Image
           src={imageUrl || undefined}
           alt="Clinic"
-          width={60}
           height={60}
-          style={{ objectFit: "cover", borderRadius: 4 }}
+          style={{ objectFit: "contain", borderRadius: 4 }}
         />
       ),
     },
@@ -198,12 +198,15 @@ export default function ClinicPage() {
       >
         {selectedClinic ? (
           <>
-            <Descriptions column={1} bordered styles={{ label: { width: '200px' } }}>
+            <Descriptions
+              column={1}
+              bordered
+              styles={{ label: { width: "200px" } }}
+            >
               <Descriptions.Item label="Hình ảnh">
                 <Image
                   src={selectedClinic.imageUrl || undefined}
                   alt={selectedClinic.name}
-                  width={100}
                   height={100}
                 />
               </Descriptions.Item>
@@ -221,14 +224,10 @@ export default function ClinicPage() {
                 />
               </Descriptions.Item>
               <Descriptions.Item label="Ngày tạo">
-                {dayjs(selectedClinic.createdAt).format(
-                  "DD/MM/YYYY HH:mm:ss",
-                )}
+                {dayjs(selectedClinic.createdAt).format("DD/MM/YYYY HH:mm:ss")}
               </Descriptions.Item>
               <Descriptions.Item label="Ngày cập nhật">
-                {dayjs(selectedClinic.updatedAt).format(
-                  "DD/MM/YYYY HH:mm:ss",
-                )}
+                {dayjs(selectedClinic.updatedAt).format("DD/MM/YYYY HH:mm:ss")}
               </Descriptions.Item>
             </Descriptions>
           </>

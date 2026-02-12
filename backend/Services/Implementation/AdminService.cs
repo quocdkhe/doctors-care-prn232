@@ -36,8 +36,16 @@ namespace backend.Services.Implementation
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
+            var createdUser = await _context.Users.AddAsync(user);
 
-            _context.Users.Add(user);
+            if(dto.Role == UserRoleEnum.Doctor)
+            {
+                _context.DoctorProfiles.Add(new DoctorProfile
+                {
+                    User = createdUser.Entity,
+                });
+            }
+
             await _context.SaveChangesAsync();
         }
 

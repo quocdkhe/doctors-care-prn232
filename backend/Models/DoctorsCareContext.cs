@@ -17,8 +17,9 @@ namespace backend.Models
 		public virtual DbSet<User> Users { get; set; }
 		public virtual DbSet<Specialty> Specialties { get; set; }
 		public virtual DbSet<Clinic> Clinics { get; set; }
+		public virtual DbSet<DoctorProfile> DoctorProfiles { get; set; }
 
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			modelBuilder.Entity<RefreshToken>(entity =>
 			{
@@ -202,6 +203,72 @@ namespace backend.Models
 				entity.HasIndex(e => e.Slug)
 					.HasDatabaseName("idx_clinics_slug")
 					.IsUnique();
+			});
+
+			modelBuilder.Entity<DoctorProfile>(entity =>
+			{
+				entity.ToTable("doctor_profiles");
+
+				entity.HasKey(e => e.Id);
+				entity.Property(e => e.Id)
+					.HasColumnName("id")
+					.HasDefaultValueSql("NEWID()");
+
+				entity.Property(e => e.Biography)
+					.HasColumnName("biography")
+					.IsRequired(false);  // NULL allowed
+
+				entity.Property(e => e.SpecialtyId)
+					.HasColumnName("specialty_id")
+					.IsRequired(false);  // NULL allowed
+
+				entity.Property(e => e.ClinicId)
+					.HasColumnName("clinic_id")
+					.IsRequired(false);  // NULL allowed
+
+				entity.Property(e => e.UserId)
+					.HasColumnName("user_id")
+					.IsRequired();  // NOT NULL
+
+				entity.Property(e => e.CreatedAt)
+					.HasDefaultValueSql("CURRENT_TIMESTAMP")
+					.HasColumnName("created_at")
+					.IsRequired();  // NOT NULL
+
+				entity.Property(e => e.UpdatedAt)
+					.HasDefaultValueSql("CURRENT_TIMESTAMP")
+					.HasColumnName("updated_at")
+					.IsRequired();  // NOT NULL
+
+				// Indexes
+				entity.HasIndex(e => e.SpecialtyId)
+					.HasDatabaseName("idx_doctor_profiles_specialty_id");
+
+				entity.HasIndex(e => e.ClinicId)
+					.HasDatabaseName("idx_doctor_profiles_clinic_id");
+
+				entity.HasIndex(e => e.UserId)
+					.HasDatabaseName("idx_doctor_profiles_user_id")
+					.IsUnique();
+
+				// Foreign keys
+				entity.HasOne(d => d.Specialty)
+					.WithMany()
+					.HasForeignKey(d => d.SpecialtyId)
+					.OnDelete(DeleteBehavior.SetNull)
+					.HasConstraintName("fk_doctor_profiles_specialties_specialty_id");
+
+				entity.HasOne(d => d.Clinic)
+					.WithMany()
+					.HasForeignKey(d => d.ClinicId)
+					.OnDelete(DeleteBehavior.SetNull)
+					.HasConstraintName("fk_doctor_profiles_clinics_clinic_id");
+
+				entity.HasOne(d => d.User)
+					.WithMany()
+					.HasForeignKey(d => d.UserId)
+					.OnDelete(DeleteBehavior.Cascade)
+					.HasConstraintName("fk_doctor_profiles_users_user_id");
 			});
 		}
 
