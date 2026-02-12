@@ -1,4 +1,4 @@
-export interface UserInfo extends Register {
+export interface UserInfo extends Omit<Register, "password"> {
   id: number;
   role: UserRoleEnum;
   avatar?: string;

@@ -11,7 +11,7 @@ public static class ClaimsPrincipalExtensions
 
         if (value == null || !Guid.TryParse(value, out var userId))
         {
-            throw new UnauthorizedException("Invalid user id claim");
+            throw new UnauthorizedException("Token không hợp lệ hoặc hết hạn");
         }
 
         return userId;
