@@ -49,14 +49,14 @@ const AdminLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
       label: "Quản lí chuyên khoa",
     },
     {
-      key: "profile",
-      icon: <UserOutlined />,
-      label: "Thông tin cá nhân",
-    },
-    {
       key: "clinic",
       icon: <MedicineBoxOutlined />,
       label: "Quản lí phòng khám",
+    },
+    {
+      key: "profile",
+      icon: <UserOutlined />,
+      label: "Thông tin cá nhân",
     },
   ];
 
