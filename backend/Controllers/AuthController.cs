@@ -4,8 +4,6 @@ using backend.Models.DTOs.User;
 using backend.Services.Authentication;
 using backend.Services.Patient;
 using backend.Utils;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
@@ -17,12 +15,10 @@ namespace backend.Controllers
 
         private readonly IAuthService _authService;
         private readonly ITokenService _tokenService;
-        private readonly IPatientService _patientService;
         public AuthController(IAuthService authService, ITokenService tokenService, IPatientService patientService)
         {
             _authService = authService;
             _tokenService = tokenService;
-            _patientService = patientService;
         }
 
 

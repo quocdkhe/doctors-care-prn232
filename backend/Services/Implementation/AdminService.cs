@@ -38,11 +38,19 @@ namespace backend.Services.Implementation
             };
             var createdUser = await _context.Users.AddAsync(user);
 
-            if(dto.Role == UserRoleEnum.Doctor)
+            if (dto.Role == UserRoleEnum.Doctor)
             {
+                string baseSlug = VietnameseSlugGenerator.ToSlug(dto.FullName);
+                var existingSlugs = await _context.DoctorProfiles
+                    .Where(s => s.Slug.StartsWith(baseSlug))
+                    .Select(s => s.Slug)
+                    .ToListAsync();
+                string uniqueSlug = VietnameseSlugGenerator.GenerateUniqueSlug(baseSlug, existingSlugs.ToArray());
+
                 _context.DoctorProfiles.Add(new DoctorProfile
                 {
                     User = createdUser.Entity,
+                    Slug = uniqueSlug,
                 });
             }
 

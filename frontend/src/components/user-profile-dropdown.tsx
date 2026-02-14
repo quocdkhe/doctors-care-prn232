@@ -53,6 +53,15 @@ export const UserProfileDropdown = () => {
     });
   }
 
+  if (user?.role === "Doctor") {
+    menuItems.unshift({
+      key: "doctor",
+      icon: <UserOutlined />,
+      label: "Trang cá nhân",
+      onClick: () => router.push("/doctor"),
+    });
+  }
+
   if (isLoading) {
     return (
       <Space size="middle" style={{ cursor: "pointer" }}>

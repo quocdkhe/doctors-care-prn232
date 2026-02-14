@@ -3,6 +3,7 @@
     public class DoctorProfile
     {
         public Guid Id { get; set; }
+        public string Slug { get; set; } = null!;
         public string? Biography { get; set; }
         public Guid? SpecialtyId { get; set; }
         public Specialty? Specialty { get; set; }

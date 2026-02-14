@@ -7,3 +7,13 @@ export interface CurrentDoctorProfile {
   specialtyId: string | null;
   clinicId: string | null;
 }
+
+export interface UpdateDoctorProfile {
+  biography?: string;
+  specialtyId?: string;
+  clinicId?: string;
+  imageUrl?: string;
+  fullName?: string;
+  phone?: string;
+  password?: string;
+}
