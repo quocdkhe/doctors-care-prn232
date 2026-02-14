@@ -4,7 +4,7 @@ import React from "react";
 import {
   ClinicForm,
   ClinicFormData,
-} from "@/src/components/clinic-form";
+} from "@/src/components/create-update-form/clinic-form";
 import { useRouter } from "next/navigation";
 import { Typography, App } from "antd";
 import { useCreateClinic } from "@/src/queries/clinic.queries";

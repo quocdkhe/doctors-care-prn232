@@ -3,11 +3,11 @@
 import { useState } from "react";
 import { Form, Input, Button, Row, Col, Typography, App, Divider } from "antd";
 import { UserOutlined } from "@ant-design/icons";
-import { useAppSelector, useAppDispatch } from "../store/hooks";
-import { useUpdateProfile } from "../queries/user.queries";
-import { useUploadFile, useUpdateFile } from "../queries/file.queries";
-import { fetchCurrentUser } from "../store/auth.slice";
-import { AvatarUpload } from "./avatar-upload";
+import { useAppSelector, useAppDispatch } from "../../store/hooks";
+import { useUpdateProfile } from "../../queries/user.queries";
+import { useUploadFile, useUpdateFile } from "../../queries/file.queries";
+import { fetchCurrentUser } from "../../store/auth.slice";
+import { AvatarUpload } from "../commons/avatar-upload";
 
 const { Title, Text } = Typography;
 
@@ -67,8 +67,8 @@ export const UserUpdateProfile = () => {
     } catch (error: any) {
       message.error(
         error.response?.data?.error ||
-        error.response?.data?.message ||
-        "Cập nhật thông tin thất bại!",
+          error.response?.data?.message ||
+          "Cập nhật thông tin thất bại!",
       );
     }
   };
@@ -96,7 +96,7 @@ export const UserUpdateProfile = () => {
           phone: user.phone,
         }}
       >
-        <Row >
+        <Row>
           {/* Left Column - Form Fields */}
           <Col xs={24} md={14}>
             <Form.Item label="Địa chỉ Email (Không thể thay đổi)" name="email">
@@ -135,7 +135,10 @@ export const UserUpdateProfile = () => {
             <Divider />
 
             <Title level={4}>Thay đổi mật khẩu</Title>
-            <Text type="secondary" style={{ display: "block", marginBottom: 16 }}>
+            <Text
+              type="secondary"
+              style={{ display: "block", marginBottom: 16 }}
+            >
               Mật khẩu phải có ít nhất 8 ký tự bao gồm cả chữ, số và ký tự đặc
               biệt
             </Text>
@@ -166,7 +169,9 @@ export const UserUpdateProfile = () => {
                         if (!value || getFieldValue("password") === value) {
                           return Promise.resolve();
                         }
-                        return Promise.reject(new Error("Mật khẩu không khớp!"));
+                        return Promise.reject(
+                          new Error("Mật khẩu không khớp!"),
+                        );
                       },
                     }),
                   ]}

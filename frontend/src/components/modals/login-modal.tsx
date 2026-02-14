@@ -1,10 +1,10 @@
 "use client";
 
 import { Modal, Form, Input, App } from "antd";
-import { useLogin } from "../queries/user.queries";
-import { Login } from "../types/user";
-import { useAppDispatch } from "../store/hooks";
-import { fetchCurrentUser } from "../store/auth.slice";
+import { useLogin } from "../../queries/user.queries";
+import { Login } from "../../types/user";
+import { useAppDispatch } from "../../store/hooks";
+import { fetchCurrentUser } from "../../store/auth.slice";
 
 interface LoginModalProps {
   open: boolean;

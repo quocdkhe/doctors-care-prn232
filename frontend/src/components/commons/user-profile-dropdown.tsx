@@ -3,9 +3,9 @@
 import { Avatar, Dropdown, App, Skeleton, Space, Typography } from "antd";
 import { HomeOutlined, LogoutOutlined, UserOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { logout } from "../store/auth.slice";
-import { useLogout } from "../queries/user.queries";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { logout } from "../../store/auth.slice";
+import { useLogout } from "../../queries/user.queries";
 import { useRouter } from "next/navigation";
 
 const { Text } = Typography;

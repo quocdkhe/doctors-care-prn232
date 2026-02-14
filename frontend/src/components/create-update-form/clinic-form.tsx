@@ -3,11 +3,11 @@
 import { useRef, useState } from "react";
 import { Form, Input, Button, Row, Col, Select } from "antd";
 import { SaveOutlined } from "@ant-design/icons";
-import { AvatarUpload } from "./avatar-upload";
+import { AvatarUpload } from "../commons/avatar-upload";
 import dynamic from "next/dynamic";
-import { TextEditorHandle } from "./text-editor";
+import { TextEditorHandle } from "../commons/text-editor";
 
-const TextEditor = dynamic(() => import("./text-editor"), {
+const TextEditor = dynamic(() => import("../commons/text-editor"), {
   ssr: false,
 });
 
@@ -56,7 +56,11 @@ export const ClinicForm = ({
     setSelectedImage(file);
   };
 
-  const onFinish = (values: { name: string; city: string; address: string }) => {
+  const onFinish = (values: {
+    name: string;
+    city: string;
+    address: string;
+  }) => {
     // Get description from text editor
     const editorDescription = editorRef.current?.getContent() || "";
 
@@ -104,22 +108,15 @@ export const ClinicForm = ({
           <Form.Item
             label="Thành phố"
             name="city"
-            rules={[
-              { required: true, message: "Vui lòng chọn thành phố!" },
-            ]}
+            rules={[{ required: true, message: "Vui lòng chọn thành phố!" }]}
           >
-            <Select
-              placeholder="Chọn thành phố"
-              options={CITIES}
-            />
+            <Select placeholder="Chọn thành phố" options={CITIES} />
           </Form.Item>
 
           <Form.Item
             label="Địa chỉ"
             name="address"
-            rules={[
-              { required: true, message: "Vui lòng nhập địa chỉ!" },
-            ]}
+            rules={[{ required: true, message: "Vui lòng nhập địa chỉ!" }]}
           >
             <Input placeholder="Nhập địa chỉ" />
           </Form.Item>

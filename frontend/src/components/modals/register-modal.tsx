@@ -1,9 +1,9 @@
 "use client";
 
 import { Modal, Form, Input, App } from "antd";
-import { useRegister } from "../queries/user.queries";
-import { useAppDispatch } from "../store/hooks";
-import { fetchCurrentUser } from "../store/auth.slice";
+import { useRegister } from "../../queries/user.queries";
+import { useAppDispatch } from "../../store/hooks";
+import { fetchCurrentUser } from "../../store/auth.slice";
 
 interface RegisterModalProps {
   open: boolean;

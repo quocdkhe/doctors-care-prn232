@@ -3,9 +3,9 @@
 import { useRef, useState } from "react";
 import { Form, Input, Button, Row, Col, Select, Spin, App } from "antd";
 import { SaveOutlined } from "@ant-design/icons";
-import { AvatarUpload } from "@/src/components/avatar-upload";
+import { AvatarUpload } from "@/src/components/commons/avatar-upload";
 import dynamic from "next/dynamic";
-import { TextEditorHandle } from "@/src/components/text-editor";
+import { TextEditorHandle } from "@/src/components/commons/text-editor";
 import {
   useGetDoctorProfile,
   useUpdateDoctorProfile,
@@ -17,9 +17,12 @@ import { useQueryClient } from "@tanstack/react-query";
 import { UpdateDoctorProfile } from "@/src/types/doctor";
 import { Typography } from "antd";
 
-const TextEditor = dynamic(() => import("@/src/components/text-editor"), {
-  ssr: false,
-});
+const TextEditor = dynamic(
+  () => import("@/src/components/commons/text-editor"),
+  {
+    ssr: false,
+  },
+);
 
 export default function DoctorProfilePage() {
   const { message } = App.useApp();

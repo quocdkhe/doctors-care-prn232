@@ -2,19 +2,21 @@
 
 import { Typography, Spin, App } from "antd";
 import React, { use } from "react";
-import { SpecialtyForm, SpecialtyFormData } from "@/src/components/specialty-form";
-import { useGetSpecialtyById, useUpdateSpecialty } from "@/src/queries/specialty.queries";
+import {
+  SpecialtyForm,
+  SpecialtyFormData,
+} from "@/src/components/create-update-form/specialty-form";
+import {
+  useGetSpecialtyById,
+  useUpdateSpecialty,
+} from "@/src/queries/specialty.queries";
 import { useUpdateFile } from "@/src/queries/file.queries";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 
 const { Title } = Typography;
 
-const EditSpecialtyPage = ({
-  params,
-}: {
-  params: Promise<{ id: string }>
-}) => {
+const EditSpecialtyPage = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = use(params);
   const { data: specialty, isLoading } = useGetSpecialtyById(id);
   const router = useRouter();
@@ -29,11 +31,10 @@ const EditSpecialtyPage = ({
 
       // Handle image upload if there's a new file
       if (data.imageFile) {
-        const uploadResponse = await updateFileMutation.mutateAsync(
-          {
-            fileUrl: data.imageUrl || "",
-            file: data.imageFile,
-          });
+        const uploadResponse = await updateFileMutation.mutateAsync({
+          fileUrl: data.imageUrl || "",
+          file: data.imageFile,
+        });
         imageUrl = uploadResponse.message; // API returns URL in message
       }
 
@@ -75,7 +76,9 @@ const EditSpecialtyPage = ({
             imageUrl={specialty?.imageUrl || ""}
             description={specialty?.description || ""}
             name={specialty?.name || ""}
-            isLoading={updateSpecialtyMutation.isPending || updateFileMutation.isPending}
+            isLoading={
+              updateSpecialtyMutation.isPending || updateFileMutation.isPending
+            }
           />
         </>
       )}

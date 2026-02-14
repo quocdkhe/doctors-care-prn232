@@ -5,9 +5,9 @@ import { Breadcrumb, Layout, Menu, theme, Button, Space } from "antd";
 import { SunOutlined, MoonOutlined } from "@ant-design/icons";
 import { useTheme } from "../../providers/theme-provider";
 import { useAppSelector } from "../../store/hooks";
-import { UserProfileDropdown } from "../../components/user-profile-dropdown";
-import { LoginModal } from "../../components/login-modal";
-import { RegisterModal } from "../../components/register-modal";
+import { UserProfileDropdown } from "../../components/commons/user-profile-dropdown";
+import { LoginModal } from "../../components/modals/login-modal";
+import { RegisterModal } from "../../components/modals/register-modal";
 
 const { Header, Content, Footer } = Layout;
 
@@ -43,7 +43,7 @@ const UserLayout: React.FC = ({ children }: React.PropsWithChildren) => {
           top: 0,
           zIndex: 1,
           width: "100%",
-          background: !isDarkMode ? "#fff" : "",
+          background: colorBgContainer,
         }}
       >
         <div className="demo-logo" />

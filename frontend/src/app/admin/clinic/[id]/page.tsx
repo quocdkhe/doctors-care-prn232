@@ -2,7 +2,10 @@
 
 import { Typography, Spin, App } from "antd";
 import React, { use } from "react";
-import { ClinicForm, ClinicFormData } from "@/src/components/clinic-form";
+import {
+  ClinicForm,
+  ClinicFormData,
+} from "@/src/components/create-update-form/clinic-form";
 import { useGetClinic, useUpdateClinic } from "@/src/queries/clinic.queries";
 import { useUpdateFile } from "@/src/queries/file.queries";
 import { useRouter } from "next/navigation";
@@ -10,11 +13,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const { Title } = Typography;
 
-const EditClinicPage = ({
-  params,
-}: {
-  params: Promise<{ id: string }>
-}) => {
+const EditClinicPage = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = use(params);
   const { data: clinic, isLoading } = useGetClinic(id);
   const router = useRouter();
@@ -29,11 +28,10 @@ const EditClinicPage = ({
 
       // Handle image upload if there's a new file
       if (data.imageFile) {
-        const uploadResponse = await updateFileMutation.mutateAsync(
-          {
-            fileUrl: data.imageUrl || "",
-            file: data.imageFile,
-          });
+        const uploadResponse = await updateFileMutation.mutateAsync({
+          fileUrl: data.imageUrl || "",
+          file: data.imageFile,
+        });
         imageUrl = uploadResponse.message; // API returns URL in message
       }
 
@@ -79,7 +77,9 @@ const EditClinicPage = ({
             name={clinic?.name || ""}
             city={clinic?.city || ""}
             address={clinic?.address || ""}
-            isLoading={updateClinicMutation.isPending || updateFileMutation.isPending}
+            isLoading={
+              updateClinicMutation.isPending || updateFileMutation.isPending
+            }
             submitButtonText="Cập nhật phòng khám"
           />
         </>

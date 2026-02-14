@@ -3,7 +3,7 @@
 import { useRef, useState, forwardRef, useImperativeHandle } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import type { Editor as TinyMCEEditor } from "tinymce";
-import { useTheme } from "../providers/theme-provider";
+import { useTheme } from "../../providers/theme-provider";
 import { Spin } from "antd";
 
 interface TextEditorProps {

@@ -4,7 +4,7 @@ import { ThemeProvider } from "../providers/theme-provider";
 import { QueryProvider } from "../providers/query-provider";
 import { StoreProvider } from "../providers/store-provider";
 import { App } from "antd";
-import { AuthInitializer } from "../components/auth-initializer";
+import { AuthInitializer } from "../components/commons/auth-initializer";
 
 const RootLayout = ({ children }: React.PropsWithChildren) => (
   <html

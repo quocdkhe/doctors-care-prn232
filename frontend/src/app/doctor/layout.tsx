@@ -14,7 +14,7 @@ import { Button, Layout, Menu, theme } from "antd";
 import { useTheme } from "@/src/providers/theme-provider";
 import { useRouter, usePathname } from "next/navigation";
 import type { MenuProps } from "antd";
-import { UserProfileDropdown } from "@/src/components/user-profile-dropdown";
+import { UserProfileDropdown } from "@/src/components/commons/user-profile-dropdown";
 
 const { Header, Sider, Content } = Layout;
 

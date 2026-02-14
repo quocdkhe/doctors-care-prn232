@@ -3,11 +3,11 @@
 import { useRef, useState } from "react";
 import { Form, Input, Button, Row, Col } from "antd";
 import { SaveOutlined } from "@ant-design/icons";
-import { AvatarUpload } from "./avatar-upload";
+import { AvatarUpload } from "../commons/avatar-upload";
 import dynamic from "next/dynamic";
-import { TextEditorHandle } from "./text-editor";
+import { TextEditorHandle } from "../commons/text-editor";
 
-const TextEditor = dynamic(() => import("./text-editor"), {
+const TextEditor = dynamic(() => import("../commons/text-editor"), {
   ssr: false,
 });
 
