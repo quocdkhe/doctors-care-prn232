@@ -1,9 +1,6 @@
-﻿using backend.Exceptions;
-using backend.Models;
-using backend.Models.DTOs.Doctor;
+﻿using backend.Models.DTOs.Doctor;
 using backend.Utils;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
@@ -26,7 +23,17 @@ namespace backend.Controllers
             var doctorProfile = await _doctorProfileService.GetCurrentDoctorProfile(userId);
             return Ok(doctorProfile);
         }
+
+        [HttpPut("me")]
+        [Authorize(Roles = "Doctor")]
+        public async Task<ActionResult> UpdateCurrentDoctorProfile(UpdateDoctorProfileDto dto)
+        {
+            var userId = User.GetUserId();
+            await _doctorProfileService.UpdateCurrentDoctorProfile(userId, dto);
+            return NoContent();
+        }
     }
+
 }
 
 

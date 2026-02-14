@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Form, Input, Button, Row, Col, Select, message, Spin } from "antd";
+import { Form, Input, Button, Row, Col, Select, Spin, App } from "antd";
 import { SaveOutlined } from "@ant-design/icons";
 import { AvatarUpload } from "@/src/components/avatar-upload";
 import dynamic from "next/dynamic";
@@ -15,13 +15,16 @@ import { useGetSpecialtyList } from "@/src/queries/specialty.queries";
 import { useUploadFile, useUpdateFile } from "@/src/queries/file.queries";
 import { useQueryClient } from "@tanstack/react-query";
 import { UpdateDoctorProfile } from "@/src/types/doctor";
+import { Typography } from "antd";
 
 const TextEditor = dynamic(() => import("@/src/components/text-editor"), {
   ssr: false,
 });
 
 export default function DoctorProfilePage() {
+  const { message } = App.useApp();
   const [form] = Form.useForm();
+  const { Title } = Typography;
   const editorRef = useRef<TextEditorHandle>(null);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const queryClient = useQueryClient();
@@ -121,8 +124,10 @@ export default function DoctorProfilePage() {
   }
 
   return (
-    <div style={{ padding: "24px" }}>
-      <h1 style={{ marginBottom: "24px" }}>Hồ sơ bác sĩ</h1>
+    <>
+      <Title level={4} style={{ margin: 0 }}>
+        Hồ sơ bác sĩ
+      </Title>
       <Form
         form={form}
         layout="vertical"
@@ -273,6 +278,6 @@ export default function DoctorProfilePage() {
           </Col>
         </Row>
       </Form>
-    </div>
+    </>
   );
 }
