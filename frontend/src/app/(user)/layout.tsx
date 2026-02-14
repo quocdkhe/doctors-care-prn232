@@ -8,6 +8,7 @@ import { useAppSelector } from "../../store/hooks";
 import { UserProfileDropdown } from "../../components/commons/user-profile-dropdown";
 import { LoginModal } from "../../components/modals/login-modal";
 import { RegisterModal } from "../../components/modals/register-modal";
+import Hero from "@/src/components/landing/hero";
 
 const { Header, Content, Footer } = Layout;
 
@@ -87,6 +88,8 @@ const UserLayout: React.FC = ({ children }: React.PropsWithChildren) => {
           style={{ marginLeft: 16 }}
         />
       </Header>
+
+      <Hero />
 
       <Content style={{ padding: "0 48px", flex: 1, overflow: "auto" }}>
         <Breadcrumb

@@ -5,6 +5,7 @@ import { QueryProvider } from "../providers/query-provider";
 import { StoreProvider } from "../providers/store-provider";
 import { App } from "antd";
 import { AuthInitializer } from "../components/commons/auth-initializer";
+import "./global.css";
 
 const RootLayout = ({ children }: React.PropsWithChildren) => (
   <html
