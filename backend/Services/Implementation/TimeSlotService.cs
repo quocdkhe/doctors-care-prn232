@@ -1,0 +1,48 @@
+﻿using backend.Exceptions;
+using backend.Models;
+using backend.Models.DTOs.Booking;
+using backend.Services.Booking;
+using Microsoft.EntityFrameworkCore;
+
+namespace backend.Services.Implementation
+{
+    public class TimeSlotService : ITimeSlotService
+    {
+        private readonly DoctorsCareContext _context;
+
+        public TimeSlotService(DoctorsCareContext context)
+        {
+            _context = context;
+        }
+
+        public async Task CreateTimeSlots(Guid DoctorId, List<CreateSlotDto> slots)
+        {
+            if (slots == null || slots.Count == 0)
+            {
+                throw new BadRequestException("Danh sách slot không được trống");
+            }
+
+            var timeSlots = slots.Select(slot => new TimeSlot
+            {
+                DoctorId = DoctorId,
+                Date = slot.Date,
+                StartTime = slot.StartTime,
+                EndTime = slot.EndTime,
+                IsBooked = false
+            }).ToList();
+
+            _context.TimeSlots.AddRange(timeSlots);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<TimeSlot>> GetTimeSlotsByDay(Guid DoctorId, DateOnly day)
+        {
+            var slots = await _context.TimeSlots
+                .Where(s => s.DoctorId == DoctorId && s.Date == day)
+                .OrderBy(s => s.StartTime)
+                .ToListAsync();
+
+            return slots;
+        }
+    }
+}

@@ -335,10 +335,6 @@ namespace backend.Models
                     .HasColumnName("id")
                     .HasDefaultValueSql("NEWID()");
 
-                entity.Property(e => e.DoctorId)
-                    .HasColumnName("doctor_id")
-                    .IsRequired();
-
                 entity.Property(e => e.PatientId)
                     .HasColumnName("patient_id")
                     .IsRequired();
@@ -366,21 +362,12 @@ namespace backend.Models
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
                     .IsRequired();
 
-                entity.HasIndex(e => e.DoctorId)
-                    .HasDatabaseName("idx_appointments_doctor_id");
-
                 entity.HasIndex(e => e.PatientId)
                     .HasDatabaseName("idx_appointments_patient_id");
 
                 entity.HasIndex(e => e.TimeSlotId)
                     .HasDatabaseName("idx_appointments_time_slot_id")
                     .IsUnique();
-
-                entity.HasOne<User>()
-                    .WithMany()
-                    .HasForeignKey(e => e.DoctorId)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("fk_appointments_users_doctor_id");
 
                 entity.HasOne<User>()
                     .WithMany()
@@ -395,8 +382,5 @@ namespace backend.Models
                     .HasConstraintName("fk_appointments_time_slots_time_slot_id");
             });
         }
-
-
-
     }
 }

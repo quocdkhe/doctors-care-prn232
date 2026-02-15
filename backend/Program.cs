@@ -19,6 +19,10 @@ namespace backend
             builder.Services.AddControllers(options =>
             {
                 options.Filters.Add<GlobalExceptionFilter>();
+            })
+            .AddJsonOptions(o =>
+            {
+                o.JsonSerializerOptions.Converters.Add(new TimeOnlyJsonConverter());
             });
 
             builder.Services.AddEndpointsApiExplorer();
@@ -30,7 +34,7 @@ namespace backend
             builder.Services.AddProjectServices();
             builder.Services.AddJwtConfig(builder.Configuration); // JWT and CORS configuration
             builder.Services.AddCorsConfig(builder.Configuration); // CORS configuration
-            
+
 
             var app = builder.Build();
             // Use cors configuration

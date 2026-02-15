@@ -3,7 +3,6 @@ import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { ThemeProvider } from "../providers/theme-provider";
 import { QueryProvider } from "../providers/query-provider";
 import { StoreProvider } from "../providers/store-provider";
-import { App } from "antd";
 import { AuthInitializer } from "../components/commons/auth-initializer";
 import "./global.css";
 

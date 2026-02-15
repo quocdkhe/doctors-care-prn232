@@ -1,4 +1,3 @@
-using System;
 using backend.Models.Enums;
 
 namespace backend.Models;
@@ -6,7 +5,6 @@ namespace backend.Models;
 public class Appointment
 {
     public Guid Id { get; set; }
-    public Guid DoctorId { get; set; }
     public Guid PatientId { get; set; }
     public int TimeSlotId { get; set; }
     public TimeSlot TimeSlot { get; set; } = null!;
