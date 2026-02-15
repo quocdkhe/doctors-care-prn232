@@ -22,6 +22,17 @@ namespace backend.Services.Implementation
                 throw new BadRequestException("Danh sách slot không được trống");
             }
 
+            // Get distinct dates from the slots
+            var distinctDates = slots.Select(s => s.Date).Distinct().ToList();
+
+            // Delete all old slots for these days and doctor
+            var oldSlots = await _context.TimeSlots
+                .Where(s => s.DoctorId == DoctorId && distinctDates.Contains(s.Date) && !s.IsBooked)
+                .ToListAsync();
+
+            _context.TimeSlots.RemoveRange(oldSlots);
+
+            // Create new slots
             var timeSlots = slots.Select(slot => new TimeSlot
             {
                 DoctorId = DoctorId,
@@ -33,6 +44,19 @@ namespace backend.Services.Implementation
 
             _context.TimeSlots.AddRange(timeSlots);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<TimeSlot>> DoctorsGetTimeSlotsByWeek(Guid DoctorId, DateOnly mondayOfWeek)
+        {
+            var sundayOfWeek = mondayOfWeek.AddDays(6);
+
+            var slots = await _context.TimeSlots
+                .Where(s => s.DoctorId == DoctorId && s.Date >= mondayOfWeek && s.Date <= sundayOfWeek)
+                .OrderBy(s => s.Date)
+                .ThenBy(s => s.StartTime)
+                .ToListAsync();
+
+            return slots;
         }
 
         public async Task<List<TimeSlot>> GetTimeSlotsByDay(Guid DoctorId, DateOnly day)

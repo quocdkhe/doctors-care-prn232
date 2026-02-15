@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import {
+  CalendarOutlined,
   MedicineBoxOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -30,6 +31,7 @@ const DoctorLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
 
   const getSelectedKey = () => {
     if (pathname?.includes("/doctor/profile")) return "profile";
+    if (pathname?.includes("/doctor/slots")) return "slots";
     return "dashboard";
   };
 
@@ -40,11 +42,17 @@ const DoctorLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
       icon: <UserOutlined />,
       label: "Thông tin cá nhân",
     },
+    {
+      key: "slots",
+      icon: <CalendarOutlined />,
+      label: "Quản lý slot",
+    },
   ];
 
   // Better approach: use a routing map
   const routeMap: Record<string, string> = {
     profile: "/doctor/profile",
+    slots: "/doctor/slots",
   };
 
   const handleMenuClick: MenuProps["onClick"] = ({ key }) => {

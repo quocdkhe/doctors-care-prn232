@@ -20,7 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\DTOs\Booking\" />
     <Folder Include="Models\DTOs\Clinic\" />
   </ItemGroup>
 

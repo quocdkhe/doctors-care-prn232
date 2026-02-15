@@ -45,6 +45,13 @@ namespace backend.Controllers
             return await _timeSlotService.GetTimeSlotsByDay(doctorId, day);
         }
 
+        [HttpGet("me/slots")]
+        public async Task<ActionResult<List<TimeSlot>>> GetTimeSlotsByDoctorId([FromQuery] DateOnly mondayOfWeek)
+        {
+            var doctorId = User.GetUserId();
+            return await _timeSlotService.DoctorsGetTimeSlotsByWeek(doctorId, mondayOfWeek);
+        }
+
         [HttpPost("me/slots")]
         [Authorize]
         public async Task CreateTimeSlots([FromBody] List<CreateSlotDto> slots)
