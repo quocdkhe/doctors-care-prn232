@@ -105,7 +105,7 @@ export default function CarouselWrapper({ children }: React.PropsWithChildren) {
 
   return (
     <div
-      className="py-12 px-4"
+      className="py-4 px-4"
       style={{
         backgroundColor: token.colorBgContainer,
       }}

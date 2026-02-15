@@ -1,18 +1,25 @@
 "use client"
 
-import { Layout, theme } from "antd";
+import { Breadcrumb, Layout, theme, type BreadcrumbProps } from "antd";
 
 const { Content } = Layout;
 
-export default function MainContentWrapper({ children }: React.PropsWithChildren) {
+interface MainContentWrapperProps extends React.PropsWithChildren {
+  breadcrumbItems?: BreadcrumbProps['items'];
+}
+
+export default function MainContentWrapper({ children, breadcrumbItems }: MainContentWrapperProps) {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
   return (
     <Content style={{ padding: "0 48px", flex: 1, overflow: "auto" }}>
-      <div style={{ margin: "16px 0" }}>
-
-      </div>
+      {breadcrumbItems && (
+        <Breadcrumb
+          style={{ margin: "16px 0" }}
+          items={breadcrumbItems}
+        />
+      )}
       <div
         style={{
           background: colorBgContainer,
