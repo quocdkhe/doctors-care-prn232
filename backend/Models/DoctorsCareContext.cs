@@ -18,6 +18,8 @@ namespace backend.Models
         public virtual DbSet<Specialty> Specialties { get; set; }
         public virtual DbSet<Clinic> Clinics { get; set; }
         public virtual DbSet<DoctorProfile> DoctorProfiles { get; set; }
+        public virtual DbSet<TimeSlot> TimeSlots { get; set; }
+        public virtual DbSet<Appointment> Appointments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -278,6 +280,119 @@ namespace backend.Models
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("fk_doctor_profiles_users_user_id");
+            });
+
+            modelBuilder.Entity<TimeSlot>(entity =>
+            {
+                entity.ToTable("time_slots");
+
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .UseIdentityColumn(1, 1);
+
+                entity.Property(e => e.DoctorId)
+                    .HasColumnName("doctor_id")
+                    .IsRequired();
+
+                entity.Property(e => e.Date)
+                    .HasColumnName("date")
+                    .IsRequired();
+
+                entity.Property(e => e.StartTime)
+                    .HasColumnName("start_time")
+                    .IsRequired();
+
+                entity.Property(e => e.EndTime)
+                    .HasColumnName("end_time")
+                    .IsRequired();
+
+                entity.Property(e => e.IsBooked)
+                    .HasColumnName("is_booked")
+                    .HasDefaultValue(false)
+                    .IsRequired();
+
+                entity.HasIndex(e => e.DoctorId)
+                    .HasDatabaseName("idx_time_slots_doctor_id");
+
+                entity.HasIndex(e => new { e.DoctorId, e.Date, e.StartTime, e.EndTime })
+                    .HasDatabaseName("idx_time_slots_doctor_date_time")
+                    .IsUnique();
+
+                entity.HasOne<User>()
+                    .WithMany()
+                    .HasForeignKey(e => e.DoctorId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("fk_time_slots_users_doctor_id");
+            });
+
+            modelBuilder.Entity<Appointment>(entity =>
+            {
+                entity.ToTable("appointments");
+
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasDefaultValueSql("NEWID()");
+
+                entity.Property(e => e.DoctorId)
+                    .HasColumnName("doctor_id")
+                    .IsRequired();
+
+                entity.Property(e => e.PatientId)
+                    .HasColumnName("patient_id")
+                    .IsRequired();
+
+                entity.Property(e => e.TimeSlotId)
+                    .HasColumnName("time_slot_id")
+                    .IsRequired();
+
+                entity.Property(e => e.Status)
+                    .HasColumnName("status")
+                    .HasConversion<string>()
+                    .IsRequired();
+
+                entity.Property(e => e.MedicalRecordFileUrl)
+                    .HasColumnName("medical_record_file_url")
+                    .IsRequired(false);  // NULL allowed
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .IsRequired();
+
+                entity.Property(e => e.UpdatedAt)
+                    .HasColumnName("updated_at")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .IsRequired();
+
+                entity.HasIndex(e => e.DoctorId)
+                    .HasDatabaseName("idx_appointments_doctor_id");
+
+                entity.HasIndex(e => e.PatientId)
+                    .HasDatabaseName("idx_appointments_patient_id");
+
+                entity.HasIndex(e => e.TimeSlotId)
+                    .HasDatabaseName("idx_appointments_time_slot_id")
+                    .IsUnique();
+
+                entity.HasOne<User>()
+                    .WithMany()
+                    .HasForeignKey(e => e.DoctorId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("fk_appointments_users_doctor_id");
+
+                entity.HasOne<User>()
+                    .WithMany()
+                    .HasForeignKey(e => e.PatientId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("fk_appointments_users_patient_id");
+
+                entity.HasOne(e => e.TimeSlot)
+                    .WithMany()
+                    .HasForeignKey(e => e.TimeSlotId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("fk_appointments_time_slots_time_slot_id");
             });
         }
 
