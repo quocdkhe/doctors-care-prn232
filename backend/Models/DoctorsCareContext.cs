@@ -231,6 +231,10 @@ namespace backend.Models
                     .HasColumnName("clinic_id")
                     .IsRequired(false);  // NULL allowed
 
+                entity.Property(e => e.PricePerHour)
+                    .HasColumnName("price_per_hour")
+                    .HasDefaultValue(0);
+
                 entity.Property(e => e.UserId)
                     .HasColumnName("user_id")
                     .IsRequired();  // NOT NULL

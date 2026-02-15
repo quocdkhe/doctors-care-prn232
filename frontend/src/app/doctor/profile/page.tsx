@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Form, Input, Button, Row, Col, Select, Spin, App } from "antd";
+import { Form, Input, Button, Row, Col, Select, Spin, App, InputNumber } from "antd";
 import { SaveOutlined } from "@ant-design/icons";
 import { AvatarUpload } from "@/src/components/commons/avatar-upload";
 import dynamic from "next/dynamic";
@@ -79,6 +79,7 @@ export default function DoctorProfilePage() {
         imageUrl,
         fullName: values.fullName,
         phone: values.phone,
+        pricePerHour: values.pricePerHour,
       };
 
       if (values.password) {
@@ -97,8 +98,8 @@ export default function DoctorProfilePage() {
     } catch (error: any) {
       message.error(
         error.response?.data?.error ||
-          error.response?.data?.message ||
-          "Có lỗi xảy ra khi cập nhật hồ sơ!",
+        error.response?.data?.message ||
+        "Có lỗi xảy ra khi cập nhật hồ sơ!",
       );
       console.error(error);
     }
@@ -141,6 +142,7 @@ export default function DoctorProfilePage() {
           fullName: doctorProfile?.user.fullName,
           phone: doctorProfile?.user.phone,
           email: doctorProfile?.user.email,
+          pricePerHour: doctorProfile?.pricePerHour,
         }}
       >
         {/* First Row - Image Upload and Form Fields */}
@@ -232,7 +234,7 @@ export default function DoctorProfilePage() {
 
         {/* Second Row - Doctor Info */}
         <Row gutter={16}>
-          <Col sm={24} md={12}>
+          <Col sm={24} md={8}>
             <Form.Item label="Chuyên khoa" name="specialtyId">
               <Select
                 placeholder="Chọn chuyên khoa"
@@ -244,7 +246,7 @@ export default function DoctorProfilePage() {
               />
             </Form.Item>
           </Col>
-          <Col sm={24} md={12}>
+          <Col sm={24} md={8}>
             <Form.Item label="Phòng khám" name="clinicId">
               <Select
                 placeholder="Chọn phòng khám"
@@ -253,6 +255,22 @@ export default function DoctorProfilePage() {
                   value: clinic.id,
                   label: clinic.name,
                 }))}
+              />
+            </Form.Item>
+          </Col>
+          <Col sm={24} md={8}>
+            <Form.Item
+              label="Giá mỗi giờ (VNĐ)"
+              name="pricePerHour"
+              rules={[{ required: true, message: "Vui lòng nhập giá!" }]}
+            >
+              <InputNumber
+                style={{ width: "100%" }}
+                formatter={(value) =>
+                  `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                }
+                parser={(value) => value?.replace(/\$\s?|(,*)/g, "") as unknown as number}
+                placeholder="Nhập giá mỗi giờ"
               />
             </Form.Item>
           </Col>

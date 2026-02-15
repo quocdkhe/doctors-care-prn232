@@ -6,6 +6,7 @@ export interface CurrentDoctorProfile {
   biography: string | null;
   specialtyId: string | null;
   clinicId: string | null;
+  pricePerHour: number;
 }
 
 export interface UpdateDoctorProfile {
@@ -16,4 +17,5 @@ export interface UpdateDoctorProfile {
   fullName?: string;
   phone?: string;
   password?: string;
+  pricePerHour: number;
 }

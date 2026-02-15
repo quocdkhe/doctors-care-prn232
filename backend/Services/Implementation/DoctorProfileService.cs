@@ -87,6 +87,11 @@ namespace backend.Services.Implementation
             {
                 currentDoctor.Biography = dto.biography;
             }
+
+            if (dto.PricePerHour > 0)
+            {
+                currentDoctor.PricePerHour = dto.PricePerHour;
+            }
             await _context.SaveChangesAsync();
         }
     }

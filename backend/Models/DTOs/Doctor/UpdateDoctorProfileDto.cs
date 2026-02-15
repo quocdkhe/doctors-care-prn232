@@ -5,6 +5,7 @@
         public string? biography { get; set; }
         public Guid? specialtyId { get; set; }
         public Guid? clinicId { get; set; }
+        public int PricePerHour { get; set; } = 0;
         public string? ImageUrl { get; set; }
         public string? FullName { get; set; }
         public string? Name { get; set; }
