@@ -3,12 +3,10 @@
 import React, { useState } from "react";
 import {
   CalendarOutlined,
-  MedicineBoxOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   MoonOutlined,
   SunOutlined,
-  UsergroupAddOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import { Button, Layout, Menu, theme } from "antd";

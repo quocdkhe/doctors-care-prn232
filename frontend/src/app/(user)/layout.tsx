@@ -9,18 +9,36 @@ import { UserProfileDropdown } from "../../components/commons/user-profile-dropd
 import { LoginModal } from "../../components/modals/login-modal";
 import { RegisterModal } from "../../components/modals/register-modal";
 
+import Link from "next/link";
+import { MedicineBoxOutlined } from "@ant-design/icons";
+
 const { Header, Footer } = Layout;
 
-const items = Array.from({ length: 5 }).map((_, index) => ({
-  key: index + 1,
-  label: `nav ${index + 1}`,
-}));
+const items = [
+  {
+    key: "specialty",
+    label: <Link href="/kham-chuyen-khoa">Chuyên khoa</Link>,
+  },
+  {
+    key: "facilities",
+    label: <Link href="/co-so-y-te">Cơ sở y tế</Link>,
+  },
+];
+
+import { usePathname } from "next/navigation";
 
 const UserLayout: React.FC = ({ children }: React.PropsWithChildren) => {
   const { isDarkMode, toggleTheme } = useTheme();
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+  const pathname = usePathname();
+
+  const getSelectedKey = () => {
+    if (pathname.includes("/kham-chuyen-khoa")) return ["specialty"];
+    if (pathname.includes("/co-so-y-te")) return ["facilities"];
+    return [];
+  };
 
   const { user, isLoading } = useAppSelector((state) => state.auth);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -44,13 +62,32 @@ const UserLayout: React.FC = ({ children }: React.PropsWithChildren) => {
           zIndex: 50,
           width: "100%",
           background: colorBgContainer,
+          justifyContent: "space-between",
         }}
       >
-        <div className="demo-logo" />
+        <div
+          className="demo-logo"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            marginRight: 20,
+            cursor: "pointer",
+          }}
+        >
+          <MedicineBoxOutlined
+            style={{ fontSize: "24px", color: "#1890ff", marginRight: 8 }}
+          />
+          <Link
+            href="/"
+            style={{ fontSize: "20px", fontWeight: "bold", color: "inherit" }}
+          >
+            Doctors Care
+          </Link>
+        </div>
         <Menu
           theme={isDarkMode ? "dark" : "light"}
           mode="horizontal"
-          defaultSelectedKeys={["2"]}
+          selectedKeys={getSelectedKey()}
           items={items}
           style={{
             flex: 1,

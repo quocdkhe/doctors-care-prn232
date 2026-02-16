@@ -1,5 +1,4 @@
-﻿using backend.Exceptions;
-using backend.Models;
+﻿using backend.Models;
 using backend.Models.DTOs.Booking;
 using backend.Services.Booking;
 using Microsoft.EntityFrameworkCore;
@@ -17,10 +16,7 @@ namespace backend.Services.Implementation
 
         public async Task CreateTimeSlots(Guid DoctorId, List<CreateSlotDto> slots)
         {
-            if (slots == null || slots.Count == 0)
-            {
-                throw new BadRequestException("Danh sách slot không được trống");
-            }
+
 
             // Get distinct dates from the slots
             var distinctDates = slots.Select(s => s.Date).Distinct().ToList();
@@ -31,6 +27,11 @@ namespace backend.Services.Implementation
                 .ToListAsync();
 
             _context.TimeSlots.RemoveRange(oldSlots);
+
+            if (slots == null || slots.Count == 0)
+            {
+                return;
+            }
 
             // Create new slots
             var timeSlots = slots.Select(slot => new TimeSlot

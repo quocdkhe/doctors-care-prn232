@@ -1,5 +1,5 @@
 export interface UserInfo extends Omit<Register, "password"> {
-  id: number;
+  id: string;
   role: UserRoleEnum;
   avatar?: string;
 }

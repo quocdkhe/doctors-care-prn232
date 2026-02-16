@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { AxiosError } from "axios";
+import { Error } from "@/src/types/common";
 import {
   DatePicker,
   Card,
@@ -13,32 +15,37 @@ import {
   Empty,
   Space,
   App,
+  TimePicker,
 } from "antd";
 import { DeleteOutlined, PlusOutlined, SaveOutlined } from "@ant-design/icons";
 import dayjs, { Dayjs } from "dayjs";
 import weekOfYear from "dayjs/plugin/weekOfYear";
-import useDoctorSlotsQuery from "@/src/queries/slot.queries";
+import useDoctorSlotsQuery, {
+  useCreateUpdateSlots,
+} from "@/src/queries/slot.queries";
 import { TimeSlot } from "@/src/types/slot";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/store/store";
+import { useQueryClient } from "@tanstack/react-query";
 
 dayjs.extend(weekOfYear);
 
 const { Title, Text } = Typography;
 
 export default function SlotManagementPage() {
+  const queryClient = useQueryClient();
   const { token } = theme.useToken();
   const { message } = App.useApp();
+  //select global state user from redux
+  const user = useSelector((state: RootState) => state.auth.user);
 
-  // State for selected week (default to current week)
   const [selectedWeek, setSelectedWeek] = useState<Dayjs>(dayjs());
 
-  // Calculate Sunday of the selected week
   const sundayOfWeek = selectedWeek.startOf("week");
   const sundayStr = sundayOfWeek.format("YYYY-MM-DD");
 
-  // Fetch slots for the week
   const { data: slots, isLoading, error } = useDoctorSlotsQuery(sundayStr);
 
-  // Build daysOfWeek array
   const daysOfWeek = [];
   for (let i = 0; i < 7; i++) {
     const day = sundayOfWeek.add(i, "day");
@@ -46,7 +53,6 @@ export default function SlotManagementPage() {
     daysOfWeek.push({ date: dayStr, dayjs: day });
   }
 
-  // Helper to group and sort slots by day
   const buildSlotsByDay = (rawSlots: TimeSlot[] | undefined) => {
     const grouped: { [key: string]: TimeSlot[] } = {};
     for (let i = 0; i < 7; i++) {
@@ -65,17 +71,22 @@ export default function SlotManagementPage() {
   };
 
   const [slotsByDay, setSlotsByDay] = useState<{ [key: string]: TimeSlot[] }>(
-    () => buildSlotsByDay(slots)
+    () => buildSlotsByDay(slots),
   );
 
-  // Sync slotsByDay when fetched data or selected week changes
   useEffect(() => {
     setSlotsByDay(buildSlotsByDay(slots));
   }, [slots, sundayStr]);
 
+  // Track which date is currently showing the add form, and its time range value
+  const [addingDate, setAddingDate] = useState<string | null>(null);
+  const [newTimeRange, setNewTimeRange] = useState<[Dayjs, Dayjs] | null>(null);
+
   const handleWeekChange = (date: Dayjs | null) => {
     if (date) {
       setSelectedWeek(date);
+      setAddingDate(null);
+      setNewTimeRange(null);
     }
   };
 
@@ -88,24 +99,71 @@ export default function SlotManagementPage() {
   };
 
   const handleAddSlot = (date: string) => {
-    message.info(`Thêm slot cho ngày ${date} (chưa triển khai)`);
-    // TODO: Implement add slot modal/form
+    setAddingDate(date);
+    setNewTimeRange(null);
   };
+
+  const handleConfirmAddSlot = (date: string) => {
+    if (!newTimeRange) {
+      message.warning("Vui lòng chọn khung giờ");
+      return;
+    }
+    const [start, end] = newTimeRange;
+    const newSlot: TimeSlot = {
+      id: Date.now(),
+      doctorId: user?.id || "",
+      date,
+      startTime: start.format("HH:mm"),
+      endTime: end.format("HH:mm"),
+      isBooked: false,
+    };
+    setSlotsByDay((prev) => ({
+      ...prev,
+      [date]: [...prev[date], newSlot].sort((a, b) =>
+        a.startTime.localeCompare(b.startTime),
+      ),
+    }));
+    setAddingDate(null);
+    setNewTimeRange(null);
+    message.success("Đã thêm slot mới");
+  };
+
+  const handleCancelAddSlot = () => {
+    setAddingDate(null);
+    setNewTimeRange(null);
+  };
+
+  const createUpdateSlotsMutation = useCreateUpdateSlots();
 
   const handleSaveChanges = () => {
-    message.info("Lưu thay đổi (chưa triển khai)");
-    // TODO: Implement save changes
+    const allSlots = Object.values(slotsByDay).flat();
+    const payload = allSlots.map((slot) => ({
+      date: slot.date,
+      startTime: slot.startTime,
+      endTime: slot.endTime,
+    }));
+
+    createUpdateSlotsMutation.mutate(payload, {
+      onSuccess: () => {
+        message.success("Lưu thay đổi thành công");
+        queryClient.invalidateQueries({
+          queryKey: ["current-doctor-slots", sundayStr],
+        });
+        console.log("Invalidated query: ", sundayStr);
+      },
+      onError: (error: AxiosError<Error>) => {
+        message.error(
+          `Lỗi khi lưu: ${error.response?.data?.error || error.message}`,
+        );
+      },
+    });
   };
 
-  // Date range display
   const saturdayOfWeek = sundayOfWeek.add(6, "day");
   const dateRangeDisplay = `${sundayOfWeek.format("DD")} - ${saturdayOfWeek.format("DD")} ${saturdayOfWeek.format("MMMM YYYY")}`;
 
-  console.log(slotsByDay);
-
   return (
     <div style={{ padding: "24px" }}>
-      {/* Header */}
       <div
         style={{
           display: "flex",
@@ -136,7 +194,6 @@ export default function SlotManagementPage() {
         </Space>
       </div>
 
-      {/* Loading State */}
       {isLoading && (
         <div
           style={{
@@ -149,19 +206,17 @@ export default function SlotManagementPage() {
         </div>
       )}
 
-      {/* Error State */}
       {error && (
         <Empty
           description={`Lỗi: ${error.response?.data?.error || "Không thể tải dữ liệu"}`}
         />
       )}
 
-      {/* Weekly Calendar View */}
       {!isLoading && !error && (
         <Table
           bordered
           rowHoverable={false}
-          dataSource={[{ key: "slots-row" }]} // Single row to hold all days
+          dataSource={[{ key: "slots-row" }]}
           columns={daysOfWeek.map((day) => {
             const daySlots = slotsByDay[day.date];
 
@@ -175,11 +230,11 @@ export default function SlotManagementPage() {
               ),
               dataIndex: day.date,
               key: day.date,
-              width: "14.28%", // 100% / 7 days
+              width: "14.28%",
               render: () => (
                 <div>
-                  {/* Slots for this day */}
-                  {!daySlots || daySlots.length === 0 ? (
+                  {!daySlots ||
+                  (daySlots.length === 0 && addingDate !== day.date) ? (
                     <Empty
                       image={Empty.PRESENTED_IMAGE_SIMPLE}
                       description="Không có slot"
@@ -227,16 +282,52 @@ export default function SlotManagementPage() {
                     ))
                   )}
 
-                  {/* Add Slot Button */}
-                  <Button
-                    type="dashed"
-                    icon={<PlusOutlined />}
-                    onClick={() => handleAddSlot(day.date)}
-                    block
-                    style={{ marginTop: "8px" }}
-                  >
-                    Thêm slot
-                  </Button>
+                  {/* Add slot form or button */}
+                  {addingDate === day.date ? (
+                    <Card
+                      size="small"
+                      style={{
+                        marginTop: "8px",
+                        borderColor: token.colorPrimary,
+                        borderStyle: "dashed",
+                      }}
+                    >
+                      <TimePicker.RangePicker
+                        format="HH:mm"
+                        minuteStep={15}
+                        value={newTimeRange}
+                        onChange={(val) =>
+                          setNewTimeRange(val as [Dayjs, Dayjs] | null)
+                        }
+                        style={{ width: "100%", marginBottom: "8px" }}
+                        needConfirm={false}
+                      />
+                      <Space
+                        style={{ width: "100%", justifyContent: "flex-end" }}
+                      >
+                        <Button size="small" onClick={handleCancelAddSlot}>
+                          Huỷ
+                        </Button>
+                        <Button
+                          size="small"
+                          type="primary"
+                          onClick={() => handleConfirmAddSlot(day.date)}
+                        >
+                          OK
+                        </Button>
+                      </Space>
+                    </Card>
+                  ) : (
+                    <Button
+                      type="dashed"
+                      icon={<PlusOutlined />}
+                      onClick={() => handleAddSlot(day.date)}
+                      block
+                      style={{ marginTop: "8px" }}
+                    >
+                      Thêm slot
+                    </Button>
+                  )}
                 </div>
               ),
             };
