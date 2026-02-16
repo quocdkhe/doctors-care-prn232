@@ -46,12 +46,12 @@ namespace backend.Services.Implementation
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<TimeSlot>> DoctorsGetTimeSlotsByWeek(Guid DoctorId, DateOnly mondayOfWeek)
+        public async Task<List<TimeSlot>> DoctorsGetTimeSlotsByWeek(Guid DoctorId, DateOnly sundayOfWeek)
         {
-            var sundayOfWeek = mondayOfWeek.AddDays(6);
+            var saturdayOfWeek = sundayOfWeek.AddDays(6);
 
             var slots = await _context.TimeSlots
-                .Where(s => s.DoctorId == DoctorId && s.Date >= mondayOfWeek && s.Date <= sundayOfWeek)
+                .Where(s => s.DoctorId == DoctorId && s.Date >= sundayOfWeek && s.Date <= saturdayOfWeek)
                 .OrderBy(s => s.Date)
                 .ThenBy(s => s.StartTime)
                 .ToListAsync();

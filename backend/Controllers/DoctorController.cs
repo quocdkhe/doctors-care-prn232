@@ -46,10 +46,10 @@ namespace backend.Controllers
         }
 
         [HttpGet("me/slots")]
-        public async Task<ActionResult<List<TimeSlot>>> GetTimeSlotsByDoctorId([FromQuery] DateOnly mondayOfWeek)
+        public async Task<ActionResult<List<TimeSlot>>> GetTimeSlotsByDoctorId([FromQuery] DateOnly sundayOfWeek)
         {
             var doctorId = User.GetUserId();
-            return await _timeSlotService.DoctorsGetTimeSlotsByWeek(doctorId, mondayOfWeek);
+            return await _timeSlotService.DoctorsGetTimeSlotsByWeek(doctorId, sundayOfWeek);
         }
 
         [HttpPost("me/slots")]
