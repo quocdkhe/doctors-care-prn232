@@ -5,6 +5,7 @@
         public Guid Id { get; set; }
         public string Slug { get; set; } = null!;
         public string? Biography { get; set; }
+        public string? ShortDescription { get; set; }
         public Guid? SpecialtyId { get; set; }
         public Specialty? Specialty { get; set; }
         public Guid? ClinicId { get; set; }

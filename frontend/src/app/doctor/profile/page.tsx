@@ -1,7 +1,17 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Form, Input, Button, Row, Col, Select, Spin, App, InputNumber } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  Row,
+  Col,
+  Select,
+  Spin,
+  App,
+  InputNumber,
+} from "antd";
 import { SaveOutlined } from "@ant-design/icons";
 import { AvatarUpload } from "@/src/components/commons/avatar-upload";
 import dynamic from "next/dynamic";
@@ -79,6 +89,7 @@ export default function DoctorProfilePage() {
         imageUrl,
         fullName: values.fullName,
         phone: values.phone,
+        shortDescription: values.shortDescription,
         pricePerHour: values.pricePerHour,
       };
 
@@ -98,8 +109,8 @@ export default function DoctorProfilePage() {
     } catch (error: any) {
       message.error(
         error.response?.data?.error ||
-        error.response?.data?.message ||
-        "Có lỗi xảy ra khi cập nhật hồ sơ!",
+          error.response?.data?.message ||
+          "Có lỗi xảy ra khi cập nhật hồ sơ!",
       );
       console.error(error);
     }
@@ -142,6 +153,7 @@ export default function DoctorProfilePage() {
           fullName: doctorProfile?.user.fullName,
           phone: doctorProfile?.user.phone,
           email: doctorProfile?.user.email,
+          shortDescription: doctorProfile?.shortDescription,
           pricePerHour: doctorProfile?.pricePerHour,
         }}
       >
@@ -269,14 +281,41 @@ export default function DoctorProfilePage() {
                 formatter={(value) =>
                   `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                 }
-                parser={(value) => value?.replace(/\$\s?|(,*)/g, "") as unknown as number}
+                parser={(value) =>
+                  value?.replace(/\$\s?|(,*)/g, "") as unknown as number
+                }
                 placeholder="Nhập giá mỗi giờ"
               />
             </Form.Item>
           </Col>
         </Row>
         <div style={{ height: 32 }}></div>
-        {/* Third Row - Text Editor (Full Width) */}
+        {/* Third Row - Short Description */}
+        <Row gutter={16}>
+          <Col span={24}>
+            <Form.Item
+              label="Mô tả ngắn"
+              name="shortDescription"
+              rules={[
+                {
+                  max: 500,
+                  message: "Mô tả ngắn không được vượt quá 500 ký tự!",
+                },
+              ]}
+            >
+              <Input.TextArea
+                rows={3}
+                placeholder="Nhập mô tả ngắn về bản thân..."
+                showCount
+                maxLength={500}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <div style={{ height: 32 }}></div>
+
+        {/* Fourth Row - Text Editor (Full Width) */}
         <Row gutter={16}>
           <Col span={24}>
             <Form.Item label="Tiểu sử" name="biography">

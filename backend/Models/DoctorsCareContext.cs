@@ -225,6 +225,10 @@ namespace backend.Models
                     .HasColumnName("biography")
                     .IsRequired(false);  // NULL allowed
 
+                entity.Property(e => e.ShortDescription)
+                    .HasColumnName("short_description")
+                    .IsRequired(false);  // NULL allowed
+
                 entity.Property(e => e.SpecialtyId)
                     .HasColumnName("specialty_id")
                     .IsRequired(false);  // NULL allowed

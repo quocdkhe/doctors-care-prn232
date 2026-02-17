@@ -2,9 +2,10 @@
 {
     public class UpdateDoctorProfileDto
     {
-        public string? biography { get; set; }
-        public Guid? specialtyId { get; set; }
-        public Guid? clinicId { get; set; }
+        public string? Biography { get; set; }
+        public string? ShortDescription { get; set; }
+        public Guid? SpecialtyId { get; set; }
+        public Guid? ClinicId { get; set; }
         public int PricePerHour { get; set; } = 0;
         public string? ImageUrl { get; set; }
         public string? FullName { get; set; }

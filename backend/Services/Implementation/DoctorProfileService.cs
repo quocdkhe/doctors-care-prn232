@@ -37,7 +37,9 @@ namespace backend.Services.Implementation
                     },
                     Biography = dp.Biography,
                     SpecialtyId = dp.SpecialtyId,
-                    ClinicId = dp.ClinicId
+                    ClinicId = dp.ClinicId,
+                    PricePerHour = dp.PricePerHour,
+                    ShortDescription = dp.ShortDescription
                 })
                 .FirstOrDefaultAsync();
         }
@@ -53,44 +55,49 @@ namespace backend.Services.Implementation
                 throw new NotFoundException("Không tìm thấy thông tin bác sĩ");
             }
 
-            if (dto.clinicId != null)
+            if (dto.ClinicId != null)
             {
-                currentDoctor.ClinicId = dto.clinicId;
+                currentDoctor.ClinicId = dto.ClinicId;
             }
 
-            if (dto.specialtyId != null)
+            if (dto.SpecialtyId != null)
             {
-                currentDoctor.SpecialtyId = dto.specialtyId;
+                currentDoctor.SpecialtyId = dto.SpecialtyId;
             }
 
-            if (dto.FullName != null)
+            if (!string.IsNullOrEmpty(dto.FullName))
             {
                 currentDoctor.User.FullName = dto.FullName;
             }
 
-            if (dto.Phone != null)
+            if (!string.IsNullOrEmpty(dto.Phone))
             {
                 currentDoctor.User.Phone = dto.Phone;
             }
 
-            if (dto.Password != null)
+            if (!string.IsNullOrEmpty(dto.Password))
             {
                 currentDoctor.User.Password = PasswordHashing.HashPassword(dto.Password);
             }
 
-            if (dto.ImageUrl != null)
+            if (!string.IsNullOrEmpty(dto.ImageUrl))
             {
                 currentDoctor.User.Avatar = dto.ImageUrl;
             }
 
-            if (dto.biography != null)
+            if (!string.IsNullOrEmpty(dto.Biography))
             {
-                currentDoctor.Biography = dto.biography;
+                currentDoctor.Biography = dto.Biography;
             }
 
             if (dto.PricePerHour > 0)
             {
                 currentDoctor.PricePerHour = dto.PricePerHour;
+            }
+
+            if (!string.IsNullOrEmpty(dto.ShortDescription))
+            {
+                currentDoctor.ShortDescription = dto.ShortDescription;
             }
             await _context.SaveChangesAsync();
         }
