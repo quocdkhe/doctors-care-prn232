@@ -21,3 +21,15 @@ export interface UpdateDoctorProfile {
   password?: string;
   pricePerHour: number;
 }
+
+export interface DoctorCard {
+  slug: string;
+  doctorName: string;
+  imageUrl?: string;
+  shortDescription?: string;
+  pricePerHour: number;
+  clinicSlug: string;
+  clinicName: string;
+  clinicAddress: string;
+  clinicCity: string;
+}

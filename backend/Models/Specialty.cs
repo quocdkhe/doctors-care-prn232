@@ -9,5 +9,6 @@
         public string? ImageUrl { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+        public virtual ICollection<DoctorProfile> Doctors { get; set; } = new List<DoctorProfile>();
     }
 }

@@ -11,5 +11,6 @@ namespace backend.Models
         public string Address { get; set; } = null!;
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+        public virtual ICollection<DoctorProfile> Doctors { get; set; } = new List<DoctorProfile>();
     }
 }

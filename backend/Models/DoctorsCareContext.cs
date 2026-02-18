@@ -268,13 +268,13 @@ namespace backend.Models
 
                 // Foreign keys
                 entity.HasOne(d => d.Specialty)
-                    .WithMany()
+                    .WithMany(s => s.Doctors)
                     .HasForeignKey(d => d.SpecialtyId)
                     .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("fk_doctor_profiles_specialties_specialty_id");
 
                 entity.HasOne(d => d.Clinic)
-                    .WithMany()
+                    .WithMany(c => c.Doctors)
                     .HasForeignKey(d => d.ClinicId)
                     .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("fk_doctor_profiles_clinics_clinic_id");

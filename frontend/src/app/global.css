@@ -1,1 +1,10 @@
 @import "tailwindcss";
+
+@layer base {
+  ul {
+    @apply list-disc list-inside;
+  }
+  ol {
+    @apply list-decimal list-inside;
+  }
+}
