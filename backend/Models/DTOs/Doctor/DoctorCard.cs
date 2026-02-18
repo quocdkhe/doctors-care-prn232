@@ -11,5 +11,6 @@
         public string ClinicName { get; set; } = null!;
         public string ClinicAddress { get; set; } = null!;
         public string ClinicCity { get; set; } = null!;
+        public List<DateOnly> AvailableDates { get; set; } = new List<DateOnly>();
     }
 }

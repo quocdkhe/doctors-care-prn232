@@ -133,7 +133,7 @@ export default function SlotManagementPage() {
     setNewTimeRange(null);
   };
 
-  const createUpdateSlotsMutation = useCreateUpdateSlots();
+  const createUpdateSlotsMutation = useCreateUpdateSlots(sundayStr);
 
   const handleSaveChanges = () => {
     const allSlots = Object.values(slotsByDay).flat();
@@ -188,6 +188,7 @@ export default function SlotManagementPage() {
             type="primary"
             icon={<SaveOutlined />}
             onClick={handleSaveChanges}
+            loading={createUpdateSlotsMutation.isPending}
           >
             Lưu thay đổi
           </Button>

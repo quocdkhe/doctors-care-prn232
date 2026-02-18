@@ -23,6 +23,6 @@ namespace backend.Models
         public DateTime UpdatedAt { get; set; }
 
         public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
-
+        public virtual ICollection<TimeSlot> TimeSlots { get; set; } = new List<TimeSlot>();
     }
 }

@@ -14,16 +14,12 @@ namespace backend.Services.Implementation
             _context = context;
         }
 
-        public async Task CreateTimeSlots(Guid DoctorId, List<CreateSlotDto> slots)
+        public async Task CreateUpdateTimeSlots(Guid DoctorId, List<CreateSlotDto> slots, DateOnly sundayOfWeek)
         {
-
-
-            // Get distinct dates from the slots
-            var distinctDates = slots.Select(s => s.Date).Distinct().ToList();
-
             // Delete all old slots for these days and doctor
+            var saturdayOfWeek = sundayOfWeek.AddDays(6);
             var oldSlots = await _context.TimeSlots
-                .Where(s => s.DoctorId == DoctorId && distinctDates.Contains(s.Date) && !s.IsBooked)
+                .Where(s => s.DoctorId == DoctorId && s.Date >= sundayOfWeek && s.Date <= saturdayOfWeek)
                 .ToListAsync();
 
             _context.TimeSlots.RemoveRange(oldSlots);

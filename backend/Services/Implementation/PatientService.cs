@@ -20,6 +20,7 @@ namespace backend.Services.Implementation
                 .Include(d => d.User)
                 .Include(d => d.Clinic)
                 .Include(d => d.Specialty)
+
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(SpecialtySlug))
@@ -47,7 +48,11 @@ namespace backend.Services.Implementation
                 ClinicSlug = d.Clinic.Slug,
                 ClinicName = d.Clinic.Name,
                 ClinicAddress = d.Clinic.Address,
-                ClinicCity = d.Clinic.City
+                ClinicCity = d.Clinic.City,
+                AvailableDates = d.User.TimeSlots.Where(ts => !ts.IsBooked && ts.Date >= DateOnly.FromDateTime(DateTime.Now))
+                    .Select(ts => ts.Date)
+                    .Distinct()
+                    .ToList()
             }).ToList();
 
         }

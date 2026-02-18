@@ -15,9 +15,11 @@ export default function useDoctorSlotsQuery(sundayOfWeek: string) {
   });
 }
 
-export function useCreateUpdateSlots() {
+export function useCreateUpdateSlots(sundayOfWeek: string) {
   return useMutation<void, AxiosError<Error>, CreateTimeSlot[]>({
     mutationFn: async (slots) =>
-      await api.post<void>(`/doctors/me/slots`, slots).then((res) => res.data),
+      await api
+        .post<void>(`/doctors/me/slots?sundayOfWeek=${sundayOfWeek}`, slots)
+        .then((res) => res.data),
   });
 }

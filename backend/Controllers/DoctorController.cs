@@ -54,10 +54,10 @@ namespace backend.Controllers
 
         [HttpPost("me/slots")]
         [Authorize]
-        public async Task CreateTimeSlots([FromBody] List<CreateSlotDto> slots)
+        public async Task CreateTimeSlots([FromQuery] DateOnly sundayOfWeek, [FromBody] List<CreateSlotDto> slots)
         {
             var doctorId = User.GetUserId();
-            await _timeSlotService.CreateTimeSlots(doctorId, slots);
+            await _timeSlotService.CreateUpdateTimeSlots(doctorId, slots, sundayOfWeek);
         }
     }
 

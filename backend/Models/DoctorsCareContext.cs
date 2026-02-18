@@ -116,6 +116,11 @@ namespace backend.Models
                       .WithOne(rt => rt.User)
                       .HasForeignKey(rt => rt.UserId)
                       .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(e => e.TimeSlots)
+                      .WithOne()
+                      .HasForeignKey(ts => ts.DoctorId)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Specialty>(entity =>
@@ -324,7 +329,7 @@ namespace backend.Models
                     .IsUnique();
 
                 entity.HasOne<User>()
-                    .WithMany()
+                    .WithMany(u => u.TimeSlots)
                     .HasForeignKey(e => e.DoctorId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("fk_time_slots_users_doctor_id");
