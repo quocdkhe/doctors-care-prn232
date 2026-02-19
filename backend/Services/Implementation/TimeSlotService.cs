@@ -58,12 +58,10 @@ namespace backend.Services.Implementation
 
         public async Task<List<TimeSlot>> GetTimeSlotsByDay(Guid DoctorId, DateOnly day)
         {
-            var slots = await _context.TimeSlots
-                .Where(s => s.DoctorId == DoctorId && s.Date == day)
+            return await _context.TimeSlots
+                .Where(s => s.DoctorId == DoctorId && s.Date == day && !s.IsBooked)
                 .OrderBy(s => s.StartTime)
                 .ToListAsync();
-
-            return slots;
         }
     }
 }

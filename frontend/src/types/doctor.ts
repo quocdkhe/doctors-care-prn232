@@ -23,6 +23,7 @@ export interface UpdateDoctorProfile {
 }
 
 export interface DoctorCard {
+  doctorId: string;
   slug: string;
   doctorName: string;
   imageUrl?: string;
@@ -32,4 +33,5 @@ export interface DoctorCard {
   clinicName: string;
   clinicAddress: string;
   clinicCity: string;
+  availableDates: string[]; // YYYY-MM-DD array
 }

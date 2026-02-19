@@ -23,3 +23,17 @@ export function useCreateUpdateSlots(sundayOfWeek: string) {
         .then((res) => res.data),
   });
 }
+
+export function useGetSlotsByDoctorAndDay(
+  doctorId: string,
+  day: string,
+  options?: { enabled?: boolean },
+) {
+  return useQuery<TimeSlot[], AxiosError<Error>>({
+    queryKey: ["slots", doctorId, day],
+    queryFn: async () =>
+      await api.get<TimeSlot[]>(`/doctors/${doctorId}/slots?day=${day}`).then((res) => res.data),
+    staleTime: 1000 * 60 * 10,
+    enabled: options?.enabled ?? true,
+  });
+}

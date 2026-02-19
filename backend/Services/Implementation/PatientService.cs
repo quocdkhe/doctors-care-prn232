@@ -40,6 +40,7 @@ namespace backend.Services.Implementation
 
             return query.Select(d => new DoctorCard
             {
+                DoctorId = d.User.Id,
                 Slug = d.Slug,
                 DoctorName = d.User.FullName,
                 ImageUrl = d.User.Avatar,

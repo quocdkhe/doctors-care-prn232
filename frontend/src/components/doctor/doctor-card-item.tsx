@@ -1,21 +1,22 @@
 "use client";
 
 import { DoctorCard } from "@/src/types/doctor";
+import { useGetSlotsByDoctorAndDay } from "@/src/queries/slot.queries";
 import { EnvironmentOutlined, CalendarOutlined } from "@ant-design/icons";
 import {
   Avatar,
   Button,
   Card,
   Col,
+  DatePicker,
   Row,
-  Select,
-  Space,
+  Spin,
   Typography,
   theme,
 } from "antd";
 import Link from "next/link";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
+import dayjs, { Dayjs } from "dayjs";
 
 const { Text, Title, Paragraph } = Typography;
 
@@ -24,32 +25,47 @@ interface DoctorCardItemProps {
 }
 
 export default function DoctorCardItem({ doctor }: DoctorCardItemProps) {
-  const router = useRouter();
-  const [selectedDate, setSelectedDate] = useState("today");
+  const { token } = theme.useToken();
+
+  // Build a Set of available date strings for O(1) lookup
+  const availableDateSet = useMemo(
+    () => new Set(doctor.availableDates),
+    [doctor.availableDates],
+  );
+
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedSlotIndex, setSelectedSlotIndex] = useState<number | null>(
     null,
   );
-  const { token } = theme.useToken();
 
-  // Fake slots data
-  const slots = [
-    { time: "09:00 - 09:30" },
-    { time: "09:30 - 10:00" },
-    { time: "10:00 - 10:30" },
-    { time: "10:30 - 11:00" },
-    { time: "11:00 - 11:30" },
-    { time: "13:30 - 14:00" },
-    { time: "14:00 - 14:30" },
-    { time: "14:30 - 15:00" },
-    { time: "15:00 - 15:30" },
-    { time: "15:30 - 16:00" },
-  ];
+  // Fetch slots for the selected doctor + date (only when a date is chosen)
+  const {
+    data: slots,
+    isLoading: slotsLoading,
+  } = useGetSlotsByDoctorAndDay(doctor.doctorId, selectedDate ?? "", {
+    enabled: !!selectedDate,
+  });
+
+  // Only show unbooked slots
+  const availableSlots = useMemo(
+    () => (slots ?? []).filter((s) => !s.isBooked),
+    [slots],
+  );
+
+  // Disable dates that are NOT in availableDates
+  const disabledDate = (current: Dayjs) => {
+    return !availableDateSet.has(current.format("YYYY-MM-DD"));
+  };
+
+  const handleDateChange = (date: Dayjs | null) => {
+    setSelectedDate(date ? date.format("YYYY-MM-DD") : null);
+    setSelectedSlotIndex(null);
+  };
 
   // Helper function to calculate price based on slot duration
-  const calculatePrice = (slotTime: string) => {
-    const [start, end] = slotTime.split(" - ");
-    const [startHour, startMinute] = start.split(":").map(Number);
-    const [endHour, endMinute] = end.split(":").map(Number);
+  const calculatePrice = (startTime: string, endTime: string) => {
+    const [startHour, startMinute] = startTime.split(":").map(Number);
+    const [endHour, endMinute] = endTime.split(":").map(Number);
     const durationInMinutes =
       endHour * 60 + endMinute - (startHour * 60 + startMinute);
     const price = (doctor.pricePerHour * durationInMinutes) / 60;
@@ -132,15 +148,12 @@ export default function DoctorCardItem({ doctor }: DoctorCardItemProps) {
         {/* Right Column: Schedule & Booking */}
         <Col xs={24} sm={12} style={{ paddingLeft: "24px" }}>
           <div style={{ marginBottom: "16px" }}>
-            <Select
-              defaultValue="today"
-              style={{ width: 160, fontWeight: 500 }}
-              onChange={setSelectedDate}
-              options={[
-                { value: "today", label: "Hôm nay - 18/2" },
-                { value: "tomorrow", label: "Ngày mai - 19/2" },
-                { value: "next", label: "Thứ 5 - 20/2" },
-              ]}
+            <DatePicker
+              value={selectedDate ? dayjs(selectedDate) : null}
+              onChange={handleDateChange}
+              disabledDate={disabledDate}
+              allowClear={false}
+              format="DD/MM/YYYY"
             />
           </div>
 
@@ -159,32 +172,42 @@ export default function DoctorCardItem({ doctor }: DoctorCardItemProps) {
               </Text>
             </div>
 
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(4, 1fr)",
-                gap: "8px",
-              }}
-            >
-              {slots.map((slot, index) => {
-                const isSelected = selectedSlotIndex === index;
-                return (
-                  <Button
-                    key={index}
-                    type={isSelected ? "primary" : "default"}
-                    onClick={() =>
-                      setSelectedSlotIndex(isSelected ? null : index)
-                    }
-                    style={{
-                      fontSize: "12px",
-                      fontWeight: 500,
-                    }}
-                  >
-                    {slot.time}
-                  </Button>
-                );
-              })}
-            </div>
+            {slotsLoading ? (
+              <div style={{ textAlign: "center", padding: "24px 0" }}>
+                <Spin />
+              </div>
+            ) : availableSlots.length === 0 ? (
+              <Text type="secondary" style={{ fontSize: "14px" }}>
+                Vui lòng chọn ngày
+              </Text>
+            ) : (
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(4, 1fr)",
+                  gap: "8px",
+                }}
+              >
+                {availableSlots.map((slot, index) => {
+                  const isSelected = selectedSlotIndex === index;
+                  return (
+                    <Button
+                      key={slot.id}
+                      type={isSelected ? "primary" : "default"}
+                      onClick={() =>
+                        setSelectedSlotIndex(isSelected ? null : index)
+                      }
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {slot.startTime} - {slot.endTime}
+                    </Button>
+                  );
+                })}
+              </div>
+            )}
             <Text
               type="secondary"
               style={{ fontSize: "12px", marginTop: "8px", display: "block" }}
@@ -192,7 +215,7 @@ export default function DoctorCardItem({ doctor }: DoctorCardItemProps) {
               Chọn <span style={{ cursor: "pointer" }}>👆</span> và đặt (Phí đặt
               lịch 0đ)
             </Text>
-            {selectedSlotIndex !== null && (
+            {selectedSlotIndex !== null && availableSlots[selectedSlotIndex] && (
               <div
                 style={{
                   display: "flex",
@@ -209,12 +232,13 @@ export default function DoctorCardItem({ doctor }: DoctorCardItemProps) {
                   </Text>
                   <Text>
                     {calculatePrice(
-                      slots[selectedSlotIndex].time,
+                      availableSlots[selectedSlotIndex].startTime,
+                      availableSlots[selectedSlotIndex].endTime,
                     ).toLocaleString()}
                     đ
                   </Text>
                 </div>
-                <Button type="primary" disabled={selectedSlotIndex === null}>
+                <Button type="primary">
                   Đặt lịch khám
                 </Button>
               </div>
@@ -272,3 +296,4 @@ export default function DoctorCardItem({ doctor }: DoctorCardItemProps) {
     </Card>
   );
 }
+

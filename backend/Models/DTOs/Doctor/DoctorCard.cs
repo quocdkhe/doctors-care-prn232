@@ -2,6 +2,7 @@
 {
     public class DoctorCard
     {
+        public Guid DoctorId { get; set; }
         public string Slug { get; set; } = null!;
         public string DoctorName { get; set; } = null!;
         public string? ImageUrl { get; set; }
