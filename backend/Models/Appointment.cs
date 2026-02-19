@@ -8,7 +8,7 @@ public class Appointment
     public Guid BookByUserId { get; set; }
     public User BookByUser { get; set; } = null!;
     public string PatientName { get; set; } = null!;
-    public bool PatientGender { get; set; }
+    public bool PatientGender { get; set; } // true is female, false is male
     public string PatientPhone { get; set; } = null!;
     public string PatientEmail { get; set; } = null!;
     public DateOnly PatientDateOfBirth { get; set; }

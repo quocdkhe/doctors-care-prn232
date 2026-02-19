@@ -13,6 +13,7 @@ import {
   Radio,
   theme,
   Typography,
+  notification,
 } from "antd";
 import {
   CalendarOutlined,
@@ -25,6 +26,8 @@ import dayjs from "dayjs";
 import { calculatePrice } from "@/src/utils/helper";
 import { useAppSelector } from "@/src/store/hooks";
 import { useEffect } from "react";
+import { useCreateAppointment } from "@/src/queries/appointment.queries";
+import { useRouter } from "next/navigation";
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -55,6 +58,8 @@ export default function SlotDetail({ slot }: { slot: SlotDetailType }) {
   const { token } = theme.useToken();
   const [form] = Form.useForm<BookingFormValues>();
   const user = useAppSelector((state) => state.auth.user);
+  const router = useRouter();
+  const { mutate: createAppointment, isPending } = useCreateAppointment();
 
   // Pre-fill with user info on first load (default is "self")
   useEffect(() => {
@@ -80,19 +85,43 @@ export default function SlotDetail({ slot }: { slot: SlotDetailType }) {
   };
 
   const handleSubmit = (values: BookingFormValues) => {
+    if (!user?.id) {
+      notification.error({
+        message: "Lỗi",
+        description: "Vui lòng đăng nhập để đặt lịch khám",
+      });
+      return;
+    }
+
     const payload = {
-      slotId: slot.slotId,
-      bookFor: values.bookFor,
-      fullName: values.fullName,
-      gender: values.gender,
-      phone: values.phone,
-      email: values.email,
-      dob: values.dob ? values.dob.format("YYYY-MM-DD") : null,
-      address: values.address,
-      reason: values.reason,
-      paymentMethod: values.paymentMethod,
+      bookByUserId: user.id,
+      timeSlotId: slot.slotId,
+      patientName: values.fullName,
+      patientGender: values.gender === "female", // true = female, false = male
+      patientPhone: values.phone,
+      patientEmail: values.email || "",
+      patientDateOfBirth: values.dob ? values.dob.format("YYYY-MM-DD") : "",
+      patientAddress: values.address || "",
+      reason: values.reason || "",
     };
-    console.log("Booking payload:", JSON.stringify(payload, null, 2));
+
+    createAppointment(payload, {
+      onSuccess: () => {
+        notification.success({
+          message: "Thành công",
+          description: "Đặt lịch khám thành công!",
+        });
+        router.push("/lich-su-kham"); // Redirect or handle as needed
+      },
+      onError: (error) => {
+        notification.error({
+          message: "Lỗi",
+          description:
+            error.response?.data?.error ||
+            "Có lỗi xảy ra khi đặt lịch. Vui lòng thử lại.",
+        });
+      },
+    });
   };
 
   return (
@@ -363,6 +392,7 @@ export default function SlotDetail({ slot }: { slot: SlotDetailType }) {
             htmlType="submit"
             size="large"
             style={{ width: "100%", fontWeight: 600 }}
+            loading={isPending}
           >
             Xác nhận đặt khám
           </Button>

@@ -24,6 +24,7 @@ namespace backend.Configurations
             services.AddScoped<IClinicService, ClinicService>();
             services.AddScoped<IDoctorProfileService, DoctorProfileService>();
             services.AddScoped<ITimeSlotService, TimeSlotService>();
+            services.AddScoped<IAppointmentService, AppointmentService>();
             return services;
         }
     }
