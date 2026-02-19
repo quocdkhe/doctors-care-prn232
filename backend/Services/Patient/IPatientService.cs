@@ -1,4 +1,5 @@
-﻿using backend.Models.DTOs.Doctor;
+﻿using backend.Models.DTOs.Booking;
+using backend.Models.DTOs.Doctor;
 
 namespace backend.Services.Patient
 {
@@ -7,5 +8,6 @@ namespace backend.Services.Patient
         public Task<SpecialtyAndDoctors> GetSpecialtyAndDoctors(string SpectialtySlug);
         public Task<List<DoctorCard>> GetDoctors(string? SpecialtySlug, string? ClinicSlug, string? City, DateOnly? Date);
         public Task<DoctorDetailDto> GetDoctorDetail(string Slug);
+        public Task<SlotAndDoctorDto> GetSlotDetail(int SlotId);
     }
 }

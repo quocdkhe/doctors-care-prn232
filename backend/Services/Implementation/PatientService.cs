@@ -1,5 +1,6 @@
 ﻿using backend.Exceptions;
 using backend.Models;
+using backend.Models.DTOs.Booking;
 using backend.Models.DTOs.Doctor;
 using backend.Services.Patient;
 using Microsoft.EntityFrameworkCore;
@@ -122,6 +123,28 @@ namespace backend.Services.Implementation
                 ?? throw new NotFoundException("Không tìm thấy thông tin bác sĩ");
 
             return doctor;
+        }
+
+        public async Task<SlotAndDoctorDto> GetSlotDetail(int SlotId)
+        {
+            return await _context.TimeSlots
+                .Where(s => s.Id == SlotId)
+                .Select(s => new SlotAndDoctorDto
+                {
+                    SlotId = s.Id,
+                    IsBooked = s.IsBooked,
+                    DoctorName = s.Doctor.FullName,
+                    ImageUrl = s.Doctor.Avatar ?? string.Empty,
+                    DoctorSlug = s.Doctor.DoctorProfile != null ? s.Doctor.DoctorProfile.Slug : "",
+                    PricePerHour = s.Doctor.DoctorProfile != null ? s.Doctor.DoctorProfile.PricePerHour : 0,
+                    Date = s.Date,
+                    StartTime = s.StartTime,
+                    EndTime = s.EndTime,
+                    ClinicAddress = s.Doctor.DoctorProfile.Clinic.Address + ", " + s.Doctor.DoctorProfile.Clinic.City,
+                    ClinicName = s.Doctor.DoctorProfile.Clinic.Name
+                })
+                .FirstOrDefaultAsync()
+                ?? throw new NotFoundException("Không tìm thấy thông tin lịch khám");
         }
     }
 }

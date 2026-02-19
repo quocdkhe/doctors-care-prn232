@@ -285,8 +285,8 @@ namespace backend.Models
                     .HasConstraintName("fk_doctor_profiles_clinics_clinic_id");
 
                 entity.HasOne(d => d.User)
-                    .WithMany()
-                    .HasForeignKey(d => d.UserId)
+                    .WithOne(u => u.DoctorProfile)
+                    .HasForeignKey<DoctorProfile>(d => d.UserId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("fk_doctor_profiles_users_user_id");
             });
@@ -328,7 +328,7 @@ namespace backend.Models
                     .HasDatabaseName("idx_time_slots_doctor_date_time")
                     .IsUnique();
 
-                entity.HasOne<User>()
+                entity.HasOne<User>(e => e.Doctor)
                     .WithMany(u => u.TimeSlots)
                     .HasForeignKey(e => e.DoctorId)
                     .OnDelete(DeleteBehavior.Cascade)

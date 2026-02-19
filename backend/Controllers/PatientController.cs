@@ -1,4 +1,5 @@
-﻿using backend.Models.DTOs.Doctor;
+﻿using backend.Models.DTOs.Booking;
+using backend.Models.DTOs.Doctor;
 using backend.Services.Patient;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,6 +34,12 @@ namespace backend.Controllers
         public async Task<ActionResult<DoctorDetailDto>> GetDoctorDetail(string slug)
         {
             return Ok(await _patientService.GetDoctorDetail(slug));
+        }
+
+        [HttpGet("slots/{id}")]
+        public async Task<ActionResult<SlotAndDoctorDto>> GetSlotAndDoctorBySlotId(int id)
+        {
+            return Ok(await _patientService.GetSlotDetail(id));
         }
     }
 }
