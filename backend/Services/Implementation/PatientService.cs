@@ -141,7 +141,9 @@ namespace backend.Services.Implementation
                     StartTime = s.StartTime,
                     EndTime = s.EndTime,
                     ClinicAddress = s.Doctor.DoctorProfile.Clinic.Address + ", " + s.Doctor.DoctorProfile.Clinic.City,
-                    ClinicName = s.Doctor.DoctorProfile.Clinic.Name
+                    ClinicName = s.Doctor.DoctorProfile.Clinic.Name,
+                    SpecialtySlug = s.Doctor.DoctorProfile.Specialty != null ? s.Doctor.DoctorProfile.Specialty.Slug : string.Empty,
+                    SpecialtyName = s.Doctor.DoctorProfile.Specialty != null ? s.Doctor.DoctorProfile.Specialty.Name : string.Empty
                 })
                 .FirstOrDefaultAsync()
                 ?? throw new NotFoundException("Không tìm thấy thông tin lịch khám");

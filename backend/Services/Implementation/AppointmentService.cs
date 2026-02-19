@@ -12,15 +12,15 @@ namespace backend.Services.Implementation
             _context = context;
         }
 
-        public async Task CreateNewAppointment(CreateAppointmentDto dto)
-        {
-            var appointment = new Appointment
-            {
-                TimeSlotId = dto.TimeSlotId,
-                PatientId = dto.PatientId,
-            };
-            await _context.Appointments.AddAsync(appointment);
-            await _context.SaveChangesAsync();
-        }
+        // public async Task CreateNewAppointment(CreateAppointmentDto dto)
+        // {
+        //     var appointment = new Appointment
+        //     {
+        //         TimeSlotId = dto.TimeSlotId,
+        //         PatientId = dto.PatientId,
+        //     };
+        //     await _context.Appointments.AddAsync(appointment);
+        //     await _context.SaveChangesAsync();
+        // }
     }
 }

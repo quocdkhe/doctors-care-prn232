@@ -4,6 +4,6 @@ namespace backend.Services.Booking
 {
     public interface IAppointmentService
     {
-        public Task CreateNewAppointment(CreateAppointmentDto dto);
+        // public Task CreateNewAppointment(CreateAppointmentDto dto);
     }
 }

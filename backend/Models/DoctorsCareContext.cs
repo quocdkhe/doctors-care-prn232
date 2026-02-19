@@ -344,8 +344,40 @@ namespace backend.Models
                     .HasColumnName("id")
                     .HasDefaultValueSql("NEWID()");
 
-                entity.Property(e => e.PatientId)
-                    .HasColumnName("patient_id")
+                entity.Property(e => e.BookByUserId)
+                    .HasColumnName("book_by_user_id")
+                    .IsRequired();
+
+                entity.Property(e => e.PatientName)
+                    .HasColumnName("patient_name")
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.PatientGender)
+                    .HasColumnName("patient_gender")
+                    .IsRequired();
+
+                entity.Property(e => e.PatientPhone)
+                    .HasColumnName("patient_phone")
+                    .IsRequired()
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.PatientEmail)
+                    .HasColumnName("patient_email")
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.PatientDateOfBirth)
+                    .HasColumnName("patient_date_of_birth")
+                    .IsRequired();
+
+                entity.Property(e => e.PatientAddress)
+                    .HasColumnName("patient_address")
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.Reason)
+                    .HasColumnName("reason")
                     .IsRequired();
 
                 entity.Property(e => e.TimeSlotId)
@@ -371,18 +403,18 @@ namespace backend.Models
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
                     .IsRequired();
 
-                entity.HasIndex(e => e.PatientId)
-                    .HasDatabaseName("idx_appointments_patient_id");
+                entity.HasIndex(e => e.BookByUserId)
+                    .HasDatabaseName("idx_appointments_book_by_user_id");
 
                 entity.HasIndex(e => e.TimeSlotId)
                     .HasDatabaseName("idx_appointments_time_slot_id")
                     .IsUnique();
 
-                entity.HasOne<User>()
+                entity.HasOne<User>(e => e.BookByUser)
                     .WithMany()
-                    .HasForeignKey(e => e.PatientId)
+                    .HasForeignKey(e => e.BookByUserId)
                     .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("fk_appointments_users_patient_id");
+                    .HasConstraintName("fk_appointments_users_book_by_user_id");
 
                 entity.HasOne(e => e.TimeSlot)
                     .WithMany()

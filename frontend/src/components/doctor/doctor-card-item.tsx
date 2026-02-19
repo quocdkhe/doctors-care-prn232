@@ -17,6 +17,7 @@ import {
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
+import { calculatePrice } from "@/src/utils/helper";
 
 const { Text, Title, Paragraph } = Typography;
 
@@ -43,12 +44,13 @@ export default function DoctorCardItem({
   );
 
   // Fetch slots for the selected doctor + date (only when a date is chosen)
-  const {
-    data: slots,
-    isLoading: slotsLoading,
-  } = useGetSlotsByDoctorAndDay(doctor.doctorId, selectedDate ?? "", {
-    enabled: !!selectedDate,
-  });
+  const { data: slots, isLoading: slotsLoading } = useGetSlotsByDoctorAndDay(
+    doctor.doctorId,
+    selectedDate ?? "",
+    {
+      enabled: !!selectedDate,
+    },
+  );
 
   // Only show unbooked slots
   const availableSlots = useMemo(
@@ -64,16 +66,6 @@ export default function DoctorCardItem({
   const handleDateChange = (date: Dayjs | null) => {
     setSelectedDate(date ? date.format("YYYY-MM-DD") : null);
     setSelectedSlotIndex(null);
-  };
-
-  // Helper function to calculate price based on slot duration
-  const calculatePrice = (startTime: string, endTime: string) => {
-    const [startHour, startMinute] = startTime.split(":").map(Number);
-    const [endHour, endMinute] = endTime.split(":").map(Number);
-    const durationInMinutes =
-      endHour * 60 + endMinute - (startHour * 60 + startMinute);
-    const price = (doctor.pricePerHour * durationInMinutes) / 60;
-    return price;
   };
 
   return (
@@ -219,34 +211,38 @@ export default function DoctorCardItem({
               Chọn <span style={{ cursor: "pointer" }}>👆</span> và đặt (Phí đặt
               lịch 0đ)
             </Text>
-            {selectedSlotIndex !== null && availableSlots[selectedSlotIndex] && (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginTop: "12px",
-                  borderTop: "1px solid #f0f0f0",
-                  paddingTop: "12px",
-                }}
-              >
-                <div>
-                  <Text strong type="secondary" style={{ marginRight: "2px" }}>
-                    GIÁ:
-                  </Text>
-                  <Text>
-                    {calculatePrice(
-                      availableSlots[selectedSlotIndex].startTime,
-                      availableSlots[selectedSlotIndex].endTime,
-                    ).toLocaleString()}
-                    đ
-                  </Text>
+            {selectedSlotIndex !== null &&
+              availableSlots[selectedSlotIndex] && (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginTop: "12px",
+                    borderTop: "1px solid #f0f0f0",
+                    paddingTop: "12px",
+                  }}
+                >
+                  <div>
+                    <Text
+                      strong
+                      type="secondary"
+                      style={{ marginRight: "2px" }}
+                    >
+                      GIÁ:
+                    </Text>
+                    <Text>
+                      {calculatePrice(
+                        availableSlots[selectedSlotIndex].startTime,
+                        availableSlots[selectedSlotIndex].endTime,
+                        doctor.pricePerHour,
+                      ).toLocaleString()}
+                      đ
+                    </Text>
+                  </div>
+                  <Button type="primary">Đặt lịch khám</Button>
                 </div>
-                <Button type="primary">
-                  Đặt lịch khám
-                </Button>
-              </div>
-            )}
+              )}
           </div>
 
           <div
@@ -300,4 +296,3 @@ export default function DoctorCardItem({
     </Card>
   );
 }
-

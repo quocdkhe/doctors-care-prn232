@@ -12,9 +12,9 @@ public class SlotAndDoctorDto
     public string DoctorName { get; set; } = null!;
     public string ImageUrl { get; set; } = null!;
     public string DoctorSlug { get; set; } = null!;
+    public string SpecialtySlug { get; set; } = null!;
+    public string SpecialtyName { get; set; } = null!;
     public int PricePerHour { get; set; }
     public string ClinicAddress { get; set; } = null!;
     public string ClinicName { get; set; } = null!;
-
-
 }
