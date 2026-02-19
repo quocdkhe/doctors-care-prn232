@@ -14,13 +14,12 @@ namespace backend.Services.Implementation
             _context = context;
         }
 
-        public async Task<List<DoctorCard>> GetDoctors(string? SpecialtySlug, string? ClinicSlug, string? City)
+        public async Task<List<DoctorCard>> GetDoctors(string? SpecialtySlug, string? ClinicSlug, string? City, DateOnly? Date)
         {
             var query = _context.DoctorProfiles
                 .Include(d => d.User)
                 .Include(d => d.Clinic)
                 .Include(d => d.Specialty)
-
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(SpecialtySlug))
@@ -36,6 +35,13 @@ namespace backend.Services.Implementation
             if (!string.IsNullOrEmpty(City))
             {
                 query = query.Where(d => d.Clinic.City == City);
+            }
+
+            if (Date != null)
+            {
+                query = query
+                    .Include(d => d.User).ThenInclude(u => u.TimeSlots)
+                    .Where(d => d.User.TimeSlots.Any(ts => ts.Date == Date));
             }
 
             return query.Select(d => new DoctorCard
@@ -85,6 +91,36 @@ namespace backend.Services.Implementation
                     ClinicCity = d.Clinic.City
                 }).ToList()
             };
+        }
+
+        public async Task<DoctorDetailDto> GetDoctorDetail(string Slug)
+        {
+            var doctor = await _context.DoctorProfiles
+                .Where(d => d.Slug == Slug)
+                .Select(d => new DoctorDetailDto
+                {
+                    DoctorId = d.User.Id,
+                    Slug = d.Slug,
+                    DoctorName = d.User.FullName,
+                    SpecialtySlug = d.Specialty != null ? d.Specialty.Slug : string.Empty,
+                    ImageUrl = d.User.Avatar ?? string.Empty,
+                    ShortDescription = d.ShortDescription ?? string.Empty,
+                    Biography = d.Biography ?? string.Empty,
+                    PricePerHour = d.PricePerHour,
+                    ClinicSlug = d.Clinic != null ? d.Clinic.Slug : string.Empty,
+                    ClinicName = d.Clinic != null ? d.Clinic.Name : string.Empty,
+                    ClinicAddress = d.Clinic != null ? d.Clinic.Address : string.Empty,
+                    ClinicCity = d.Clinic != null ? d.Clinic.City : string.Empty,
+                    AvailableDates = d.User.TimeSlots
+                        .Where(ts => !ts.IsBooked && ts.Date >= DateOnly.FromDateTime(DateTime.Now))
+                        .Select(ts => ts.Date)
+                        .Distinct()
+                        .ToList()
+                })
+                .FirstOrDefaultAsync()
+                ?? throw new NotFoundException("Không tìm thấy thông tin bác sĩ");
+
+            return doctor;
         }
     }
 }

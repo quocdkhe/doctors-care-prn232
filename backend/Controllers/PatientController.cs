@@ -23,10 +23,16 @@ namespace backend.Controllers
         }
 
         [HttpGet("doctors")]
-        public async Task<ActionResult<List<DoctorCard>>> GetDoctors([FromQuery] string? specialtySlug, [FromQuery] string? clinicSlug, [FromQuery] string? city)
+        public async Task<ActionResult<List<DoctorCard>>> GetDoctors([FromQuery] string? specialtySlug, [FromQuery] string? clinicSlug, [FromQuery] string? city, [FromQuery] DateOnly? date)
         {
-            var result = await _patientService.GetDoctors(specialtySlug, clinicSlug, city);
+            var result = await _patientService.GetDoctors(specialtySlug, clinicSlug, city, date);
             return Ok(result);
+        }
+
+        [HttpGet("doctors/{slug}")]
+        public async Task<ActionResult<DoctorDetailDto>> GetDoctorDetail(string slug)
+        {
+            return Ok(await _patientService.GetDoctorDetail(slug));
         }
     }
 }

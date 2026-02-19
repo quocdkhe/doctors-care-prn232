@@ -5,6 +5,7 @@ namespace backend.Services.Patient
     public interface IPatientService
     {
         public Task<SpecialtyAndDoctors> GetSpecialtyAndDoctors(string SpectialtySlug);
-        public Task<List<DoctorCard>> GetDoctors(string? SpecialtySlug, string? ClinicSlug, string? City);
+        public Task<List<DoctorCard>> GetDoctors(string? SpecialtySlug, string? ClinicSlug, string? City, DateOnly? Date);
+        public Task<DoctorDetailDto> GetDoctorDetail(string Slug);
     }
 }

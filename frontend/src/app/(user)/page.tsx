@@ -7,9 +7,10 @@ import Link from "next/link";
 import { Button } from "antd";
 
 export default async function LandingPage() {
-  const allSpecialties = await fetch("http://localhost:5000/api/specialties");
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const allSpecialties = await fetch(`${apiUrl}/api/specialties`);
   const specialties = await allSpecialties.json();
-  const allClinics = await fetch("http://localhost:5000/api/clinics");
+  const allClinics = await fetch(`${apiUrl}/api/clinics`);
   const clinics = await allClinics.json();
   return (
     <>

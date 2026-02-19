@@ -8,9 +8,11 @@ export default async function DoctorList({
 }) {
   return (
     <div className="flex flex-col gap-6">
-      {doctors.map((doctor) => (
+      {doctors?.length > 0 ? doctors.map((doctor) => (
         <DoctorCardItem key={doctor.slug} doctor={doctor} />
-      ))}
+      )) : (
+        <div className="text-center text-gray-500">Không tìm thấy bác sĩ</div>
+      )}
     </div>
   );
 }

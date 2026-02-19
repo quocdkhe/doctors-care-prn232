@@ -3,7 +3,8 @@ import AllSpecialties from "./all-specialties";
 import Link from "next/link";
 
 export default async function SpecialtiesPage() {
-  const allSpecialties = await fetch("http://localhost:5000/api/specialties");
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const allSpecialties = await fetch(`${apiUrl}/api/specialties`);
   const specialties = await allSpecialties.json();
   return (
     <>

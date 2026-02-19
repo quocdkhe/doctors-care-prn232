@@ -4,18 +4,24 @@ import Link from "next/link";
 import SpecialtyDetail from "./specialty-detail";
 import { DoctorCard } from "@/src/types/doctor";
 import DoctorList from "./doctor-list";
+import SpecialtyFilter from "./specialty-filter";
 
 export default async function SpecialtyDetailsAndDoctorsPage({
   params,
+  searchParams
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const { slug } = await params;
+  const { city, date } = await searchParams;
   const specialty: SpecialtyInfo = await fetch(
-    `http://localhost:5000/api/specialties/${slug}/doctors`,
+    `${apiUrl}/api/specialties/${slug}/doctors`,
   ).then((res) => res.json());
+
   const doctors: DoctorCard[] = await fetch(
-    `http://localhost:5000/api/doctors?specialtySlug=${slug}`,
+    `${apiUrl}/api/doctors?specialtySlug=${slug}&city=${city || ""}&date=${date || ""}`,
   ).then((res) => res.json());
   return (
     <>

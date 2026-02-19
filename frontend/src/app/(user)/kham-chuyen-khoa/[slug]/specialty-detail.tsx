@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { SpecialtyInfo } from "@/src/types/specialty";
 import { theme } from "antd";
+import SpecialtyFilter from "./specialty-filter";
 
 export default function SpecialtyDetail({
   specialty,
@@ -57,12 +58,7 @@ export default function SpecialtyDetail({
       >
         {isExpanded ? "Thu gọn" : "Xem thêm"}
       </a>
-
-      {/* <div className="flex flex-col gap-6">
-        {data.doctors.map((doctor) => (
-          <DoctorCardItem key={doctor.slug} doctor={doctor} />
-        ))}
-      </div> */}
+      <SpecialtyFilter />
     </>
   );
 }
