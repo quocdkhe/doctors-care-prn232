@@ -24,19 +24,17 @@ export default async function SpecialtyDetailsAndDoctorsPage({
     `${apiUrl}/api/doctors?specialtySlug=${slug}&city=${city || ""}&date=${date || ""}`,
   ).then((res) => res.json());
   return (
-    <>
-      <MainContentWrapper
-        breadcrumbItems={[
-          { title: <Link href="/">Trang chủ</Link> },
-          {
-            title: <Link href="/kham-chuyen-khoa">Khám chuyên khoa</Link>,
-          },
-          { title: specialty.specialtyName },
-        ]}
-      >
-        <SpecialtyDetail specialty={specialty} />
-        <DoctorList doctors={doctors} />
-      </MainContentWrapper>
-    </>
+    <MainContentWrapper
+      breadcrumbItems={[
+        { title: <Link href="/">Trang chủ</Link> },
+        {
+          title: <Link href="/kham-chuyen-khoa">Khám chuyên khoa</Link>,
+        },
+        { title: specialty.specialtyName },
+      ]}
+    >
+      <SpecialtyDetail specialty={specialty} />
+      <DoctorList doctors={doctors} specialtySlug={slug} />
+    </MainContentWrapper>
   );
 }

@@ -8,6 +8,7 @@ public class DoctorDetailDto
     public string Slug { get; set; } = null!;
     public string DoctorName { get; set; } = null!;
     public string SpecialtySlug { get; set; } = null!;
+    public string SpecialtyName { get; set; } = null!;
     public string ImageUrl { get; set; } = null!;
     public string ShortDescription { get; set; } = null!;
     public string Biography { get; set; } = null!;

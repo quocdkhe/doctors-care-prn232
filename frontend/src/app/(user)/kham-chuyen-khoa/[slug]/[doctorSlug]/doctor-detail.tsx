@@ -1,34 +1,29 @@
 "use client";
 
-import { DoctorCard } from "@/src/types/doctor";
+import { DoctorDetail as DoctorDetailType } from "@/src/types/doctor";
 import { useGetSlotsByDoctorAndDay } from "@/src/queries/slot.queries";
 import { EnvironmentOutlined, CalendarOutlined } from "@ant-design/icons";
 import {
   Avatar,
   Button,
-  Card,
   Col,
   DatePicker,
+  Divider,
   Row,
   Spin,
   Typography,
   theme,
 } from "antd";
-import Link from "next/link";
 import { useMemo, useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 
 const { Text, Title, Paragraph } = Typography;
 
-interface DoctorCardItemProps {
-  doctor: DoctorCard;
-  specialtySlug: string;
-}
-
-export default function DoctorCardItem({
+export default function DoctorDetail({
   doctor,
-  specialtySlug,
-}: DoctorCardItemProps) {
+}: {
+  doctor: DoctorDetailType;
+}) {
   const { token } = theme.useToken();
 
   // Build a Set of available date strings for O(1) lookup
@@ -43,12 +38,10 @@ export default function DoctorCardItem({
   );
 
   // Fetch slots for the selected doctor + date (only when a date is chosen)
-  const {
-    data: slots,
-    isLoading: slotsLoading,
-  } = useGetSlotsByDoctorAndDay(doctor.doctorId, selectedDate ?? "", {
-    enabled: !!selectedDate,
-  });
+  const { data: slots, isLoading: slotsLoading } =
+    useGetSlotsByDoctorAndDay(doctor.doctorId, selectedDate ?? "", {
+      enabled: !!selectedDate,
+    });
 
   // Only show unbooked slots
   const availableSlots = useMemo(
@@ -77,80 +70,52 @@ export default function DoctorCardItem({
   };
 
   return (
-    <Card
-      styles={{ body: { padding: "20px" } }}
-      style={{
-        boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-      }}
-    >
-      <Row gutter={[24, 24]}>
-        {/* Left Column: Avatar + Info */}
-        <Col xs={24} sm={12} style={{ borderRight: "1px solid #f0f0f0" }}>
-          <Row gutter={[16, 16]}>
-            {/* Avatar & Link */}
-            <Col
-              xs={24}
-              md={8}
-              lg={6}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: "16px",
-              }}
-            >
-              <Avatar
-                size={80}
-                src={doctor.imageUrl || "/default-avatar.png"}
-                style={{ border: "1px solid #d9d9d9" }}
-              />
-              <Link
-                href={`/kham-chuyen-khoa/${specialtySlug}/${doctor.slug}`}
-                style={{
-                  color: token.colorPrimary,
-                  fontSize: "14px",
-                  fontWeight: 500,
-                }}
-              >
-                Xem thêm
-              </Link>
-            </Col>
-
-            {/* Info */}
-            <Col xs={24} md={16} lg={18}>
-              <Title level={4} style={{ marginBottom: "8px" }}>
-                {doctor.doctorName}
-              </Title>
-
-              <Paragraph
-                ellipsis={{ rows: 3 }}
-                style={{
-                  marginBottom: "8px",
-                  fontSize: "14px",
-                  color: token.colorTextSecondary,
-                }}
-              >
-                {doctor.shortDescription || "Bác sĩ chưa có mô tả ngắn."}
-              </Paragraph>
-
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "flex-start",
-                  gap: "8px",
-                  marginTop: "16px",
-                  color: token.colorTextSecondary,
-                }}
-              >
-                <EnvironmentOutlined style={{ marginTop: "4px" }} />
-                <Text type="secondary">{doctor.clinicCity}</Text>
-              </div>
-            </Col>
-          </Row>
+    <div>
+      {/* ── Row 1: Avatar + Info (full width) ── */}
+      <Row gutter={[24, 16]} align="middle" style={{ marginBottom: "24px" }}>
+        <Col flex="none">
+          <Avatar
+            size={120}
+            src={doctor.imageUrl || "/default-avatar.png"}
+            style={{ border: "1px solid #d9d9d9" }}
+          />
         </Col>
+        <Col flex="auto">
+          <Title level={3} style={{ marginBottom: "8px" }}>
+            {doctor.doctorName}
+          </Title>
 
-        {/* Right Column: Schedule & Booking */}
-        <Col xs={24} sm={12} style={{ paddingLeft: "24px" }}>
+          <Paragraph
+            style={{
+              marginBottom: "8px",
+              fontSize: "15px",
+              color: token.colorTextSecondary,
+            }}
+          >
+            {doctor.shortDescription || "Bác sĩ chưa có mô tả ngắn."}
+          </Paragraph>
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "flex-start",
+              gap: "8px",
+              marginTop: "12px",
+              color: token.colorTextSecondary,
+            }}
+          >
+            <EnvironmentOutlined style={{ marginTop: "4px" }} />
+            <Text type="secondary" style={{ fontSize: "15px" }}>
+              {doctor.clinicCity}
+            </Text>
+          </div>
+        </Col>
+      </Row>
+
+      {/* ── Row 2: Schedule (left) + Clinic Info (right) ── */}
+      <Row gutter={[24, 24]}>
+        {/* Left Column: DatePicker & Slots */}
+        <Col xs={24} sm={12} style={{ borderRight: "1px solid #f0f0f0" }}>
           <div style={{ marginBottom: "16px" }}>
             <DatePicker
               value={selectedDate ? dayjs(selectedDate) : null}
@@ -242,62 +207,67 @@ export default function DoctorCardItem({
                     đ
                   </Text>
                 </div>
-                <Button type="primary">
-                  Đặt lịch khám
-                </Button>
+                <Button type="primary">Đặt lịch khám</Button>
               </div>
             )}
+          </div>
+        </Col>
+
+        {/* Right Column: Clinic Address & Price */}
+        <Col xs={24} sm={12} style={{ paddingLeft: "24px" }}>
+          <div style={{ marginBottom: "8px" }}>
+            <Text
+              strong
+              style={{
+                textTransform: "uppercase",
+                color: token.colorTextDescription,
+                display: "block",
+                marginBottom: "4px",
+              }}
+            >
+              Địa chỉ khám
+            </Text>
+            <Text strong style={{ display: "block" }}>
+              {doctor.clinicName}
+            </Text>
+            <Text type="secondary" style={{ display: "block" }}>
+              {doctor.clinicAddress + ", " + doctor.clinicCity}
+            </Text>
           </div>
 
           <div
             style={{
-              borderTop: "1px solid #f0f0f0",
-              paddingTop: "12px",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              marginTop: "12px",
             }}
           >
-            <div style={{ marginBottom: "8px" }}>
-              <Text
-                strong
-                style={{
-                  textTransform: "uppercase",
-                  color: token.colorTextDescription,
-                  display: "block",
-                  marginBottom: "4px",
-                }}
-              >
-                Địa chỉ khám
-              </Text>
-              <Text strong style={{ display: "block" }}>
-                {doctor.clinicName}
-              </Text>
-              <Text type="secondary" style={{ display: "block" }}>
-                {doctor.clinicAddress}
-              </Text>
-            </div>
-
-            <div
+            <Text
+              strong
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                marginTop: "12px",
+                textTransform: "uppercase",
+                color: token.colorTextDescription,
               }}
             >
-              <Text
-                strong
-                style={{
-                  textTransform: "uppercase",
-                  color: token.colorTextDescription,
-                }}
-              >
-                GIÁ KHÁM:
-              </Text>
-              <Text>{doctor.pricePerHour.toLocaleString()}đ / giờ</Text>
-            </div>
+              GIÁ KHÁM:
+            </Text>
+            <Text>{doctor.pricePerHour.toLocaleString()}đ / giờ</Text>
           </div>
         </Col>
       </Row>
-    </Card>
+
+      {/* ── Part 2: Doctor Biography ── */}
+      <Divider />
+      <div
+        className="doctor-biography"
+        dangerouslySetInnerHTML={{ __html: doctor.biography || "" }}
+        style={{
+          fontSize: "14px",
+          lineHeight: 1.8,
+          color: token.colorText,
+        }}
+      />
+    </div>
   );
 }
-

@@ -35,3 +35,20 @@ export interface DoctorCard {
   clinicCity: string;
   availableDates: string[]; // YYYY-MM-DD array
 }
+
+export interface DoctorDetail {
+  doctorId: string;
+  slug: string;
+  doctorName: string;
+  specialtySlug: string;
+  specialtyName: string;
+  imageUrl: string;
+  shortDescription: string;
+  biography: string;
+  pricePerHour: number;
+  clinicSlug: string;
+  clinicName: string;
+  clinicAddress: string;
+  clinicCity: string;
+  availableDates: string[]; // YYYY-MM-DD array
+}

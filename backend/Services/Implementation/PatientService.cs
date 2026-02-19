@@ -103,6 +103,7 @@ namespace backend.Services.Implementation
                     Slug = d.Slug,
                     DoctorName = d.User.FullName,
                     SpecialtySlug = d.Specialty != null ? d.Specialty.Slug : string.Empty,
+                    SpecialtyName = d.Specialty != null ? d.Specialty.Name : string.Empty,
                     ImageUrl = d.User.Avatar ?? string.Empty,
                     ShortDescription = d.ShortDescription ?? string.Empty,
                     Biography = d.Biography ?? string.Empty,
