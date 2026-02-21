@@ -10,4 +10,5 @@ public class AppointmentItemDto
     public TimeOnly EndTime { get; set; }
     public bool IsBooked { get; set; }
     public AppointmentStatusEnum? Status { get; set; }
+    public string PatientName { get; set; } = null!;
 }

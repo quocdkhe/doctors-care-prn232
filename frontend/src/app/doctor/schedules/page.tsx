@@ -2,12 +2,24 @@
 
 import React, { useMemo, useState } from "react";
 import type { BadgeProps, CalendarProps } from "antd";
-import { Badge, Button, Calendar, Modal, Select, Spin, theme } from "antd";
+import {
+  App,
+  Badge,
+  Button,
+  Calendar,
+  Flex,
+  Select,
+  Spin,
+  theme,
+  Typography,
+} from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
-import { useDoctorGetAllAppointments } from "../../../queries/appointment.queries";
-import { AppointmentItem, AppointmentStatus } from "../../../types/appointment";
+import { useDoctorGetAllAppointments } from "@/src/queries/appointment.queries";
+import { AppointmentItem, AppointmentStatus } from "@/src/types/appointment";
+import AppointmentDetailModal from "@/src/components/modals/appointment-modal";
+import { abbreviateVietnameseName } from "@/src/utils/helper";
 
 // ─── badge status helper ──────────────────────────────────────────────────────
 
@@ -25,23 +37,26 @@ function getBadgeStatus(item: AppointmentItem): BadgeProps["status"] {
   }
 }
 
-// ─── Modal detail label ───────────────────────────────────────────────────────
+// // ─── Modal detail label ───────────────────────────────────────────────────────
 
-function statusLabel(status: AppointmentStatus): string {
-  switch (status) {
-    case AppointmentStatus.Scheduled:
-      return "Scheduled";
-    case AppointmentStatus.Cancelled:
-      return "Cancelled";
-    case AppointmentStatus.Completed:
-      return "Completed";
-  }
-}
+// function statusLabel(status: AppointmentStatus): string {
+//   switch (status) {
+//     case AppointmentStatus.Scheduled:
+//       return "Scheduled";
+//     case AppointmentStatus.Cancelled:
+//       return "Cancelled";
+//     case AppointmentStatus.Completed:
+//       return "Completed";
+//   }
+// }
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
+const { Title, Text } = Typography;
+
 const SchedulePage: React.FC = () => {
   const { token } = theme.useToken();
+  const { message } = App.useApp();
 
   // current displayed month (drives the API call)
   const [current, setCurrent] = useState<Dayjs>(dayjs());
@@ -71,6 +86,10 @@ const SchedulePage: React.FC = () => {
   // ── event handlers ───────────────────────────────────────────────────────
   const showEventModal = (item: AppointmentItem, e: React.MouseEvent) => {
     e.stopPropagation();
+    if (!item.isBooked) {
+      message.warning("Slot này chưa được đặt");
+      return;
+    }
     setSelectedItem(item);
     setIsModalOpen(true);
   };
@@ -172,7 +191,7 @@ const SchedulePage: React.FC = () => {
           >
             <Badge
               status={getBadgeStatus(item)}
-              text={`${item.startTime.slice(0, 5)} – ${item.endTime.slice(0, 5)}`}
+              text={`${item.startTime.slice(0, 5)}–${item.endTime.slice(0, 5)}: ${abbreviateVietnameseName(item.patientName)}`}
             />
           </li>
         ))}
@@ -182,7 +201,20 @@ const SchedulePage: React.FC = () => {
 
   // ── render ───────────────────────────────────────────────────────────────
   return (
-    <>
+    <Flex vertical gap={token.margin}>
+      <Flex align="center" justify="space-between">
+        <Title level={4} style={{ margin: 0 }}>
+          Lịch khám
+        </Title>
+
+        <Flex gap={token.marginMD} wrap="wrap">
+          <Badge status="success" text="Đã hoàn thành" />
+          <Badge status="error" text="Bị huỷ" />
+          <Badge status="warning" text="Đã đặt" />
+          <Badge status="default" text="Chưa đặt" />
+        </Flex>
+      </Flex>
+
       <Calendar
         className="doctor-schedule-calendar"
         cellRender={cellRender}
@@ -191,34 +223,14 @@ const SchedulePage: React.FC = () => {
         onPanelChange={(val) => setCurrent(val)}
       />
 
-      <Modal
-        title="Appointment Details"
-        open={isModalOpen}
-        onOk={() => setIsModalOpen(false)}
-        onCancel={() => setIsModalOpen(false)}
-        footer={null}
-      >
-        {selectedItem && (
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <p>
-              <strong>Date:</strong> {selectedItem.date}
-            </p>
-            <p>
-              <strong>Time:</strong> {selectedItem.startTime.slice(0, 5)} –{" "}
-              {selectedItem.endTime.slice(0, 5)}
-            </p>
-            <p>
-              <strong>Booked:</strong> {selectedItem.isBooked ? "Yes" : "No"}
-            </p>
-            {selectedItem.isBooked && (
-              <p>
-                <strong>Status:</strong> {statusLabel(selectedItem.status)}
-              </p>
-            )}
-          </div>
-        )}
-      </Modal>
-    </>
+      {selectedItem && (
+        <AppointmentDetailModal
+          appointmentId={selectedItem.appointmentId}
+          open={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
+    </Flex>
   );
 };
 

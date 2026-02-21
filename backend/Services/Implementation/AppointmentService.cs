@@ -1,5 +1,7 @@
-﻿using backend.Models;
+﻿using backend.Exceptions;
+using backend.Models;
 using backend.Models.DTOs.Booking;
+using backend.Models.DTOs.User;
 using backend.Services.Booking;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +13,29 @@ namespace backend.Services.Implementation
         public AppointmentService(DoctorsCareContext context)
         {
             _context = context;
+        }
+
+        public async Task CancelAppointment(Guid AppointmentId)
+        {
+            var current = await _context.Appointments.FirstOrDefaultAsync(a => a.Id == AppointmentId);
+            if (current == null)
+            {
+                throw new NotFoundException("Không tìm thấy");
+            }
+            current.Status = Models.Enums.AppointmentStatusEnum.Cancelled;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task CompleteAppointment(Guid AppointmentId, CompleteAppointmentDto dto)
+        {
+            var current = await _context.Appointments.FirstOrDefaultAsync(a => a.Id == AppointmentId);
+            if (current == null)
+            {
+                throw new NotFoundException("Không tìm thấy");
+            }
+            current.Status = Models.Enums.AppointmentStatusEnum.Completed;
+            current.MedicalRecordFileUrl = dto.MedicalRecordFileUrl;
+            await _context.SaveChangesAsync();
         }
 
         public async Task CreateNewAppointment(CreateAppointmentDto dto)
@@ -46,9 +71,64 @@ namespace backend.Services.Implementation
                     StartTime = ts.StartTime,
                     EndTime = ts.EndTime,
                     IsBooked = ts.IsBooked,
-                    Status = ts.Appointment != null ? ts.Appointment.Status : null
+                    Status = ts.Appointment != null ? ts.Appointment.Status : null,
+                    PatientName = ts.Appointment != null ? ts.Appointment.PatientName : string.Empty
                 })
                 .ToListAsync();
+        }
+
+        public async Task<AppointmentDetailDto?> GetAppointmentDetailById(Guid AppointmentId)
+        {
+            return await _context.Appointments
+                .AsNoTracking()
+                .Where(a => a.Id == AppointmentId)
+                .Select(a => new AppointmentDetailDto
+                {
+                    AppointmentId = a.Id,
+                    Date = a.TimeSlot.Date,
+                    StartTime = a.TimeSlot.StartTime,
+                    EndTime = a.TimeSlot.EndTime,
+                    IsBooked = a.TimeSlot.IsBooked,
+                    Status = a.Status,
+                    BookByUser = new UserResponseDto
+                    {
+                        Id = a.BookByUser.Id,
+                        FullName = a.BookByUser.FullName,
+                        Phone = a.BookByUser.Phone,
+                        Email = a.BookByUser.Email,
+                        Avatar = a.BookByUser.Avatar,
+                        Role = a.BookByUser.Role
+                    },
+                    PatientName = a.PatientName,
+                    PatientGender = a.PatientGender,
+                    PatientPhone = a.PatientPhone,
+                    PatientEmail = a.PatientEmail,
+                    PatientDateOfBirth = a.PatientDateOfBirth,
+                    PatientAddress = a.PatientAddress,
+                    Reason = a.Reason,
+                    MedicalRecordFileUrl = a.MedicalRecordFileUrl,
+                    UpdatedAt = a.UpdatedAt,
+                    CreatedAt = a.CreatedAt
+                })
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task RevokeAppointment(Guid AppointmentId)
+        {
+            var appointment = await _context.Appointments.FirstOrDefaultAsync(a => a.Id == AppointmentId);
+            if (appointment == null)
+            {
+                throw new NotFoundException("Không tìm thấy");
+            }
+
+            var timeSlot = await _context.TimeSlots.FirstOrDefaultAsync(ts => ts.Id == appointment.TimeSlotId);
+            if (timeSlot != null)
+            {
+                timeSlot.IsBooked = false;
+            }
+
+            _context.Appointments.Remove(appointment);
+            await _context.SaveChangesAsync();
         }
     }
 }
