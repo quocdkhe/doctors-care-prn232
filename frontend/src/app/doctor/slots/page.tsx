@@ -163,7 +163,7 @@ export default function SlotManagementPage() {
   const dateRangeDisplay = `${sundayOfWeek.format("DD")} - ${saturdayOfWeek.format("DD")} ${saturdayOfWeek.format("MMMM YYYY")}`;
 
   return (
-    <div style={{ padding: "24px" }}>
+    <>
       <div
         style={{
           display: "flex",
@@ -337,6 +337,6 @@ export default function SlotManagementPage() {
           showHeader={true}
         />
       )}
-    </div>
+    </>
   );
 }

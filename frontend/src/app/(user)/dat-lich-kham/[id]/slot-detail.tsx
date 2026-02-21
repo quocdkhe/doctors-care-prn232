@@ -14,6 +14,7 @@ import {
   theme,
   Typography,
   notification,
+  App,
 } from "antd";
 import {
   CalendarOutlined,
@@ -27,7 +28,6 @@ import { calculatePrice } from "@/src/utils/helper";
 import { useAppSelector } from "@/src/store/hooks";
 import { useEffect } from "react";
 import { useCreateAppointment } from "@/src/queries/appointment.queries";
-import { useRouter } from "next/navigation";
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -58,7 +58,8 @@ export default function SlotDetail({ slot }: { slot: SlotDetailType }) {
   const { token } = theme.useToken();
   const [form] = Form.useForm<BookingFormValues>();
   const user = useAppSelector((state) => state.auth.user);
-  const router = useRouter();
+  // const router = useRouter();
+  const { message } = App.useApp();
   const { mutate: createAppointment, isPending } = useCreateAppointment();
 
   // Pre-fill with user info on first load (default is "self")
@@ -107,19 +108,13 @@ export default function SlotDetail({ slot }: { slot: SlotDetailType }) {
 
     createAppointment(payload, {
       onSuccess: () => {
-        notification.success({
-          message: "Thành công",
-          description: "Đặt lịch khám thành công!",
-        });
-        router.push("/lich-su-kham"); // Redirect or handle as needed
+        message.success("Đặt lịch khám thành công!");
       },
       onError: (error) => {
-        notification.error({
-          message: "Lỗi",
-          description:
-            error.response?.data?.error ||
+        message.error(
+          error.response?.data?.error ||
             "Có lỗi xảy ra khi đặt lịch. Vui lòng thử lại.",
-        });
+        );
       },
     });
   };

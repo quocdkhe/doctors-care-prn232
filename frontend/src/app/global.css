@@ -8,3 +8,14 @@
     @apply list-decimal list-inside;
   }
 }
+
+/* Calendar event items inside date cells */
+.calendar-event-item {
+  cursor: pointer;
+  pointer-events: auto; /* capture clicks independently of the cell */
+  list-style: none;
+}
+
+.calendar-event-item:hover {
+  background-color: var(--event-hover-bg);
+}

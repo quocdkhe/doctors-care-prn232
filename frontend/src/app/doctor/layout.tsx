@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import {
-  CalendarOutlined,
+  ClockCircleOutlined,
+  MedicineBoxOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   MoonOutlined,
@@ -30,20 +31,26 @@ const DoctorLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
   const getSelectedKey = () => {
     if (pathname?.includes("/doctor/profile")) return "profile";
     if (pathname?.includes("/doctor/slots")) return "slots";
+    if (pathname?.includes("/doctor/schedules")) return "schedules";
     return "dashboard";
   };
 
   // Define menu items with proper typing
   const menuItems: MenuProps["items"] = [
     {
+      key: "slots",
+      icon: <ClockCircleOutlined />, // represents time slots
+      label: "Quản lý slot",
+    },
+    {
+      key: "schedules",
+      icon: <MedicineBoxOutlined />, // represents medical appointments/schedules
+      label: "Lịch khám",
+    },
+    {
       key: "profile",
       icon: <UserOutlined />,
       label: "Thông tin cá nhân",
-    },
-    {
-      key: "slots",
-      icon: <CalendarOutlined />,
-      label: "Quản lý slot",
     },
   ];
 
@@ -51,6 +58,7 @@ const DoctorLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
   const routeMap: Record<string, string> = {
     profile: "/doctor/profile",
     slots: "/doctor/slots",
+    schedules: "/doctor/schedules",
   };
 
   const handleMenuClick: MenuProps["onClick"] = ({ key }) => {

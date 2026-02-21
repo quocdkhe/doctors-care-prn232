@@ -32,3 +32,12 @@ export interface CreateAppointment {
   patientAddress: string;
   reason: string;
 }
+
+export interface AppointmentItem {
+  appointmentId: string;
+  date: string; // DateOnly → string (ISO format: YYYY-MM-DD)
+  startTime: string;
+  endTime: string;
+  isBooked: boolean;
+  status: AppointmentStatus;
+}

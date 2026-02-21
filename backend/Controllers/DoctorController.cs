@@ -15,10 +15,12 @@ namespace backend.Controllers
     {
         private readonly IDoctorProfileService _doctorProfileService;
         private readonly ITimeSlotService _timeSlotService;
-        public DoctorController(IDoctorProfileService doctorProfileService, ITimeSlotService timeSlotService)
+        private readonly IAppointmentService _appointmentService;
+        public DoctorController(IDoctorProfileService doctorProfileService, ITimeSlotService timeSlotService, IAppointmentService appointmentService)
         {
             _doctorProfileService = doctorProfileService;
             _timeSlotService = timeSlotService;
+            _appointmentService = appointmentService;
         }
 
         [HttpGet("me")]
@@ -58,6 +60,14 @@ namespace backend.Controllers
         {
             var doctorId = User.GetUserId();
             await _timeSlotService.CreateUpdateTimeSlots(doctorId, slots, sundayOfWeek);
+        }
+
+        [HttpGet("me/appointments")]
+        public async Task<ActionResult<List<AppointmentItemDto>>> GetAppointmentsByDoctorId([FromQuery] int month, [FromQuery] int year)
+        {
+            var doctorId = User.GetUserId();
+            var appointments = await _appointmentService.GetAllAppointmentsByMonth(month, year, doctorId);
+            return Ok(appointments);
         }
     }
 

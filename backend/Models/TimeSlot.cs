@@ -11,4 +11,5 @@ public class TimeSlot
     public TimeOnly StartTime { get; set; }
     public TimeOnly EndTime { get; set; }
     public bool IsBooked { get; set; }
+    public Appointment? Appointment { get; set; }
 }

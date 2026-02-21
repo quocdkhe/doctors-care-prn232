@@ -19,7 +19,7 @@ namespace backend.Services.Implementation
             // Delete all old slots for these days and doctor
             var saturdayOfWeek = sundayOfWeek.AddDays(6);
             var oldSlots = await _context.TimeSlots
-                .Where(s => s.DoctorId == DoctorId && s.Date >= sundayOfWeek && s.Date <= saturdayOfWeek)
+                .Where(s => s.DoctorId == DoctorId && s.Date >= sundayOfWeek && s.Date <= saturdayOfWeek && !s.IsBooked)
                 .ToListAsync();
 
             _context.TimeSlots.RemoveRange(oldSlots);

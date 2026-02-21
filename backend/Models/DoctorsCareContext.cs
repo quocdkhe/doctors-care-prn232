@@ -417,8 +417,8 @@ namespace backend.Models
                     .HasConstraintName("fk_appointments_users_book_by_user_id");
 
                 entity.HasOne(e => e.TimeSlot)
-                    .WithMany()
-                    .HasForeignKey(e => e.TimeSlotId)
+                    .WithOne(ts => ts.Appointment)
+                    .HasForeignKey<Appointment>(e => e.TimeSlotId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("fk_appointments_time_slots_time_slot_id");
             });
