@@ -1,19 +1,29 @@
-"use client"
+"use client";
 
 import { Card, Typography } from "antd";
 import Image from "next/image";
 import { Specialty } from "@/src/types/specialty";
 import CarouselWrapper from "./carousel-wrapper";
+import { useRouter } from "next/navigation";
 
 const { Title } = Typography;
 
-export default function SpecialtyCarousel({ specialties }: { specialties: Specialty[] }) {
+export default function SpecialtyCarousel({
+  specialties,
+}: {
+  specialties: Specialty[];
+}) {
+  const router = useRouter();
   if (!specialties || specialties.length === 0) return null;
 
   return (
     <CarouselWrapper>
       {specialties.map((specialty) => (
-        <div key={specialty.id} className="p-2 cursor-pointer">
+        <div
+          key={specialty.id}
+          className="p-2 cursor-pointer"
+          onClick={() => router.push(`/kham-chuyen-khoa/${specialty.slug}`)}
+        >
           <Card
             hoverable
             cover={
@@ -28,7 +38,9 @@ export default function SpecialtyCarousel({ specialties }: { specialties: Specia
               </div>
             }
           >
-            <Title style={{ textAlign: "center" }} level={4}>{specialty.name}</Title>
+            <Title style={{ textAlign: "center" }} level={4}>
+              {specialty.name}
+            </Title>
           </Card>
         </div>
       ))}

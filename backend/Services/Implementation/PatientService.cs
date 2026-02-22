@@ -1,6 +1,7 @@
 ﻿using backend.Exceptions;
 using backend.Models;
 using backend.Models.DTOs.Booking;
+using backend.Models.DTOs.Clinic;
 using backend.Models.DTOs.Doctor;
 using backend.Services.Patient;
 using Microsoft.EntityFrameworkCore;
@@ -65,34 +66,7 @@ namespace backend.Services.Implementation
 
         }
 
-        public async Task<SpecialtyAndDoctors> GetSpecialtyAndDoctors(string SpecialtySlug)
-        {
-            var specialty = await _context.Specialties
-                .Include(s => s.Doctors).ThenInclude(dp => dp.User)
-                .Include(s => s.Doctors).ThenInclude(dp => dp.Clinic)
-                .FirstOrDefaultAsync(s => s.Slug == SpecialtySlug)
-                ?? throw new NotFoundException("Specialty not found");
 
-            return new SpecialtyAndDoctors
-            {
-                SpeicaltySlug = specialty.Slug,
-                SpecialtyName = specialty.Name,
-                SpecialtyDescription = specialty.Description,
-                SpeialtyImage = specialty.ImageUrl,
-                Doctors = specialty.Doctors.Select(d => new DoctorCard
-                {
-                    Slug = d.Slug,
-                    DoctorName = d.User.FullName,
-                    ImageUrl = d.User.Avatar,
-                    ShortDescription = d.ShortDescription,
-                    PricePerHour = d.PricePerHour,
-                    ClinicSlug = d.Clinic.Slug,
-                    ClinicName = d.Clinic.Name,
-                    ClinicAddress = d.Clinic.Address,
-                    ClinicCity = d.Clinic.City
-                }).ToList()
-            };
-        }
 
         public async Task<DoctorDetailDto> GetDoctorDetail(string Slug)
         {
@@ -147,6 +121,39 @@ namespace backend.Services.Implementation
                 })
                 .FirstOrDefaultAsync()
                 ?? throw new NotFoundException("Không tìm thấy thông tin lịch khám");
+        }
+
+        public async Task<SpecialtyDetailDto> GetSpecialtyDetail(string SpecialtySlug)
+        {
+            return await _context.Specialties
+                .Where(s => s.Slug == SpecialtySlug)
+                .Select(s => new SpecialtyDetailDto
+                {
+                    SpeicaltySlug = s.Slug,
+                    SpecialtyName = s.Name,
+                    SpecialtyDescription = s.Description,
+                    SpeialtyImage = s.ImageUrl
+                })
+                .FirstOrDefaultAsync()
+                ?? throw new NotFoundException("Không tìm thấy thông tin chuyên khoa");
+        }
+
+        public async Task<ClinicDetailDto> GetClinicDetail(string ClinicSlug)
+        {
+            return await _context.Clinics
+                .Where(c => c.Slug == ClinicSlug)
+                .Select(c => new ClinicDetailDto
+                {
+                    Id = c.Id,
+                    Slug = c.Slug,
+                    Name = c.Name,
+                    Description = c.Description,
+                    ImageUrl = c.ImageUrl ?? string.Empty,
+                    City = c.City,
+                    Address = c.Address
+                })
+                .FirstOrDefaultAsync()
+                ?? throw new NotFoundException("Không tìm thấy thông tin phòng khám");
         }
     }
 }

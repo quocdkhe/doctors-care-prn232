@@ -1,4 +1,5 @@
 ﻿using backend.Models.DTOs.Booking;
+using backend.Models.DTOs.Clinic;
 using backend.Models.DTOs.Doctor;
 using backend.Services.Patient;
 using Microsoft.AspNetCore.Mvc;
@@ -16,10 +17,10 @@ namespace backend.Controllers
             _patientService = patientService;
         }
 
-        [HttpGet("specialties/{slug}/doctors")]
-        public async Task<ActionResult<List<SpecialtyAndDoctors>>> GetSpecialtyAndDoctors(string slug)
+        [HttpGet("specialties/{slug}/details")]
+        public async Task<ActionResult<SpecialtyDetailDto>> GetSpecialtyDetail(string slug)
         {
-            var result = await _patientService.GetSpecialtyAndDoctors(slug);
+            var result = await _patientService.GetSpecialtyDetail(slug);
             return Ok(result);
         }
 
@@ -40,6 +41,12 @@ namespace backend.Controllers
         public async Task<ActionResult<SlotAndDoctorDto>> GetSlotAndDoctorBySlotId(int id)
         {
             return Ok(await _patientService.GetSlotDetail(id));
+        }
+
+        [HttpGet("clinics/{slug}/details")]
+        public async Task<ActionResult<ClinicDetailDto>> GetClinicDetail(string slug)
+        {
+            return Ok(await _patientService.GetClinicDetail(slug));
         }
     }
 }

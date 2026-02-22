@@ -5,6 +5,7 @@ export interface TimeSlot {
   startTime: string; // HH:mm
   endTime: string; // HH:mm
   isBooked: boolean;
+  appointment: unknown;
 }
 
 export interface CreateTimeSlot {

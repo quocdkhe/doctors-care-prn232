@@ -8,7 +8,7 @@ import SpecialtyFilter from "./specialty-filter";
 
 export default async function SpecialtyDetailsAndDoctorsPage({
   params,
-  searchParams
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -17,7 +17,7 @@ export default async function SpecialtyDetailsAndDoctorsPage({
   const { slug } = await params;
   const { city, date } = await searchParams;
   const specialty: SpecialtyInfo = await fetch(
-    `${apiUrl}/api/specialties/${slug}/doctors`,
+    `${apiUrl}/api/specialties/${slug}/details`,
   ).then((res) => res.json());
 
   const doctors: DoctorCard[] = await fetch(

@@ -95,7 +95,6 @@ export default function SlotManagementPage() {
       ...prev,
       [date]: prev[date].filter((slot) => slot.id !== slotId),
     }));
-    message.success(`Đã xóa slot ${slotId}`);
   };
 
   const handleAddSlot = (date: string) => {
@@ -116,6 +115,7 @@ export default function SlotManagementPage() {
       startTime: start.format("HH:mm"),
       endTime: end.format("HH:mm"),
       isBooked: false,
+      appointment: null,
     };
     setSlotsByDay((prev) => ({
       ...prev,
@@ -137,11 +137,13 @@ export default function SlotManagementPage() {
 
   const handleSaveChanges = () => {
     const allSlots = Object.values(slotsByDay).flat();
-    const payload = allSlots.map((slot) => ({
-      date: slot.date,
-      startTime: slot.startTime,
-      endTime: slot.endTime,
-    }));
+    const payload = allSlots
+      .filter((slot) => !slot.isBooked)
+      .map((slot) => ({
+        date: slot.date,
+        startTime: slot.startTime,
+        endTime: slot.endTime,
+      }));
 
     createUpdateSlotsMutation.mutate(payload, {
       onSuccess: () => {
@@ -149,7 +151,6 @@ export default function SlotManagementPage() {
         queryClient.invalidateQueries({
           queryKey: ["current-doctor-slots", sundayStr],
         });
-        console.log("Invalidated query: ", sundayStr);
       },
       onError: (error: AxiosError<Error>) => {
         message.error(

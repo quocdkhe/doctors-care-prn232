@@ -18,6 +18,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import { calculatePrice } from "@/src/utils/helper";
+import { useRouter } from "next/navigation";
 
 const { Text, Title, Paragraph } = Typography;
 
@@ -31,6 +32,7 @@ export default function DoctorCardItem({
   specialtySlug,
 }: DoctorCardItemProps) {
   const { token } = theme.useToken();
+  const router = useRouter();
 
   // Build a Set of available date strings for O(1) lookup
   const availableDateSet = useMemo(
@@ -240,7 +242,16 @@ export default function DoctorCardItem({
                       đ
                     </Text>
                   </div>
-                  <Button type="primary">Đặt lịch khám</Button>
+                  <Button
+                    type="primary"
+                    onClick={() =>
+                      router.push(
+                        `/dat-lich-kham/${availableSlots[selectedSlotIndex].id}`,
+                      )
+                    }
+                  >
+                    Đặt lịch khám
+                  </Button>
                 </div>
               )}
           </div>
