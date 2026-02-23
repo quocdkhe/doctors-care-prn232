@@ -67,67 +67,80 @@ const UserLayout: React.FC = ({ children }: React.PropsWithChildren) => {
           zIndex: 50,
           width: "100%",
           background: colorBgContainer,
-          justifyContent: "space-between",
+          padding: 0,
         }}
       >
+        {/* Centred inner container — full width on small, 75% on large */}
         <div
-          className="demo-logo"
+          className="w-full lg:max-w-[75%]"
           style={{
+            margin: "0 auto",
             display: "flex",
             alignItems: "center",
-            marginRight: 20,
-            cursor: "pointer",
+            justifyContent: "space-between",
+            padding: "0 24px",
+            height: "100%",
           }}
         >
-          <MedicineBoxOutlined
-            style={{ fontSize: "24px", color: "#1890ff", marginRight: 8 }}
-          />
-          <Link
-            href="/"
-            style={{ fontSize: "20px", fontWeight: "bold", color: "inherit" }}
+          <div
+            className="demo-logo"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginRight: 20,
+              cursor: "pointer",
+            }}
           >
-            Doctors Care
-          </Link>
+            <MedicineBoxOutlined
+              style={{ fontSize: "24px", color: "#1890ff", marginRight: 8 }}
+            />
+            <Link
+              href="/"
+              style={{ fontSize: "20px", fontWeight: "bold", color: "inherit" }}
+            >
+              Doctors Care
+            </Link>
+          </div>
+          <Menu
+            theme={isDarkMode ? "dark" : "light"}
+            mode="horizontal"
+            selectedKeys={getSelectedKey()}
+            items={items}
+            style={{
+              flex: 1,
+              minWidth: 0,
+              background: "transparent",
+              borderBottom: "none",
+              justifyContent: "center",
+            }}
+          />
+
+          {!isLoading && !user && (
+            <Space size="middle">
+              <Button type="primary" onClick={() => setIsLoginModalOpen(true)}>
+                Đăng nhập
+              </Button>
+              <Button onClick={() => setIsRegisterModalOpen(true)}>
+                Đăng ký
+              </Button>
+            </Space>
+          )}
+
+          {!isLoading && user && <UserProfileDropdown />}
+
+          <Button
+            type="text"
+            icon={
+              isDarkMode ? (
+                <SunOutlined style={{ color: "#ffd700", fontSize: "18px" }} />
+              ) : (
+                <MoonOutlined style={{ fontSize: "18px" }} />
+              )
+            }
+            onClick={toggleTheme}
+            style={{ marginLeft: 16 }}
+          />
         </div>
-        <Menu
-          theme={isDarkMode ? "dark" : "light"}
-          mode="horizontal"
-          selectedKeys={getSelectedKey()}
-          items={items}
-          style={{
-            flex: 1,
-            minWidth: 0,
-            background: "transparent",
-            borderBottom: "none",
-            justifyContent: "center",
-          }}
-        />
-
-        {!isLoading && !user && (
-          <Space size="middle">
-            <Button type="primary" onClick={() => setIsLoginModalOpen(true)}>
-              Đăng nhập
-            </Button>
-            <Button onClick={() => setIsRegisterModalOpen(true)}>
-              Đăng ký
-            </Button>
-          </Space>
-        )}
-
-        {!isLoading && user && <UserProfileDropdown />}
-
-        <Button
-          type="text"
-          icon={
-            isDarkMode ? (
-              <SunOutlined style={{ color: "#ffd700", fontSize: "18px" }} />
-            ) : (
-              <MoonOutlined style={{ fontSize: "18px" }} />
-            )
-          }
-          onClick={toggleTheme}
-          style={{ marginLeft: 16 }}
-        />
       </Header>
 
       {children}

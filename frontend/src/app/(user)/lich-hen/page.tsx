@@ -21,7 +21,6 @@ export default function PatientAppointmentsPage() {
           display: "flex",
           flexDirection: "column",
           gap: 24,
-          margin: "0 25vw",
         }}
       >
         {isLoading ? (

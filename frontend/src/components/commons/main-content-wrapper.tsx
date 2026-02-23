@@ -1,34 +1,40 @@
-"use client"
+"use client";
 
 import { Breadcrumb, Layout, theme, type BreadcrumbProps } from "antd";
 
 const { Content } = Layout;
 
 interface MainContentWrapperProps extends React.PropsWithChildren {
-  breadcrumbItems?: BreadcrumbProps['items'];
+  breadcrumbItems?: BreadcrumbProps["items"];
 }
 
-export default function MainContentWrapper({ children, breadcrumbItems }: MainContentWrapperProps) {
+export default function MainContentWrapper({
+  children,
+  breadcrumbItems,
+}: MainContentWrapperProps) {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
   return (
-    <Content style={{ padding: "0 48px", flex: 1, overflow: "auto" }}>
-      {breadcrumbItems && (
-        <Breadcrumb
-          style={{ margin: "16px 0" }}
-          items={breadcrumbItems}
-        />
-      )}
+    <Content style={{ flex: 1 }}>
       <div
-        style={{
-          background: colorBgContainer,
-          minHeight: 280,
-          padding: 24,
-          borderRadius: borderRadiusLG,
-        }}
+        className="w-full lg:max-w-[75%]"
+        style={{ margin: "0 auto", padding: "0 24px" }}
       >
-        {children}
+        {breadcrumbItems && (
+          <Breadcrumb style={{ margin: "16px 0" }} items={breadcrumbItems} />
+        )}
+        <div
+          style={{
+            background: colorBgContainer,
+            minHeight: 280,
+            padding: 24,
+            borderRadius: borderRadiusLG,
+          }}
+        >
+          {children}
+        </div>
       </div>
-    </Content>)
+    </Content>
+  );
 }

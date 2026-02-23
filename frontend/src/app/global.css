@@ -1,13 +1,6 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
-@layer base {
-  ul {
-    @apply list-disc list-inside;
-  }
-  ol {
-    @apply list-decimal list-inside;
-  }
-}
 
 /* Calendar event items inside date cells */
 .calendar-event-item {
@@ -18,4 +11,8 @@
 
 .calendar-event-item:hover {
   background-color: var(--event-hover-bg);
+}
+
+html {
+  scroll-behavior: smooth;
 }

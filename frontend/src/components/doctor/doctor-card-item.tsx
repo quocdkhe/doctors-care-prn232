@@ -23,6 +23,7 @@ import { useRouter } from "next/navigation";
 const { Text, Title, Paragraph } = Typography;
 
 export default function DoctorCardItem({ doctor }: { doctor: DoctorCard }) {
+  console.log(doctor);
   const { token } = theme.useToken();
   const router = useRouter();
 
@@ -86,7 +87,7 @@ export default function DoctorCardItem({ doctor }: { doctor: DoctorCard }) {
               }}
             >
               <Avatar
-                size={80}
+                size={100}
                 src={doctor.imageUrl || "/default-avatar.png"}
                 style={{ border: "1px solid #d9d9d9" }}
               />
@@ -94,7 +95,6 @@ export default function DoctorCardItem({ doctor }: { doctor: DoctorCard }) {
                 href={`/kham-chuyen-khoa/${doctor.specialtySlug}/${doctor.slug}`}
                 style={{
                   color: token.colorPrimary,
-                  fontSize: "14px",
                   fontWeight: 500,
                 }}
               >

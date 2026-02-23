@@ -6,6 +6,7 @@ export default async function DoctorList({
 }: {
   doctors: DoctorCard[];
 }) {
+  console.log(doctors);
   return (
     <div className="flex flex-col gap-6">
       {doctors?.length > 0 ? (
