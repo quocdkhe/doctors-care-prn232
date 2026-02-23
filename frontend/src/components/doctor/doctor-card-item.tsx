@@ -22,15 +22,7 @@ import { useRouter } from "next/navigation";
 
 const { Text, Title, Paragraph } = Typography;
 
-interface DoctorCardItemProps {
-  doctor: DoctorCard;
-  specialtySlug: string;
-}
-
-export default function DoctorCardItem({
-  doctor,
-  specialtySlug,
-}: DoctorCardItemProps) {
+export default function DoctorCardItem({ doctor }: { doctor: DoctorCard }) {
   const { token } = theme.useToken();
   const router = useRouter();
 
@@ -99,7 +91,7 @@ export default function DoctorCardItem({
                 style={{ border: "1px solid #d9d9d9" }}
               />
               <Link
-                href={`/kham-chuyen-khoa/${specialtySlug}/${doctor.slug}`}
+                href={`/kham-chuyen-khoa/${doctor.specialtySlug}/${doctor.slug}`}
                 style={{
                   color: token.colorPrimary,
                   fontSize: "14px",

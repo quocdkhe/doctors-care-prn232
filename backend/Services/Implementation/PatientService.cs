@@ -55,6 +55,7 @@ namespace backend.Services.Implementation
                 ShortDescription = d.ShortDescription,
                 PricePerHour = d.PricePerHour,
                 ClinicSlug = d.Clinic.Slug,
+                SpecialtySlug = d.Specialty.Slug,
                 ClinicName = d.Clinic.Name,
                 ClinicAddress = d.Clinic.Address,
                 ClinicCity = d.Clinic.City,

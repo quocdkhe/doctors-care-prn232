@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { SpecialtyInfo } from "@/src/types/specialty";
 import { theme } from "antd";
-import SpecialtyFilter from "./specialty-filter";
+import SpecialtyFilter from "../../../../components/commons/doctor-filter";
 
 export default function SpecialtyDetail({
   specialty,

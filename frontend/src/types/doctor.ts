@@ -30,6 +30,7 @@ export interface DoctorCard {
   shortDescription?: string;
   pricePerHour: number;
   clinicSlug: string;
+  specialtySlug: string;
   clinicName: string;
   clinicAddress: string;
   clinicCity: string;

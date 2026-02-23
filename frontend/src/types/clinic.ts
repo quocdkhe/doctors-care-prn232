@@ -18,4 +18,6 @@ export interface CreateClinic {
   address: string;
 }
 
-export interface UpdateClinic extends CreateClinic { }
+export interface UpdateClinic extends CreateClinic {}
+
+export interface ClinicDetail extends Omit<Clinic, "createdAt" | "updatedAt"> {}
