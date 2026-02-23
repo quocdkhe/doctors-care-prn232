@@ -7,13 +7,13 @@ export default async function SpecialtiesPage() {
   const allSpecialties = await fetch(`${apiUrl}/api/specialties`);
   const specialties = await allSpecialties.json();
   return (
-    <>
-      <MainContentWrapper breadcrumbItems={[
+    <MainContentWrapper
+      breadcrumbItems={[
         { title: <Link href="/">Trang chủ</Link> },
         { title: "Khám chuyên khoa" },
-      ]}>
-        <AllSpecialties specialties={specialties} />
-      </MainContentWrapper>
-    </>
+      ]}
+    >
+      <AllSpecialties specialties={specialties} />
+    </MainContentWrapper>
   );
 }

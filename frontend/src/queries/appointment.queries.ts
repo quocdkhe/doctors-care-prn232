@@ -3,6 +3,7 @@ import {
   CreateAppointment,
   AppointmentItem,
   AppointmentDetail,
+  PatientAppointment,
 } from "../types/appointment";
 import api from "../lib/client-fetcher";
 import { AxiosError } from "axios";
@@ -60,5 +61,16 @@ export const useCompleteAppointment = (appointmentId: string) => {
           medicalRecordFileUrl,
         })
         .then((res) => res.data),
+  });
+};
+
+export const useGetAllAppointmentsForPatient = () => {
+  return useQuery<PatientAppointment[], AxiosError<Error>>({
+    queryKey: ["patient-appointments"],
+    queryFn: async () =>
+      await api
+        .get<PatientAppointment[]>(`/patients/me/appointments`)
+        .then((res) => res.data),
+    staleTime: 1000 * 60 * 10,
   });
 };

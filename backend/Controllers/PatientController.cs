@@ -2,6 +2,8 @@
 using backend.Models.DTOs.Clinic;
 using backend.Models.DTOs.Doctor;
 using backend.Services.Patient;
+using backend.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
@@ -47,6 +49,14 @@ namespace backend.Controllers
         public async Task<ActionResult<ClinicDetailDto>> GetClinicDetail(string slug)
         {
             return Ok(await _patientService.GetClinicDetail(slug));
+        }
+
+        [HttpGet("patients/me/appointments")]
+        [Authorize(Roles = "Patient")]
+        public async Task<ActionResult<List<PatientAppointmentDto>>> GetAllAppointmentsForPatient()
+        {
+            var userId = User.GetUserId();
+            return Ok(await _patientService.GetAllAppointmentsForPatient(userId));
         }
     }
 }

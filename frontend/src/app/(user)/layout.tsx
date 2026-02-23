@@ -23,6 +23,10 @@ const items = [
     key: "facilities",
     label: <Link href="/co-so-y-te">Cơ sở y tế</Link>,
   },
+  {
+    key: "appointments",
+    label: <Link href="/lich-hen">Lịch hẹn</Link>,
+  },
 ];
 
 import { usePathname } from "next/navigation";
@@ -37,6 +41,7 @@ const UserLayout: React.FC = ({ children }: React.PropsWithChildren) => {
   const getSelectedKey = () => {
     if (pathname.includes("/kham-chuyen-khoa")) return ["specialty"];
     if (pathname.includes("/co-so-y-te")) return ["facilities"];
+    if (pathname.includes("/lich-hen")) return ["appointments"];
     return [];
   };
 

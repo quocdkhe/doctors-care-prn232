@@ -64,3 +64,21 @@ export interface AppointmentDetail {
   updatedAt: string;
   createdAt: string;
 }
+
+export interface PatientAppointment {
+  doctorName: string;
+  doctorAvatar: string;
+  clinicName: string;
+  clinicAddress: string;
+  startTime: string; // "HH:mm:ss"
+  endTime: string; // "HH:mm:ss"
+  date: string; // "YYYY-MM-DD"
+  status: AppointmentStatus;
+  reason: string;
+  medicalRecordFileUrl?: string;
+  patientName: string;
+  patientGender: boolean; // true = female, false = male
+  patientPhone: string;
+  patientDateOfBirth: string; // "YYYY-MM-DD"
+  patientAddress: string;
+}

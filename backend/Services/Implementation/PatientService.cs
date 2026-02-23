@@ -43,7 +43,7 @@ namespace backend.Services.Implementation
             {
                 query = query
                     .Include(d => d.User).ThenInclude(u => u.TimeSlots)
-                    .Where(d => d.User.TimeSlots.Any(ts => ts.Date == Date));
+                    .Where(d => d.User.TimeSlots.Any(ts => ts.Date == Date && !ts.IsBooked));
             }
 
             return query.Select(d => new DoctorCard
@@ -154,6 +154,34 @@ namespace backend.Services.Implementation
                 })
                 .FirstOrDefaultAsync()
                 ?? throw new NotFoundException("Không tìm thấy thông tin phòng khám");
+        }
+
+        public async Task<List<PatientAppointmentDto>> GetAllAppointmentsForPatient(Guid PatientId)
+        {
+            var appointments = await _context.Appointments
+                .Where(a => a.BookByUserId == PatientId)
+                .Select(a => new PatientAppointmentDto
+                {
+                    DoctorName = a.TimeSlot.Doctor.FullName,
+                    DoctorAvatar = a.TimeSlot.Doctor.Avatar,
+                    ClinicName = a.TimeSlot.Doctor.DoctorProfile.Clinic.Name,
+                    ClinicAddress = a.TimeSlot.Doctor.DoctorProfile.Clinic.Address + ", " + a.TimeSlot.Doctor.DoctorProfile.Clinic.City,
+                    StartTime = a.TimeSlot.StartTime,
+                    EndTime = a.TimeSlot.EndTime,
+                    Date = a.TimeSlot.Date,
+                    Status = a.Status,
+                    Reason = a.Reason ?? string.Empty,
+                    MedicalRecordFileUrl = a.MedicalRecordFileUrl,
+                    PatientName = a.PatientName,
+                    PatientGender = a.PatientGender,
+                    PatientPhone = a.PatientPhone,
+                    PatientDateOfBirth = a.PatientDateOfBirth,
+                    PatientAddress = a.PatientAddress
+                })
+                .OrderByDescending(a => a.Date)
+                .ToListAsync();
+
+            return appointments;
         }
     }
 }
