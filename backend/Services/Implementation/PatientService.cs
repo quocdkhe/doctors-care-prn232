@@ -3,6 +3,7 @@ using backend.Models;
 using backend.Models.DTOs.Booking;
 using backend.Models.DTOs.Clinic;
 using backend.Models.DTOs.Doctor;
+using backend.Models.Enums;
 using backend.Services.Patient;
 using Microsoft.EntityFrameworkCore;
 
@@ -183,6 +184,35 @@ namespace backend.Services.Implementation
                 .ToListAsync();
 
             return appointments;
+        }
+
+        public async Task<List<DoctorTopDto>> GetTopDoctors()
+        {
+            var topDoctors = await _context.DoctorProfiles
+                .Include(d => d.User)
+                .Include(d => d.Specialty)
+                .Include(d => d.User.TimeSlots)
+                .AsQueryable()
+                .Select(d => new
+                {
+                    DoctorProfile = d,
+                    AppointmentCount = _context.Appointments
+                        .Count(a => a.TimeSlot.DoctorId == d.UserId && a.Status == AppointmentStatusEnum.Completed)
+                })
+                .OrderByDescending(x => x.AppointmentCount)
+                .Take(10)
+                .Select(x => new DoctorTopDto
+                {
+                    DoctorSlug = x.DoctorProfile.Slug,
+                    DoctorName = x.DoctorProfile.User.FullName,
+                    DoctorAvatar = x.DoctorProfile.User.Avatar ?? string.Empty,
+                    SpecialtyName = x.DoctorProfile.Specialty != null ? x.DoctorProfile.Specialty.Name : string.Empty,
+                    SpecialtySlug = x.DoctorProfile.Specialty != null ? x.DoctorProfile.Specialty.Slug : string.Empty,
+                    AppoinmentCount = x.AppointmentCount
+                })
+                .ToListAsync();
+
+            return topDoctors;
         }
     }
 }

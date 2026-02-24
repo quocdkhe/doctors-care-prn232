@@ -12,5 +12,6 @@ namespace backend.Services.Patient
         public Task<SlotAndDoctorDto> GetSlotDetail(int SlotId);
         public Task<ClinicDetailDto> GetClinicDetail(string ClinicSlug);
         public Task<List<PatientAppointmentDto>> GetAllAppointmentsForPatient(Guid PatientId);
+        public Task<List<DoctorTopDto>> GetTopDoctors();
     }
 }

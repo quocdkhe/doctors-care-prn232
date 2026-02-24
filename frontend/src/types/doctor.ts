@@ -53,3 +53,12 @@ export interface DoctorDetail {
   clinicCity: string;
   availableDates: string[]; // YYYY-MM-DD array
 }
+
+export interface DoctorTop {
+  doctorSlug: string;
+  doctorName: string;
+  doctorAvatar: string;
+  specialtyName: string;
+  specialtySlug: string;
+  appoinmentCount: number;
+}

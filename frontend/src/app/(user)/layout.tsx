@@ -3,7 +3,6 @@
 import React from "react";
 import { Layout, Menu, theme, Button, Space } from "antd";
 import { SunOutlined, MoonOutlined } from "@ant-design/icons";
-import { useTheme } from "../../providers/theme-provider";
 import { useAppSelector } from "../../store/hooks";
 import { UserProfileDropdown } from "../../components/commons/user-profile-dropdown";
 import { useAuthModal } from "../../providers/auth-modal-provider";
@@ -29,7 +28,6 @@ const items = [
 ];
 
 const UserLayout: React.FC = ({ children }: React.PropsWithChildren) => {
-  const { isDarkMode, toggleTheme } = useTheme();
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -102,7 +100,6 @@ const UserLayout: React.FC = ({ children }: React.PropsWithChildren) => {
             </Link>
           </div>
           <Menu
-            theme={isDarkMode ? "dark" : "light"}
             mode="horizontal"
             selectedKeys={getSelectedKey()}
             items={user ? items : items.filter((i) => i.key !== "appointments")}
@@ -123,19 +120,6 @@ const UserLayout: React.FC = ({ children }: React.PropsWithChildren) => {
             </Space>
           )}
           {!isLoading && user && <UserProfileDropdown />}
-
-          <Button
-            type="text"
-            icon={
-              isDarkMode ? (
-                <SunOutlined style={{ color: "#ffd700", fontSize: "18px" }} />
-              ) : (
-                <MoonOutlined style={{ fontSize: "18px" }} />
-              )
-            }
-            onClick={toggleTheme}
-            style={{ marginLeft: 16 }}
-          />
         </div>
       </Header>
 

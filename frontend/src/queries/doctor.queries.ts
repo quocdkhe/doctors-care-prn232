@@ -1,5 +1,9 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { CurrentDoctorProfile, UpdateDoctorProfile } from "../types/doctor";
+import {
+  CurrentDoctorProfile,
+  DoctorTop,
+  UpdateDoctorProfile,
+} from "../types/doctor";
 import { AxiosError } from "axios";
 import { Error } from "../types/common";
 import api from "../lib/client-fetcher";
@@ -25,5 +29,14 @@ export function useUpdateDoctorProfile() {
       await api
         .put<CurrentDoctorProfile>("/doctors/me", data)
         .then((res) => res.data),
+  });
+}
+
+export function useGetTopDoctors() {
+  return useQuery<DoctorTop[], AxiosError<Error>>({
+    queryKey: ["top-doctors"],
+    queryFn: async () =>
+      await api.get<DoctorTop[]>("/doctors/top").then((res) => res.data),
+    staleTime: 1000 * 60 * 10,
   });
 }

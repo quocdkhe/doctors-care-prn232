@@ -3,7 +3,15 @@ import React from "react";
 import { Carousel, theme } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
-export default function CarouselWrapper({ children }: React.PropsWithChildren) {
+interface CarouselWrapperProps {
+  children: React.ReactNode;
+  bgTransparent?: boolean;
+}
+
+export default function CarouselWrapper({
+  children,
+  bgTransparent = false,
+}: CarouselWrapperProps) {
   const { token } = theme.useToken();
 
   const arrowStyle: React.CSSProperties = {
@@ -14,7 +22,7 @@ export default function CarouselWrapper({ children }: React.PropsWithChildren) {
   };
 
   const CustomPrevArrow = (props: any) => {
-    const { onClick } = props;  // ❌ drop className, it carries slick's broken styles
+    const { onClick } = props; // ❌ drop className, it carries slick's broken styles
     return (
       <button
         onClick={onClick}
@@ -102,12 +110,11 @@ export default function CarouselWrapper({ children }: React.PropsWithChildren) {
     ],
   };
 
-
   return (
     <div
       className="py-4 px-4"
       style={{
-        backgroundColor: token.colorBgContainer,
+        backgroundColor: bgTransparent ? "transparent" : token.colorBgContainer,
       }}
     >
       <div className="px-4">

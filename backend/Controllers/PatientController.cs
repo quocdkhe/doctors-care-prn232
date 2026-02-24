@@ -58,5 +58,11 @@ namespace backend.Controllers
             var userId = User.GetUserId();
             return Ok(await _patientService.GetAllAppointmentsForPatient(userId));
         }
+
+        [HttpGet("doctors/top")]
+        public async Task<ActionResult<List<DoctorTopDto>>> GetTopDoctors()
+        {
+            return Ok(await _patientService.GetTopDoctors());
+        }
     }
 }
