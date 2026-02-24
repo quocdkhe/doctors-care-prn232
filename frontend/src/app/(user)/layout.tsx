@@ -1,14 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { Layout, Menu, theme, Button, Space } from "antd";
 import { SunOutlined, MoonOutlined } from "@ant-design/icons";
 import { useTheme } from "../../providers/theme-provider";
 import { useAppSelector } from "../../store/hooks";
 import { UserProfileDropdown } from "../../components/commons/user-profile-dropdown";
-import { LoginModal } from "../../components/modals/login-modal";
-import { RegisterModal } from "../../components/modals/register-modal";
-
+import { useAuthModal } from "../../providers/auth-modal-provider";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { MedicineBoxOutlined } from "@ant-design/icons";
 
@@ -29,8 +28,6 @@ const items = [
   },
 ];
 
-import { usePathname } from "next/navigation";
-
 const UserLayout: React.FC = ({ children }: React.PropsWithChildren) => {
   const { isDarkMode, toggleTheme } = useTheme();
   const {
@@ -46,8 +43,7 @@ const UserLayout: React.FC = ({ children }: React.PropsWithChildren) => {
   };
 
   const { user, isLoading } = useAppSelector((state) => state.auth);
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+  const { openLoginModal, openRegisterModal } = useAuthModal();
 
   return (
     <Layout
@@ -96,7 +92,11 @@ const UserLayout: React.FC = ({ children }: React.PropsWithChildren) => {
             />
             <Link
               href="/"
-              style={{ fontSize: "20px", fontWeight: "bold", color: "inherit" }}
+              style={{
+                fontSize: "20px",
+                fontWeight: "bold",
+                color: "inherit",
+              }}
             >
               Doctors Care
             </Link>
@@ -105,7 +105,7 @@ const UserLayout: React.FC = ({ children }: React.PropsWithChildren) => {
             theme={isDarkMode ? "dark" : "light"}
             mode="horizontal"
             selectedKeys={getSelectedKey()}
-            items={items}
+            items={user ? items : items.filter((i) => i.key !== "appointments")}
             style={{
               flex: 1,
               minWidth: 0,
@@ -114,18 +114,14 @@ const UserLayout: React.FC = ({ children }: React.PropsWithChildren) => {
               justifyContent: "center",
             }}
           />
-
           {!isLoading && !user && (
             <Space size="middle">
-              <Button type="primary" onClick={() => setIsLoginModalOpen(true)}>
+              <Button type="primary" onClick={openLoginModal}>
                 Đăng nhập
               </Button>
-              <Button onClick={() => setIsRegisterModalOpen(true)}>
-                Đăng ký
-              </Button>
+              <Button onClick={openRegisterModal}>Đăng ký</Button>
             </Space>
           )}
-
           {!isLoading && user && <UserProfileDropdown />}
 
           <Button
@@ -148,16 +144,6 @@ const UserLayout: React.FC = ({ children }: React.PropsWithChildren) => {
       <Footer style={{ textAlign: "center", marginTop: "auto" }}>
         Ant Design ©{new Date().getFullYear()} Created by Ant UED
       </Footer>
-
-      <LoginModal
-        open={isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
-      />
-
-      <RegisterModal
-        open={isRegisterModalOpen}
-        onClose={() => setIsRegisterModalOpen(false)}
-      />
     </Layout>
   );
 };

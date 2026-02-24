@@ -1,9 +1,11 @@
 "use client";
 
-import { Modal, Form, Input, App } from "antd";
+import { Modal, Form, Input, App, Button, Divider, Space } from "antd";
+import { GoogleOutlined } from "@ant-design/icons";
 import { useRegister } from "../../queries/user.queries";
 import { useAppDispatch } from "../../store/hooks";
 import { fetchCurrentUser } from "../../store/auth.slice";
+import { useAuthModal } from "../../providers/auth-modal-provider";
 
 interface RegisterModalProps {
   open: boolean;
@@ -15,6 +17,7 @@ export const RegisterModal = ({ open, onClose }: RegisterModalProps) => {
   const { message } = App.useApp();
   const registerMutation = useRegister();
   const dispatch = useAppDispatch();
+  const { openLoginModal } = useAuthModal();
 
   const handleRegister = (values: any) => {
     registerMutation.mutate(values, {
@@ -40,10 +43,9 @@ export const RegisterModal = ({ open, onClose }: RegisterModalProps) => {
       title="Đăng ký"
       open={open}
       onCancel={handleCancel}
-      onOk={() => form.submit()}
-      confirmLoading={registerMutation.isPending}
-      okText="Đăng ký"
-      cancelText="Hủy"
+      destroyOnHidden
+      footer={null}
+      afterClose={() => form.resetFields()}
     >
       <Form
         form={form}
@@ -123,11 +125,42 @@ export const RegisterModal = ({ open, onClose }: RegisterModalProps) => {
               },
             }),
           ]}
+          style={{ marginBottom: 24 }}
         >
           <Input.Password
             placeholder="Nhập lại mật khẩu"
             autoComplete="new-password"
           />
+        </Form.Item>
+
+        <Form.Item style={{ marginBottom: 12 }}>
+          <Space orientation="vertical" style={{ width: "100%" }} size="middle">
+            <Button
+              type="primary"
+              htmlType="submit"
+              block
+              loading={registerMutation.isPending}
+            >
+              Đăng ký
+            </Button>
+
+            <Divider style={{ margin: "12px 0" }}>Hoặc</Divider>
+
+            <Button icon={<GoogleOutlined />} block>
+              Đăng nhập với Google
+            </Button>
+
+            <div style={{ textAlign: "center", marginTop: 8 }}>
+              <span>Đã có tài khoản? </span>
+              <Button
+                type="link"
+                onClick={openLoginModal}
+                style={{ padding: 0 }}
+              >
+                Đăng nhập
+              </Button>
+            </div>
+          </Space>
         </Form.Item>
       </Form>
     </Modal>

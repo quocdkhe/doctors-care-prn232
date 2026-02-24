@@ -19,13 +19,17 @@ import { useMemo, useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import { calculatePrice } from "@/src/utils/helper";
 import { useRouter } from "next/navigation";
+import { useAppSelector } from "@/src/store/hooks";
+import { UserRoleEnum } from "@/src/types/user";
+import { useAuthModal } from "@/src/providers/auth-modal-provider";
 
 const { Text, Title, Paragraph } = Typography;
 
 export default function DoctorCardItem({ doctor }: { doctor: DoctorCard }) {
-  console.log(doctor);
   const { token } = theme.useToken();
   const router = useRouter();
+  const user = useAppSelector((state) => state.auth.user);
+  const { openLoginModal } = useAuthModal();
 
   // Build a Set of available date strings for O(1) lookup
   const availableDateSet = useMemo(
@@ -234,16 +238,24 @@ export default function DoctorCardItem({ doctor }: { doctor: DoctorCard }) {
                       đ
                     </Text>
                   </div>
-                  <Button
-                    type="primary"
-                    onClick={() =>
-                      router.push(
-                        `/dat-lich-kham/${availableSlots[selectedSlotIndex].id}`,
-                      )
-                    }
-                  >
-                    Đặt lịch khám
-                  </Button>
+                  {!user ? (
+                    <Button type="primary" onClick={openLoginModal}>
+                      Đăng nhập để đặt lịch
+                    </Button>
+                  ) : (
+                    user.role === UserRoleEnum.Patient && (
+                      <Button
+                        type="primary"
+                        onClick={() =>
+                          router.push(
+                            `/dat-lich-kham/${availableSlots[selectedSlotIndex].id}`,
+                          )
+                        }
+                      >
+                        Đặt lịch khám
+                      </Button>
+                    )
+                  )}
                 </div>
               )}
           </div>

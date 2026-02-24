@@ -4,6 +4,7 @@ import { ThemeProvider } from "../providers/theme-provider";
 import { QueryProvider } from "../providers/query-provider";
 import { StoreProvider } from "../providers/store-provider";
 import { AuthInitializer } from "../components/commons/auth-initializer";
+import { AuthModalProvider } from "../providers/auth-modal-provider";
 import "./global.css";
 
 const RootLayout = ({ children }: React.PropsWithChildren) => (
@@ -19,7 +20,9 @@ const RootLayout = ({ children }: React.PropsWithChildren) => (
         <AuthInitializer />
         <QueryProvider>
           <ThemeProvider>
-            <AntdRegistry>{children}</AntdRegistry>
+            <AntdRegistry>
+              <AuthModalProvider>{children}</AuthModalProvider>
+            </AntdRegistry>
           </ThemeProvider>
         </QueryProvider>
       </StoreProvider>
