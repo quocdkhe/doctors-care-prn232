@@ -66,6 +66,7 @@ export interface AppointmentDetail {
 }
 
 export interface PatientAppointment {
+  appointmentId: string;
   doctorName: string;
   doctorAvatar: string;
   clinicName: string;

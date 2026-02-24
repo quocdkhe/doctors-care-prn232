@@ -164,6 +164,7 @@ namespace backend.Services.Implementation
                 .Where(a => a.BookByUserId == PatientId)
                 .Select(a => new PatientAppointmentDto
                 {
+                    AppointmentId = a.Id,
                     DoctorName = a.TimeSlot.Doctor.FullName,
                     DoctorAvatar = a.TimeSlot.Doctor.Avatar,
                     ClinicName = a.TimeSlot.Doctor.DoctorProfile.Clinic.Name,

@@ -1,10 +1,10 @@
-using System;
 using backend.Models.Enums;
 
 namespace backend.Models.DTOs.Booking;
 
 public class PatientAppointmentDto
 {
+    public Guid AppointmentId { get; set; }
     public string DoctorName { get; set; } = null!;
     public string DoctorAvatar { get; set; } = null!;
     public string ClinicName { get; set; } = null!;

@@ -74,3 +74,12 @@ export const useGetAllAppointmentsForPatient = () => {
     staleTime: 1000 * 60 * 10,
   });
 };
+
+export const useRevokeAppointment = (appointmentId: string) => {
+  return useMutation<void, AxiosError<Error>, undefined>({
+    mutationFn: async () =>
+      await api
+        .delete<void>(`/appointments/${appointmentId}/revoke`)
+        .then((res) => res.data),
+  });
+};

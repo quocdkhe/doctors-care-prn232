@@ -1,7 +1,20 @@
 "use client";
 
 import { AppointmentStatus, PatientAppointment } from "@/src/types/appointment";
-import { Avatar, Button, Card, Col, Row, Tag, theme, Typography } from "antd";
+import {
+  Avatar,
+  Button,
+  Card,
+  Col,
+  Row,
+  Tag,
+  theme,
+  Typography,
+  Popconfirm,
+  App,
+} from "antd";
+import { useQueryClient } from "@tanstack/react-query";
+import { useRevokeAppointment } from "@/src/queries/appointment.queries";
 import {
   CalendarOutlined,
   ClockCircleOutlined,
@@ -49,17 +62,50 @@ export default function AppointmentCard({
   appointment: PatientAppointment;
 }) {
   const { token } = useToken();
+  const { message } = App.useApp();
+  const queryClient = useQueryClient();
+  const revokeMutation = useRevokeAppointment(appointment.appointmentId);
+
+  const handleRevoke = () => {
+    revokeMutation.mutate(undefined, {
+      onSuccess: () => {
+        message.success("Huỷ đặt lịch thành công");
+        queryClient.invalidateQueries({ queryKey: ["patient-appointments"] });
+      },
+      onError: (error) => {
+        message.error(error.response?.data?.error || "Huỷ đặt lịch thất bại");
+      },
+    });
+  };
 
   const cardFooter =
     appointment.status === AppointmentStatus.Scheduled ? (
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <Button danger icon={<CloseCircleOutlined />}>
-          Huỷ đặt lịch
-        </Button>
+        <Popconfirm
+          title="Huỷ lịch hẹn"
+          description="Bạn có chắc chắn muốn huỷ lịch hẹn này không?"
+          onConfirm={handleRevoke}
+          okText="Đồng ý"
+          cancelText="Đóng"
+          okButtonProps={{ danger: true, loading: revokeMutation.isPending }}
+        >
+          <Button danger icon={<CloseCircleOutlined />}>
+            Huỷ đặt lịch
+          </Button>
+        </Popconfirm>
       </div>
     ) : appointment.status === AppointmentStatus.Completed ? (
       <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
-        <Button icon={<FileTextOutlined />}>Tải bệnh án</Button>
+        {appointment.medicalRecordFileUrl && (
+          <Button
+            icon={<FileTextOutlined />}
+            onClick={() =>
+              window.open(appointment.medicalRecordFileUrl, "_blank")
+            }
+          >
+            Tải bệnh án
+          </Button>
+        )}
         <Button icon={<StarOutlined />} type="primary">
           Viết đánh giá
         </Button>
