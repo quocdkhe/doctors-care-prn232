@@ -1,6 +1,7 @@
 ﻿using backend.Models.DTOs.Booking;
 using backend.Models.DTOs.Clinic;
 using backend.Models.DTOs.Doctor;
+using backend.Services.Booking;
 using backend.Services.Patient;
 using backend.Utils;
 using Microsoft.AspNetCore.Authorization;
@@ -13,9 +14,11 @@ namespace backend.Controllers
     public class PatientController : ControllerBase
     {
         private readonly IPatientService _patientService;
+        private readonly ITimeSlotService _timeSlotService;
 
-        public PatientController(IPatientService patientService)
+        public PatientController(IPatientService patientService, ITimeSlotService timeSlotService)
         {
+            _timeSlotService = timeSlotService;
             _patientService = patientService;
         }
 
@@ -63,6 +66,13 @@ namespace backend.Controllers
         public async Task<ActionResult<List<DoctorTopDto>>> GetTopDoctors()
         {
             return Ok(await _patientService.GetTopDoctors());
+        }
+
+        [HttpGet("slots/{id}/is-available")]
+        public async Task<ActionResult<bool>> GetIsAvailable(int id)
+        {
+            var result = await _timeSlotService.CheckIfSlotIsAvailable(id);
+            return Ok(result);
         }
     }
 }

@@ -1,9 +1,10 @@
 "use client";
 
 import { DoctorDetail as DoctorDetailType } from "@/src/types/doctor";
-import { useGetSlotsByDoctorAndDay } from "@/src/queries/slot.queries";
+import { useCheckIfSlotIsAvailable, useGetSlotsByDoctorAndDay } from "@/src/queries/slot.queries";
 import { EnvironmentOutlined, CalendarOutlined } from "@ant-design/icons";
 import {
+  App,
   Avatar,
   Button,
   Col,
@@ -21,10 +22,13 @@ import { useRouter } from "next/navigation";
 import { UserRoleEnum } from "@/src/types/user";
 import { useAppSelector } from "@/src/store/hooks";
 import { useAuthModal } from "@/src/providers/auth-modal-provider";
+import { useQueryClient } from "@tanstack/react-query";
 
 const { Text, Title, Paragraph } = Typography;
 
 export default function DoctorDetail({ doctor }: { doctor: DoctorDetailType }) {
+  const queryClient = useQueryClient();
+  const { message } = App.useApp();
   const { token } = theme.useToken();
   const router = useRouter();
   const user = useAppSelector((state) => state.auth.user);
@@ -56,6 +60,13 @@ export default function DoctorDetail({ doctor }: { doctor: DoctorDetailType }) {
     [slots],
   );
 
+  const { data: isSlotAvailable } = useCheckIfSlotIsAvailable(
+    selectedSlotIndex !== null ? (availableSlots[selectedSlotIndex]?.id ?? 0) : 0,
+    {
+      enabled: selectedSlotIndex !== null,
+    }
+  );
+
   // Disable dates that are NOT in availableDates
   const disabledDate = (current: Dayjs) => {
     return !availableDateSet.has(current.format("YYYY-MM-DD"));
@@ -65,6 +76,17 @@ export default function DoctorDetail({ doctor }: { doctor: DoctorDetailType }) {
     setSelectedDate(date ? date.format("YYYY-MM-DD") : null);
     setSelectedSlotIndex(null);
   };
+
+  const handleSlotBooking = (slotId: number) => {
+    if (!isSlotAvailable) {
+      message.error("Lịch khám đã hết");
+      queryClient.invalidateQueries({ queryKey: ["slots", doctor.doctorId, selectedDate] });
+      return;
+    }
+    router.push(
+      `/dat-lich-kham/${slotId}`,
+    )
+  }
 
   return (
     <div>
@@ -218,11 +240,7 @@ export default function DoctorDetail({ doctor }: { doctor: DoctorDetailType }) {
                     user.role === UserRoleEnum.Patient && (
                       <Button
                         type="primary"
-                        onClick={() =>
-                          router.push(
-                            `/dat-lich-kham/${availableSlots[selectedSlotIndex].id}`,
-                          )
-                        }
+                        onClick={() => handleSlotBooking(availableSlots[selectedSlotIndex].id)}
                       >
                         Đặt lịch khám
                       </Button>

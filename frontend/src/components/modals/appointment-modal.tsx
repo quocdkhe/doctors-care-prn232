@@ -123,12 +123,15 @@ export default function AppointmentDetailModal({
                 queryClient.invalidateQueries({
                   queryKey: ["appointment-detail", appointmentId],
                 });
+                queryClient.invalidateQueries({
+                  queryKey: ["current-doctor-slots"],
+                })
                 onClose();
               },
               onError: (error) => {
                 message.error(
                   error.response?.data?.error ||
-                    "Có lỗi xảy ra khi cập nhật trạng thái",
+                  "Có lỗi xảy ra khi cập nhật trạng thái",
                 );
               },
             },
@@ -157,7 +160,7 @@ export default function AppointmentDetailModal({
           onError: (error) => {
             message.error(
               error.response?.data?.error ||
-                "Có lỗi xảy ra khi cập nhật trạng thái",
+              "Có lỗi xảy ra khi cập nhật trạng thái",
             );
           },
         },

@@ -151,6 +151,9 @@ export default function SlotManagementPage() {
         queryClient.invalidateQueries({
           queryKey: ["current-doctor-slots", sundayStr],
         });
+        queryClient.invalidateQueries({
+          queryKey: ["doctor-appointments"],
+        });
       },
       onError: (error: AxiosError<Error>) => {
         message.error(
@@ -236,7 +239,7 @@ export default function SlotManagementPage() {
               render: () => (
                 <div>
                   {!daySlots ||
-                  (daySlots.length === 0 && addingDate !== day.date) ? (
+                    (daySlots.length === 0 && addingDate !== day.date) ? (
                     <Empty
                       image={Empty.PRESENTED_IMAGE_SIMPLE}
                       description="Không có slot"

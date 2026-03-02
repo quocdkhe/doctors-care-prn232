@@ -56,5 +56,7 @@ namespace backend.Controllers
             await _appointmentService.CompleteAppointment(id, dto);
             return NoContent();
         }
+
+   
     }
 }

@@ -1,11 +1,11 @@
 @import "tailwindcss";
-@plugin "@tailwindcss/typography";
 
 
 /* Calendar event items inside date cells */
 .calendar-event-item {
   cursor: pointer;
-  pointer-events: auto; /* capture clicks independently of the cell */
+  pointer-events: auto;
+  /* capture clicks independently of the cell */
   list-style: none;
 }
 

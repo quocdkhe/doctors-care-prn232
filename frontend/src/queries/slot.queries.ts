@@ -37,3 +37,15 @@ export function useGetSlotsByDoctorAndDay(
     enabled: options?.enabled ?? true,
   });
 }
+
+export function useCheckIfSlotIsAvailable(slotId: number,
+  options?: { enabled?: boolean },
+) {
+  return useQuery<boolean, AxiosError<Error>>({
+    queryKey: ["slot", slotId],
+    queryFn: async () =>
+      await api.get<boolean>(`/slots/${slotId}/is-available`).then((res) => res.data),
+    staleTime: 0,
+    enabled: options?.enabled ?? true,
+  });
+}

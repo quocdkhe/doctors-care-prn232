@@ -130,5 +130,7 @@ namespace backend.Services.Implementation
             _context.Appointments.Remove(appointment);
             await _context.SaveChangesAsync();
         }
+
+        
     }
 }

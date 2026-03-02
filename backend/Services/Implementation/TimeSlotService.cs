@@ -63,5 +63,10 @@ namespace backend.Services.Implementation
                 .OrderBy(s => s.StartTime)
                 .ToListAsync();
         }
+
+        public async Task<bool> CheckIfSlotIsAvailable(int SlotId)
+        {
+            return await _context.TimeSlots.AnyAsync(s => s.Id == SlotId && !s.IsBooked);
+        }
     }
 }

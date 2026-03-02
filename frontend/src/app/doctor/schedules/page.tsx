@@ -52,7 +52,7 @@ function getBadgeStatus(item: AppointmentItem): BadgeProps["status"] {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 const SchedulePage: React.FC = () => {
   const { token } = theme.useToken();

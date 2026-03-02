@@ -8,5 +8,6 @@ namespace backend.Services.Booking
         public Task CreateUpdateTimeSlots(Guid DoctorId, List<CreateSlotDto> slots, DateOnly sundayOfWeek);
         public Task<List<TimeSlot>> GetTimeSlotsByDay(Guid DoctorId, DateOnly day);
         public Task<List<TimeSlot>> DoctorsGetTimeSlotsByWeek(Guid DoctorId, DateOnly sundayOfWeek);
+        public Task<bool> CheckIfSlotIsAvailable(int SlotId);
     }
 }
