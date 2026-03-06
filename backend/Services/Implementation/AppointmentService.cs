@@ -10,9 +10,11 @@ namespace backend.Services.Implementation
     public class AppointmentService : IAppointmentService
     {
         private readonly DoctorsCareContext _context;
-        public AppointmentService(DoctorsCareContext context)
+        private readonly IAppointmentNotifier _notifier;
+        public AppointmentService(DoctorsCareContext context, IAppointmentNotifier notifier)
         {
             _context = context;
+            _notifier = notifier;
         }
 
         public async Task CancelAppointment(Guid AppointmentId)
@@ -57,6 +59,16 @@ namespace backend.Services.Implementation
             slot.IsBooked = true;
             await _context.Appointments.AddAsync(appointment);
             await _context.SaveChangesAsync();
+            await _notifier.NotifyDoctor(slot.DoctorId, new AppointmentItemDto
+            {
+                AppointmentId = appointment.Id,
+                Date = slot.Date,
+                StartTime = slot.StartTime,
+                EndTime = slot.EndTime,
+                IsBooked = slot.IsBooked,
+                Status = appointment.Status,
+                PatientName = appointment.PatientName
+            });
         }
 
         public Task<List<AppointmentItemDto>> GetAllAppointmentsByMonth(int Month, int Year, Guid doctorId)
@@ -129,8 +141,16 @@ namespace backend.Services.Implementation
 
             _context.Appointments.Remove(appointment);
             await _context.SaveChangesAsync();
+            await _notifier.NotifyDoctor(appointment.TimeSlot.DoctorId, new AppointmentItemDto
+            {
+                AppointmentId = Guid.Empty,
+                Date = timeSlot.Date,
+                StartTime = timeSlot.StartTime,
+                EndTime = timeSlot.EndTime,
+                IsBooked = false,
+                Status = Models.Enums.AppointmentStatusEnum.Scheduled,
+                PatientName = string.Empty
+            });
         }
-
-        
     }
 }

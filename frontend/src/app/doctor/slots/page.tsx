@@ -125,7 +125,6 @@ export default function SlotManagementPage() {
     }));
     setAddingDate(null);
     setNewTimeRange(null);
-    message.success("Đã thêm slot mới");
   };
 
   const handleCancelAddSlot = () => {

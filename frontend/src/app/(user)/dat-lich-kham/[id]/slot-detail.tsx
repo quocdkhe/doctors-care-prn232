@@ -28,6 +28,7 @@ import { calculatePrice } from "@/src/utils/helper";
 import { useAppSelector } from "@/src/store/hooks";
 import { useEffect } from "react";
 import { useCreateAppointment } from "@/src/queries/appointment.queries";
+import { useQueryClient } from "@tanstack/react-query";
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -56,6 +57,7 @@ function formatPrice(amount: number) {
 
 export default function SlotDetail({ slot }: { slot: SlotDetailType }) {
   const { token } = theme.useToken();
+  const queryClient = useQueryClient();
   const [form] = Form.useForm<BookingFormValues>();
   const user = useAppSelector((state) => state.auth.user);
   // const router = useRouter();
@@ -109,11 +111,12 @@ export default function SlotDetail({ slot }: { slot: SlotDetailType }) {
     createAppointment(payload, {
       onSuccess: () => {
         message.success("Đặt lịch khám thành công!");
+        queryClient.invalidateQueries({ queryKey: ["patient-appointments"] });
       },
       onError: (error) => {
         message.error(
           error.response?.data?.error ||
-            "Có lỗi xảy ra khi đặt lịch. Vui lòng thử lại.",
+          "Có lỗi xảy ra khi đặt lịch. Vui lòng thử lại.",
         );
       },
     });

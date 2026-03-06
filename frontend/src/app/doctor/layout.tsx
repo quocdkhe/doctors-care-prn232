@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   ClockCircleOutlined,
   MedicineBoxOutlined,
@@ -10,16 +10,24 @@ import {
   SunOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Button, Layout, Menu, theme } from "antd";
+import { App, Button, Layout, Menu, theme } from "antd";
 import { useTheme } from "@/src/providers/theme-provider";
 import { useRouter, usePathname } from "next/navigation";
 import type { MenuProps } from "antd";
 import { UserProfileDropdown } from "@/src/components/commons/user-profile-dropdown";
+import { AppointmentItem } from "@/src/types/appointment";
+import { useAppSelector } from "@/src/store/hooks";
+import { useNotifications } from "@/src/lib/use-notification";
+import { useQueryClient } from "@tanstack/react-query";
 
 const { Header, Sider, Content } = Layout;
 
-const DoctorLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
+const DoctorLayoutInner: React.FC<React.PropsWithChildren> = ({ children }) => {
+  const queryClient = useQueryClient();
   const [collapsed, setCollapsed] = useState(false);
+  const { user } = useAppSelector((state) => state.auth);
+  const [notifications, setNotifications] = useState<AppointmentItem[]>([]);
+  const { notification } = App.useApp();
   const router = useRouter();
   const pathname = usePathname();
   const {
@@ -34,6 +42,37 @@ const DoctorLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
     if (pathname?.includes("/doctor/schedules")) return "schedules";
     return "dashboard";
   };
+
+  // useCallback prevents useEffect from re-running on every render
+  const handleNotification = useCallback((notification: AppointmentItem) => {
+    setNotifications((prev) => [notification, ...prev]);
+    queryClient.invalidateQueries({ queryKey: ["doctor-appointments"] });
+    queryClient.invalidateQueries({ queryKey: ["current-doctor-slots"] });
+    queryClient.invalidateQueries({ queryKey: ["appointment-detail", notification.appointmentId] });
+  }, []);
+
+  useNotifications(handleNotification, user?.id);
+
+  useEffect(() => {
+    if (notifications.length === 0) return;
+    const latest = notifications[0];
+    if (latest.isBooked) {
+      notification.success({
+        title: "Lịch đã được đặt",
+        description: `Bệnh nhân: ${latest.patientName} | Thời gian: ${latest.startTime} - ${latest.endTime}, ${latest.date}`,
+        placement: "topRight",
+        duration: 5,
+      });
+    } else {
+      notification.warning({
+        title: "Lịch đã bị hủy",
+        description: `Thời gian: ${latest.startTime} - ${latest.endTime}, ${latest.date}`,
+        placement: "topRight",
+        duration: 5,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [notifications]);
 
   // Define menu items with proper typing
   const menuItems: MenuProps["items"] = [
@@ -142,5 +181,11 @@ const DoctorLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
     </Layout>
   );
 };
+
+const DoctorLayout: React.FC<React.PropsWithChildren> = ({ children }) => (
+  <App>
+    <DoctorLayoutInner>{children}</DoctorLayoutInner>
+  </App>
+);
 
 export default DoctorLayout;

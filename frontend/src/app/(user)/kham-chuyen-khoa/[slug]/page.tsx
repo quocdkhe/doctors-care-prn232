@@ -4,7 +4,6 @@ import Link from "next/link";
 import SpecialtyDetail from "./specialty-detail";
 import { DoctorCard } from "@/src/types/doctor";
 import DoctorList from "./doctor-list";
-import SpecialtyFilter from "../../../../components/commons/doctor-filter";
 
 export default async function SpecialtyDetailsAndDoctorsPage({
   params,

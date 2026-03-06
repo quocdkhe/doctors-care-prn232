@@ -25,6 +25,7 @@ namespace backend.Configurations
             services.AddScoped<IDoctorProfileService, DoctorProfileService>();
             services.AddScoped<ITimeSlotService, TimeSlotService>();
             services.AddScoped<IAppointmentService, AppointmentService>();
+            services.AddSingleton<IAppointmentNotifier, AppointmentNotifier>();
             return services;
         }
     }
