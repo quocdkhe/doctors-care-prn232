@@ -19,6 +19,6 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__MyCnn=Server=db;Database=Doctors_Care;User Id=sa;Password=Quoc2810@;TrustServerCertificate=True;
     ports:
-      - "8080:8080"
+      - "8000:8000"
     depends_on:
       - db
