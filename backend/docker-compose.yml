@@ -1,0 +1,22 @@
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql_db
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Quoc2810@
+    ports:
+      - "1433"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dotnet_app
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__MyCnn=Server=db;Database=Doctors_Care;User Id=sa;Password=Quoc2810@;TrustServerCertificate=True;
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db

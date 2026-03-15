@@ -13,7 +13,8 @@
                         .WithOrigins(
                             "http://localhost:3000",
                             "http://localhost:5000",
-                            "https://localhost:7000"
+                            "https://localhost:7000",
+                            "https://doctors-care.quocdk.id.vn"
                         )
                         .AllowAnyHeader()
                         .AllowAnyMethod()
