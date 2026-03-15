@@ -2,6 +2,7 @@ services:
   db:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: mssql_db
+    restart: always
     environment:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=Quoc2810@
@@ -13,6 +14,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: dotnet_app
+    restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__MyCnn=Server=db;Database=Doctors_Care;User Id=sa;Password=Quoc2810@;TrustServerCertificate=True;
