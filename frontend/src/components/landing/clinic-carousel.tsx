@@ -4,15 +4,19 @@ import { Clinic } from "@/src/types/clinic";
 import CarouselWrapper from "./carousel-wrapper";
 import { Card, Typography } from "antd";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const { Title } = Typography;
 
 export default function ClinicCarousel({ clinics }: { clinics: Clinic[] }) {
+  const router = useRouter();
   if (!clinics || clinics.length === 0) return null;
   return (
     <CarouselWrapper>
       {clinics.map((clinic) => (
-        <div key={clinic.id} className="p-2 cursor-pointer">
+        <div key={clinic.id} className="p-2 cursor-pointer"
+          onClick={() => router.push(`co-so-y-te/${clinic.slug}`)  }
+        >
           <Card
             hoverable
             cover={

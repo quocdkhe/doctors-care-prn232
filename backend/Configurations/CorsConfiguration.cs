@@ -14,7 +14,8 @@
                             "http://localhost:3000",
                             "http://localhost:5000",
                             "https://localhost:7000",
-                            "https://doctors-care.quocdk.id.vn"
+                            "https://doctors-care.quocdk.id.vn",
+                            "http://192.168.0.115:3000"
                         )
                         .AllowAnyHeader()
                         .AllowAnyMethod()
