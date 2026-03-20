@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { AxiosError } from "axios";
 import { Error } from "@/src/types/common";
 import {
@@ -36,7 +36,6 @@ export default function SlotManagementPage() {
   const queryClient = useQueryClient();
   const { token } = theme.useToken();
   const { message } = App.useApp();
-  //select global state user from redux
   const user = useSelector((state: RootState) => state.auth.user);
 
   const [selectedWeek, setSelectedWeek] = useState<Dayjs>(dayjs());
@@ -45,6 +44,15 @@ export default function SlotManagementPage() {
   const sundayStr = sundayOfWeek.format("YYYY-MM-DD");
 
   const { data: slots, isLoading, error } = useDoctorSlotsQuery(sundayStr);
+  const slotIdRef = useRef(0);
+
+  useEffect(() => {
+    if (slots && slots.length > 0) {
+      slotIdRef.current = Math.max(...slots.map((s) => s.id)) + 1;
+    } else {
+      slotIdRef.current = 1;
+    }
+  }, [slots]);
 
   const daysOfWeek = [];
   for (let i = 0; i < 7; i++) {
@@ -71,14 +79,18 @@ export default function SlotManagementPage() {
   };
 
   const [slotsByDay, setSlotsByDay] = useState<{ [key: string]: TimeSlot[] }>(
-    () => buildSlotsByDay(slots),
+    () => buildSlotsByDay(slots)
   );
 
-  useEffect(() => {
-    setSlotsByDay(buildSlotsByDay(slots));
-  }, [slots, sundayStr]);
+  const [prevSlots, setPrevSlots] = useState(slots);
+  const [prevSundayStr, setPrevSundayStr] = useState(sundayStr);
 
-  // Track which date is currently showing the add form, and its time range value
+  if (prevSlots !== slots || prevSundayStr !== sundayStr) {
+    setPrevSlots(slots);
+    setPrevSundayStr(sundayStr);
+    setSlotsByDay(buildSlotsByDay(slots));
+  }
+
   const [addingDate, setAddingDate] = useState<string | null>(null);
   const [newTimeRange, setNewTimeRange] = useState<[Dayjs, Dayjs] | null>(null);
 
@@ -109,7 +121,7 @@ export default function SlotManagementPage() {
     }
     const [start, end] = newTimeRange;
     const newSlot: TimeSlot = {
-      id: Date.now(),
+      id: slotIdRef.current++,
       doctorId: user?.id || "",
       date,
       startTime: start.format("HH:mm"),
@@ -131,6 +143,63 @@ export default function SlotManagementPage() {
     setAddingDate(null);
     setNewTimeRange(null);
   };
+
+  // --- NEW DRAG AND DROP HANDLERS ---
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, slotId: number, sourceDate: string) => {
+    e.dataTransfer.setData("slotId", slotId.toString());
+    e.dataTransfer.setData("sourceDate", sourceDate);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>, targetDate: string) => {
+    e.preventDefault();
+    const slotIdStr = e.dataTransfer.getData("slotId");
+    const sourceDate = e.dataTransfer.getData("sourceDate");
+
+    if (!slotIdStr || !sourceDate) return;
+
+    const slotId = parseInt(slotIdStr, 10);
+
+    setSlotsByDay((prev) => {
+      const sourceSlots = prev[sourceDate] || [];
+      const originalSlot = sourceSlots.find((s) => s.id === slotId);
+
+      if (!originalSlot) return prev;
+
+      // 1. Check if the target date already has this exact time slot
+      const targetSlots = prev[targetDate] || [];
+      const isDuplicate = targetSlots.some(
+          (s) => s.startTime === originalSlot.startTime && s.endTime === originalSlot.endTime
+      );
+
+      if (isDuplicate) {
+        message.warning("Khung giờ này đã tồn tại trong ngày được chọn.");
+        return prev; // Do nothing if it's a duplicate
+      }
+
+      // 2. Create a brand-new slot based on the dragged slot's time
+      const newCopiedSlot: TimeSlot = {
+        id: slotIdRef.current++, // Generate a new unique ID
+        doctorId: user?.id || "",
+        date: targetDate, // Assign it to the new drop target date
+        startTime: originalSlot.startTime,
+        endTime: originalSlot.endTime,
+        isBooked: false,
+        appointment: null,
+      };
+
+      // 3. Add to the target date and re-sort
+      const newTargetSlots = [...targetSlots, newCopiedSlot];
+      newTargetSlots.sort((a, b) => a.startTime.localeCompare(b.startTime));
+
+      // Notice we are NO LONGER modifying the source array,
+      // leaving the original slot exactly where it was.
+      return {
+        ...prev,
+        [targetDate]: newTargetSlots,
+      };
+    });
+  };
+  // -----------------------------------
 
   const createUpdateSlotsMutation = useCreateUpdateSlots(sundayStr);
 
@@ -236,57 +305,69 @@ export default function SlotManagementPage() {
               key: day.date,
               width: "14.28%",
               render: () => (
-                <div>
+                <div
+                  // --- NEW DROP ZONE SETTINGS ---
+                  onDragOver={(e) => e.preventDefault()} // Required to allow dropping
+                  onDrop={(e) => handleDrop(e, day.date)}
+                  style={{ minHeight: "150px", height: "100%" }} // Make sure there is room to drop on empty days
+                >
                   {!daySlots ||
                     (daySlots.length === 0 && addingDate !== day.date) ? (
                     <Empty
                       image={Empty.PRESENTED_IMAGE_SIMPLE}
                       description="Không có slot"
-                      style={{ marginTop: "20px" }}
+                      style={{ marginTop: "20px", pointerEvents: "none" }} // Ensure empty text doesn't block drop
                     />
                   ) : (
                     daySlots.map((slot) => (
-                      <Card
+                      <div
                         key={slot.id}
-                        size="small"
-                        style={{
-                          marginBottom: "8px",
-                          backgroundColor: slot.isBooked
-                            ? token.colorInfoBg
-                            : token.colorBgContainer,
-                        }}
+                        // --- NEW DRAG SETTINGS ---
+                        draggable={!slot.isBooked} // Prevent dragging booked slots
+                        onDragStart={(e) => handleDragStart(e, slot.id, day.date)}
+                        style={{ cursor: slot.isBooked ? "not-allowed" : "grab" }}
                       >
-                        <div
+                        <Card
+                          size="small"
                           style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
+                            marginBottom: "8px",
+                            backgroundColor: slot.isBooked
+                              ? token.colorInfoBg
+                              : token.colorBgContainer,
+                            opacity: slot.isBooked ? 0.8 : 1,
                           }}
                         >
-                          <div>
-                            <Text strong>
-                              {slot.startTime} - {slot.endTime}
-                            </Text>
-                            <br />
-                            <Badge
-                              status={slot.isBooked ? "processing" : "success"}
-                              text={slot.isBooked ? "Đã đặt" : "Trống"}
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                            }}
+                          >
+                            <div>
+                              <Text strong>
+                                {slot.startTime} - {slot.endTime}
+                              </Text>
+                              <br />
+                              <Badge
+                                status={slot.isBooked ? "processing" : "success"}
+                                text={slot.isBooked ? "Đã đặt" : "Trống"}
+                              />
+                            </div>
+                            <Button
+                              type="text"
+                              danger
+                              icon={<DeleteOutlined />}
+                              disabled={slot.isBooked}
+                              onClick={() => handleDeleteSlot(slot.id, day.date)}
+                              size="small"
                             />
                           </div>
-                          <Button
-                            type="text"
-                            danger
-                            icon={<DeleteOutlined />}
-                            disabled={slot.isBooked}
-                            onClick={() => handleDeleteSlot(slot.id, day.date)}
-                            size="small"
-                          />
-                        </div>
-                      </Card>
+                        </Card>
+                      </div>
                     ))
                   )}
 
-                  {/* Add slot form or button */}
                   {addingDate === day.date ? (
                     <Card
                       size="small"
