@@ -8,6 +8,8 @@ services:
       - MSSQL_SA_PASSWORD=Quoc2810@
     ports:
       - "192.168.1.100:1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
 
   app:
     build:
@@ -22,3 +24,6 @@ services:
       - "127.0.0.1:8000:8080"
     depends_on:
       - db
+
+volumes:
+  mssql_data:
