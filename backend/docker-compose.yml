@@ -7,7 +7,7 @@ services:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=Quoc2810@
     ports:
-      - "127.0.0.1:1433:1433"
+      - "192.168.1.100:1433:1433"
 
   app:
     build:
