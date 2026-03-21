@@ -9,22 +9,18 @@
             {
                 options.AddPolicy("CorsPolicy", policy =>
                 {
-                    policy
-                        .WithOrigins(
-                            "http://localhost:3000",
-                            "http://localhost:5000",
-                            "https://localhost:7000",
-                            "https://doctors-care.quocdk.id.vn",
-                            "http://192.168.0.115:3000"
-                        )
-                        .SetIsOriginAllowed(origin => 
-                        {
-                            var host = new Uri(origin).Host;
-                            return host.EndsWith(".vercel.app") || host == "localhost";
-                        })
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .AllowCredentials(); // allow cookies
+                    policy.SetIsOriginAllowed(origin => 
+                    {
+                        if (string.IsNullOrWhiteSpace(origin)) return false;
+
+                        var host = new Uri(origin).Host;
+                        return host == "localhost" || 
+                            host == "doctors-care.quocdk.id.vn" || 
+                            host.EndsWith(".vercel.app");
+                    })
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials(); // Required for your JWT cookies
                 });
             });
             return services;
