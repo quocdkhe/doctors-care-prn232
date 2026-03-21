@@ -17,6 +17,11 @@
                             "https://doctors-care.quocdk.id.vn",
                             "http://192.168.0.115:3000"
                         )
+                        .SetIsOriginAllowed(origin => 
+                        {
+                            var host = new Uri(origin).Host;
+                            return host.EndsWith(".vercel.app") || host == "localhost";
+                        })
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials(); // allow cookies
