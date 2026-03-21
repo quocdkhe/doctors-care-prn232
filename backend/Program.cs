@@ -37,8 +37,14 @@ namespace backend
 
 
             var app = builder.Build();
-            // Use cors configuration
+
+            // IMPORTANT: UseCors MUST come before UseHttpsRedirection.
+            // In production, UseHttpsRedirection issues a 301 redirect and redirect
+            // responses do NOT carry CORS headers, causing the browser to block them.
+            // If SSL is terminated at the reverse proxy (Nginx/Caddy), you can also
+            // safely remove UseHttpsRedirection entirely.
             app.UseCors("CorsPolicy");
+
             // Run migration
             using (var scope = app.Services.CreateScope())
             {
@@ -46,7 +52,6 @@ namespace backend
                 var context = services.GetRequiredService<DoctorsCareContext>();
                 context.Database.Migrate();
             }
-
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
