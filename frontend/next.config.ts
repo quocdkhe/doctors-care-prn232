@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "storage.quocdk.id.vn",
       },
+      {
+        protocol: 'https',
+        hostname: 'r2-storage.quocdk.id.vn',
+      },
     ],
   },
 };
