@@ -48,7 +48,9 @@ const DoctorLayoutInner: React.FC<React.PropsWithChildren> = ({ children }) => {
     setNotifications((prev) => [notification, ...prev]);
     queryClient.invalidateQueries({ queryKey: ["doctor-appointments"] });
     queryClient.invalidateQueries({ queryKey: ["current-doctor-slots"] });
-    queryClient.invalidateQueries({ queryKey: ["appointment-detail", notification.appointmentId] });
+    queryClient.invalidateQueries({
+      queryKey: ["appointment-detail", notification.appointmentId],
+    });
   }, []);
 
   useNotifications(handleNotification, user?.id);

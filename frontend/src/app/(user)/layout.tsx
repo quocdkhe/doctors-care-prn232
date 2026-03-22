@@ -1,14 +1,15 @@
 "use client";
 
-import React from "react";
-import { Layout, Menu, theme, Button, Space } from "antd";
-import { SunOutlined, MoonOutlined } from "@ant-design/icons";
+import React, { useCallback } from "react";
+import { App, Layout, Menu, theme, Button, Space } from "antd";
 import { useAppSelector } from "../../store/hooks";
 import { UserProfileDropdown } from "../../components/commons/user-profile-dropdown";
 import { useAuthModal } from "../../providers/auth-modal-provider";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { MedicineBoxOutlined } from "@ant-design/icons";
+import { useUserNotifications } from "../../lib/use-notification";
+import { useQueryClient } from "@tanstack/react-query";
 
 const { Header, Footer } = Layout;
 
@@ -27,11 +28,13 @@ const items = [
   },
 ];
 
-const UserLayout: React.FC = ({ children }: React.PropsWithChildren) => {
+const UserLayoutInner: React.FC<React.PropsWithChildren> = ({ children }) => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
   const pathname = usePathname();
+  const queryClient = useQueryClient();
+  const { notification } = App.useApp();
 
   const getSelectedKey = () => {
     if (pathname.includes("/kham-chuyen-khoa")) return ["specialty"];
@@ -42,6 +45,18 @@ const UserLayout: React.FC = ({ children }: React.PropsWithChildren) => {
 
   const { user, isLoading } = useAppSelector((state) => state.auth);
   const { openLoginModal, openRegisterModal } = useAuthModal();
+
+  const handleNotification = useCallback(() => {
+    notification.info({
+      message: "Lịch hẹn đã được cập nhật",
+      description: "Bác sĩ vừa cập nhật lịch hẹn của bạn.",
+      placement: "topRight",
+      duration: 5,
+    });
+    queryClient.invalidateQueries({ queryKey: ["patient-appointments"] });
+  }, [notification, queryClient]);
+
+  useUserNotifications(handleNotification, user?.id);
 
   return (
     <Layout
@@ -131,5 +146,11 @@ const UserLayout: React.FC = ({ children }: React.PropsWithChildren) => {
     </Layout>
   );
 };
+
+const UserLayout: React.FC<React.PropsWithChildren> = ({ children }) => (
+  <App>
+    <UserLayoutInner>{children}</UserLayoutInner>
+  </App>
+);
 
 export default UserLayout;

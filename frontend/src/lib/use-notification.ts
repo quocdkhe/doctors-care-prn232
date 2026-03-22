@@ -27,3 +27,30 @@ export function useNotifications(
 		};
 	}, [doctorId, onNotification]);
 }
+
+export function useUserNotifications(
+	onNotification: (appointmentId: string) => void,
+	userId: string | undefined
+) {
+	const eventSourceRef = useRef<EventSource | null>(null);
+	const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+	useEffect(() => {
+		if (!userId) return;
+
+		eventSourceRef.current = new EventSource(`${apiUrl}/api/notification/stream/user/${userId}`);
+
+		eventSourceRef.current.onmessage = (event) => {
+			const appointmentId: string = JSON.parse(event.data);
+			console.log("[user notification] appointmentId:", appointmentId);
+			onNotification(appointmentId);
+		};
+
+		eventSourceRef.current.onerror = () => {
+			console.warn("SSE user connection lost, reconnecting...");
+		};
+
+		return () => {
+			eventSourceRef.current?.close();
+		};
+	}, [userId, onNotification]);
+}

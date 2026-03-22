@@ -1,4 +1,4 @@
-﻿using backend.Exceptions;
+using backend.Exceptions;
 using backend.Models;
 using backend.Models.DTOs.Booking;
 using backend.Models.DTOs.User;
@@ -26,6 +26,7 @@ namespace backend.Services.Implementation
             }
             current.Status = Models.Enums.AppointmentStatusEnum.Cancelled;
             await _context.SaveChangesAsync();
+            await _notifier.NotifyUser(current.BookByUserId, AppointmentId);
         }
 
         public async Task CompleteAppointment(Guid AppointmentId, CompleteAppointmentDto dto)
@@ -38,6 +39,7 @@ namespace backend.Services.Implementation
             current.Status = Models.Enums.AppointmentStatusEnum.Completed;
             current.MedicalRecordFileUrl = dto.MedicalRecordFileUrl;
             await _context.SaveChangesAsync();
+            await _notifier.NotifyUser(current.BookByUserId, AppointmentId);
         }
 
         public async Task CreateNewAppointment(CreateAppointmentDto dto)
