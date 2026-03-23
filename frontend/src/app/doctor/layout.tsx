@@ -15,6 +15,8 @@ import { useTheme } from "@/src/providers/theme-provider";
 import { useRouter, usePathname } from "next/navigation";
 import type { MenuProps } from "antd";
 import { UserProfileDropdown } from "@/src/components/commons/user-profile-dropdown";
+import RoleGuard from "@/src/components/commons/role-guard";
+import { UserRoleEnum } from "@/src/types/user";
 import { AppointmentItem } from "@/src/types/appointment";
 import { useAppSelector } from "@/src/store/hooks";
 import { useNotifications } from "@/src/lib/use-notification";
@@ -177,7 +179,9 @@ const DoctorLayoutInner: React.FC<React.PropsWithChildren> = ({ children }) => {
             borderRadius: borderRadiusLG,
           }}
         >
-          {children}
+          <RoleGuard allowedRoles={[UserRoleEnum.Doctor]}>
+            {children}
+          </RoleGuard>
         </Content>
       </Layout>
     </Layout>

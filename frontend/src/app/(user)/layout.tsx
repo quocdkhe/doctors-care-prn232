@@ -48,7 +48,7 @@ const UserLayoutInner: React.FC<React.PropsWithChildren> = ({ children }) => {
 
   const handleNotification = useCallback(() => {
     notification.info({
-      message: "Lịch hẹn đã được cập nhật",
+      title: "Lịch hẹn đã được cập nhật",
       description: "Bác sĩ vừa cập nhật lịch hẹn của bạn.",
       placement: "topRight",
       duration: 5,
