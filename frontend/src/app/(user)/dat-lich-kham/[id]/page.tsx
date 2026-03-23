@@ -10,9 +10,9 @@ export default async function BookingPage({
 }) {
   const { id } = await params;
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  const slot: SlotDetailType = await fetch(`${apiUrl}/api/slots/${id}`).then(
-    (res) => res.json(),
-  );
+  const slot: SlotDetailType = await fetch(`${apiUrl}/api/slots/${id}`, {
+    next: { revalidate: 0 },
+  }).then((res) => res.json());
   return (
     <MainContentWrapper
       breadcrumbItems={[

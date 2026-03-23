@@ -12,17 +12,17 @@ import { DoctorTop } from "@/src/types/doctor";
 
 export default async function LandingPage() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  const specialties: Specialty[] = await fetch(
-    `${apiUrl}/api/specialties`,
-  ).then((res) => res.json());
+  const specialties: Specialty[] = await fetch(`${apiUrl}/api/specialties`, {
+    next: { revalidate: 0 },
+  }).then((res) => res.json());
 
-  const clinics: Clinic[] = await fetch(`${apiUrl}/api/clinics`).then((res) =>
-    res.json(),
-  );
+  const clinics: Clinic[] = await fetch(`${apiUrl}/api/clinics`, {
+    next: { revalidate: 0 },
+  }).then((res) => res.json());
 
-  const topDoctors: DoctorTop[] = await fetch(`${apiUrl}/api/doctors/top`).then(
-    (res) => res.json(),
-  );
+  const topDoctors: DoctorTop[] = await fetch(`${apiUrl}/api/doctors/top`, {
+    next: { revalidate: 0 },
+  }).then((res) => res.json());
 
   return (
     <>

@@ -13,10 +13,14 @@ export default async function ClinicDetailServerPage({
   const { slug } = await params;
   const clinic: ClinicDetail = await fetch(
     `${apiUrl}/api/clinics/${slug}/details`,
+    { next: { revalidate: 0 } },
   ).then((res) => res.json());
+
   const doctors: DoctorCard[] = await fetch(
     `${apiUrl}/api/doctors?clinicSlug=${slug}`,
+    { next: { revalidate: 0 } },
   ).then((res) => res.json());
+
   return (
     <MainContentWrapper
       breadcrumbItems={[

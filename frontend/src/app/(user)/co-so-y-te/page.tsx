@@ -4,14 +4,18 @@ import Link from "next/link";
 
 export default async function ClinicsPage() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  const allClinics = await fetch(`${apiUrl}/api/clinics`);
+  const allClinics = await fetch(`${apiUrl}/api/clinics`, {
+    next: { revalidate: 0 },
+  });
   const clinics = await allClinics.json();
   return (
     <>
-      <MainContentWrapper breadcrumbItems={[
-        { title: <Link href="/">Trang chủ</Link> },
-        { title: "Cơ sở y tế" },
-      ]}>
+      <MainContentWrapper
+        breadcrumbItems={[
+          { title: <Link href="/">Trang chủ</Link> },
+          { title: "Cơ sở y tế" },
+        ]}
+      >
         <AllClinic clinics={clinics} />
       </MainContentWrapper>
     </>

@@ -17,10 +17,12 @@ export default async function SpecialtyDetailsAndDoctorsPage({
   const { city, date } = await searchParams;
   const specialty: SpecialtyInfo = await fetch(
     `${apiUrl}/api/specialties/${slug}/details`,
+    { next: { revalidate: 0 } },
   ).then((res) => res.json());
 
   const doctors: DoctorCard[] = await fetch(
     `${apiUrl}/api/doctors?specialtySlug=${slug}&city=${city || ""}&date=${date || ""}`,
+    { next: { revalidate: 0 } },
   ).then((res) => res.json());
   return (
     <MainContentWrapper
