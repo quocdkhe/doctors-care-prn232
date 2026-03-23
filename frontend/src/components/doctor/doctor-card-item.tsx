@@ -18,7 +18,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import { calculatePrice } from "@/src/utils/helper";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@bprogress/next/app";
 import { useAppSelector } from "@/src/store/hooks";
 import { UserRoleEnum } from "@/src/types/user";
 import { useAuthModal } from "@/src/providers/auth-modal-provider";

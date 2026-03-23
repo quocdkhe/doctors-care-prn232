@@ -5,7 +5,7 @@ import {
   SpecialtyForm,
   SpecialtyFormData,
 } from "@/src/components/create-update-form/specialty-form";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@bprogress/next/app";
 import { Typography, App } from "antd";
 import { useCreateSpecialty } from "@/src/queries/specialty.queries";
 import { useUploadFile } from "@/src/queries/file.queries";

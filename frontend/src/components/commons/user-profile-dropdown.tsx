@@ -6,7 +6,7 @@ import type { MenuProps } from "antd";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { logout } from "../../store/auth.slice";
 import { useLogout } from "../../queries/user.queries";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@bprogress/next/app";
 
 const { Text } = Typography;
 
@@ -59,6 +59,15 @@ export const UserProfileDropdown = () => {
       icon: <UserOutlined />,
       label: "Trang cá nhân",
       onClick: () => router.push("/doctor"),
+    });
+  }
+
+  if (user?.role === "Patient") {
+    menuItems.unshift({
+      key: "patient",
+      icon: <UserOutlined />,
+      label: "Thông tin cá nhân",
+      onClick: () => router.push("/thong-tin-ca-nhan"),
     });
   }
 

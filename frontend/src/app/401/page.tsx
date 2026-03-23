@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@bprogress/next/app";
 import { useAppSelector } from "@/src/store/hooks";
 import { Button, Result } from "antd";
 
@@ -25,13 +25,10 @@ const UnauthorizedPage: React.FC = () => {
         title="401 – Unauthorized"
         subTitle={
           <>
-            <p>
-              Bạn không có quyền truy cập trang này.
-            </p>
+            <p>Bạn không có quyền truy cập trang này.</p>
             {user && (
               <p style={{ marginTop: 4 }}>
-                Vai trò hiện tại của bạn:{" "}
-                <strong>{roleLabel}</strong>
+                Vai trò hiện tại của bạn: <strong>{roleLabel}</strong>
               </p>
             )}
           </>

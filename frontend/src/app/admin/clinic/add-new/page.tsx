@@ -5,7 +5,7 @@ import {
   ClinicForm,
   ClinicFormData,
 } from "@/src/components/create-update-form/clinic-form";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@bprogress/next/app";
 import { Typography, App } from "antd";
 import { useCreateClinic } from "@/src/queries/clinic.queries";
 import { useUploadFile } from "@/src/queries/file.queries";

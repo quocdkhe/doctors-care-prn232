@@ -182,6 +182,7 @@ namespace backend.Services.Implementation
                     PatientAddress = a.PatientAddress
                 })
                 .OrderByDescending(a => a.Date)
+                .ThenBy(a => a.StartTime)
                 .ToListAsync();
 
             return appointments;

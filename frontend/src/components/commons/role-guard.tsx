@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@bprogress/next/app";
 import { useAppSelector } from "@/src/store/hooks";
 import type { UserRoleEnum } from "@/src/types/user";
 

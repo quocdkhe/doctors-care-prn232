@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
 import { Clinic } from "@/src/types/clinic";
 import CarouselWrapper from "./carousel-wrapper";
 import { Card, Typography } from "antd";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@bprogress/next/app";
 
 const { Title } = Typography;
 
@@ -14,8 +14,10 @@ export default function ClinicCarousel({ clinics }: { clinics: Clinic[] }) {
   return (
     <CarouselWrapper>
       {clinics.map((clinic) => (
-        <div key={clinic.id} className="p-2 cursor-pointer"
-          onClick={() => router.push(`co-so-y-te/${clinic.slug}`)  }
+        <div
+          key={clinic.id}
+          className="p-2 cursor-pointer"
+          onClick={() => router.push(`co-so-y-te/${clinic.slug}`)}
         >
           <Card
             hoverable
@@ -31,10 +33,12 @@ export default function ClinicCarousel({ clinics }: { clinics: Clinic[] }) {
               </div>
             }
           >
-            <Title style={{ textAlign: "center" }} level={4}>{clinic.name}</Title>
+            <Title style={{ textAlign: "center" }} level={4}>
+              {clinic.name}
+            </Title>
           </Card>
         </div>
       ))}
     </CarouselWrapper>
-  )
+  );
 }

@@ -3,7 +3,7 @@
 import { Card, Typography, Avatar, Button } from "antd";
 import { DoctorTop } from "@/src/types/doctor";
 import CarouselWrapper from "./carousel-wrapper";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@bprogress/next/app";
 import { UserOutlined } from "@ant-design/icons";
 import bgImage from "@/src/public/140311-background5.png";
 import Link from "next/link";

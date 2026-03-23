@@ -6,6 +6,7 @@ import { StoreProvider } from "../providers/store-provider";
 import { AuthInitializer } from "../components/commons/auth-initializer";
 import { AuthModalProvider } from "../providers/auth-modal-provider";
 import "./global.css";
+import ProgressBarProvider from "../providers/progress-bar-provider";
 
 const RootLayout = ({ children }: React.PropsWithChildren) => (
   <html
@@ -21,7 +22,9 @@ const RootLayout = ({ children }: React.PropsWithChildren) => (
         <QueryProvider>
           <ThemeProvider>
             <AntdRegistry>
-              <AuthModalProvider>{children}</AuthModalProvider>
+              <AuthModalProvider>
+                <ProgressBarProvider>{children}</ProgressBarProvider>
+              </AuthModalProvider>
             </AntdRegistry>
           </ThemeProvider>
         </QueryProvider>

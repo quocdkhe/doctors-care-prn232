@@ -4,7 +4,7 @@ import { Card, Typography } from "antd";
 import Image from "next/image";
 import { Specialty } from "@/src/types/specialty";
 import CarouselWrapper from "./carousel-wrapper";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@bprogress/next/app";
 
 const { Title } = Typography;
 

@@ -4,7 +4,7 @@ import { Clinic } from "@/src/types/clinic";
 import { Card, Col, Row } from "antd";
 import Image from "next/image";
 import { Typography } from "antd";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@bprogress/next/app";
 
 const { Title } = Typography;
 export default function AllClinic({ clinics }: { clinics: Clinic[] }) {

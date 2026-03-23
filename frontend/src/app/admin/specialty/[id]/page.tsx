@@ -11,7 +11,7 @@ import {
   useUpdateSpecialty,
 } from "@/src/queries/specialty.queries";
 import { useUpdateFile } from "@/src/queries/file.queries";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@bprogress/next/app";
 import { useQueryClient } from "@tanstack/react-query";
 
 const { Title } = Typography;

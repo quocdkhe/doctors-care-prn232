@@ -1,7 +1,10 @@
 "use client";
 
 import { DoctorDetail as DoctorDetailType } from "@/src/types/doctor";
-import { useCheckIfSlotIsAvailable, useGetSlotsByDoctorAndDay } from "@/src/queries/slot.queries";
+import {
+  useCheckIfSlotIsAvailable,
+  useGetSlotsByDoctorAndDay,
+} from "@/src/queries/slot.queries";
 import { EnvironmentOutlined, CalendarOutlined } from "@ant-design/icons";
 import {
   App,
@@ -18,7 +21,7 @@ import {
 import { useMemo, useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import { calculatePrice } from "@/src/utils/helper";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@bprogress/next/app";
 import { UserRoleEnum } from "@/src/types/user";
 import { useAppSelector } from "@/src/store/hooks";
 import { useAuthModal } from "@/src/providers/auth-modal-provider";
@@ -61,10 +64,12 @@ export default function DoctorDetail({ doctor }: { doctor: DoctorDetailType }) {
   );
 
   const { data: isSlotAvailable } = useCheckIfSlotIsAvailable(
-    selectedSlotIndex !== null ? (availableSlots[selectedSlotIndex]?.id ?? 0) : 0,
+    selectedSlotIndex !== null
+      ? (availableSlots[selectedSlotIndex]?.id ?? 0)
+      : 0,
     {
       enabled: selectedSlotIndex !== null,
-    }
+    },
   );
 
   // Disable dates that are NOT in availableDates
@@ -80,13 +85,13 @@ export default function DoctorDetail({ doctor }: { doctor: DoctorDetailType }) {
   const handleSlotBooking = (slotId: number) => {
     if (!isSlotAvailable) {
       message.error("Lịch khám đã hết");
-      queryClient.invalidateQueries({ queryKey: ["slots", doctor.doctorId, selectedDate] });
+      queryClient.invalidateQueries({
+        queryKey: ["slots", doctor.doctorId, selectedDate],
+      });
       return;
     }
-    router.push(
-      `/dat-lich-kham/${slotId}`,
-    )
-  }
+    router.push(`/dat-lich-kham/${slotId}`);
+  };
 
   return (
     <div>
@@ -240,7 +245,11 @@ export default function DoctorDetail({ doctor }: { doctor: DoctorDetailType }) {
                     user.role === UserRoleEnum.Patient && (
                       <Button
                         type="primary"
-                        onClick={() => handleSlotBooking(availableSlots[selectedSlotIndex].id)}
+                        onClick={() =>
+                          handleSlotBooking(
+                            availableSlots[selectedSlotIndex].id,
+                          )
+                        }
                       >
                         Đặt lịch khám
                       </Button>

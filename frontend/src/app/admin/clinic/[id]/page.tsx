@@ -8,7 +8,7 @@ import {
 } from "@/src/components/create-update-form/clinic-form";
 import { useGetClinic, useUpdateClinic } from "@/src/queries/clinic.queries";
 import { useUpdateFile } from "@/src/queries/file.queries";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@bprogress/next/app";
 import { useQueryClient } from "@tanstack/react-query";
 
 const { Title } = Typography;

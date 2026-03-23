@@ -3,7 +3,7 @@
 import { Specialty } from "@/src/types/specialty";
 import { Card, Col, Row, Typography } from "antd";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@bprogress/next/app";
 
 const { Title } = Typography;
 

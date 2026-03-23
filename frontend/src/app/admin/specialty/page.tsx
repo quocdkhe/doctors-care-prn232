@@ -27,7 +27,7 @@ import {
 import { Specialty } from "@/src/types/specialty";
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@bprogress/next/app";
 import { AxiosError } from "axios";
 import { Error } from "@/src/types/common";
 
