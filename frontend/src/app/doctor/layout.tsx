@@ -12,7 +12,7 @@ import {
 } from "@ant-design/icons";
 import { App, Button, Layout, Menu, theme } from "antd";
 import { useTheme } from "@/src/providers/theme-provider";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import type { MenuProps } from "antd";
 import { UserProfileDropdown } from "@/src/components/commons/user-profile-dropdown";
 import RoleGuard from "@/src/components/commons/role-guard";
@@ -21,6 +21,7 @@ import { AppointmentItem } from "@/src/types/appointment";
 import { useAppSelector } from "@/src/store/hooks";
 import { useNotifications } from "@/src/lib/use-notification";
 import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "@bprogress/next/app";
 
 const { Header, Sider, Content } = Layout;
 
@@ -179,9 +180,7 @@ const DoctorLayoutInner: React.FC<React.PropsWithChildren> = ({ children }) => {
             borderRadius: borderRadiusLG,
           }}
         >
-          <RoleGuard allowedRoles={[UserRoleEnum.Doctor]}>
-            {children}
-          </RoleGuard>
+          <RoleGuard allowedRoles={[UserRoleEnum.Doctor]}>{children}</RoleGuard>
         </Content>
       </Layout>
     </Layout>

@@ -1,12 +1,14 @@
 "use client";
 
 import { ProgressProvider } from "@bprogress/next/app";
+import { theme } from "antd";
 
 const ProgressBarProvider = ({ children }: { children: React.ReactNode }) => {
+  const { token } = theme.useToken();
   return (
     <ProgressProvider
       height="2px"
-      color="#1677ff"
+      color={token.colorPrimary}
       options={{ showSpinner: false }}
       // These props force the progress bar to trigger
       shallowRouting={false} // don’t skip any route changes

@@ -74,7 +74,7 @@ export const UserProfileDropdown = () => {
   if (isLoading) {
     return (
       <Space size="middle" style={{ cursor: "pointer" }}>
-        <Skeleton.Avatar active size="default" />
+        <Skeleton.Avatar active size="medium" />
         <div>
           <Skeleton.Input active size="small" style={{ width: 100 }} />
           <Skeleton.Input
