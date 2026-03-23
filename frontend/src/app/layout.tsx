@@ -7,10 +7,18 @@ import { AuthInitializer } from "../components/commons/auth-initializer";
 import { AuthModalProvider } from "../providers/auth-modal-provider";
 import "./global.css";
 import ProgressBarProvider from "../providers/progress-bar-provider";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Doctors Care",
+  verification: {
+    google: "VbUSl2Gqzhib8gMMvFgM8v572c85dggHuvq3eR1Ufd0",
+  },
+};
 
 const RootLayout = ({ children }: React.PropsWithChildren) => (
   <html
-    lang="en"
+    lang="vi"
     style={{ margin: 0, padding: 0, width: "100%", height: "100%" }}
   >
     <body
