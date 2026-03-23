@@ -7,9 +7,9 @@ const ProgressBarProvider = ({ children }: { children: React.ReactNode }) => {
   const { token } = theme.useToken();
   return (
     <ProgressProvider
-      height="2px"
+      height="4px"
       color={token.colorPrimary}
-      options={{ showSpinner: false }}
+      options={{ showSpinner: true }}
       // These props force the progress bar to trigger
       shallowRouting={false} // don’t skip any route changes
       disableSameURL={false} // trigger even if query changes are the only diff
