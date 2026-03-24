@@ -52,4 +52,4 @@ public class NotificationController : ControllerBase
             _notifier.UnregisterUser(userId); // always clean up
         }
     }
-}
+}

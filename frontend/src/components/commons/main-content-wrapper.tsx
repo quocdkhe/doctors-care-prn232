@@ -15,10 +15,11 @@ export default function MainContentWrapper({
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+
   return (
     <Content style={{ flex: 1 }}>
       <div
-        className="w-full lg:max-w-[75%]"
+        className="w-full lg:max-w-[90%] xl:max-w-[85%] 2xl:max-w-[75%]"
         style={{ margin: "0 auto", padding: "0 24px" }}
       >
         {breadcrumbItems && (

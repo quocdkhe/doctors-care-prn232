@@ -140,7 +140,7 @@ export default function StatisticsReportPage() {
             <Statistic
               title="Tổng số bệnh nhân"
               value={stats.totalUsers}
-              valueStyle={{ color: isDarkMode ? "#177ddc" : "#3f8600" }}
+              styles={{ content: { color: isDarkMode ? "#177ddc" : "#3f8600" } }}
             />
           </Card>
         </Col>
