@@ -1,8 +1,6 @@
-﻿using backend.Exceptions;
 using backend.Models.DTOs.User;
 using backend.Services.Admin;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
@@ -19,7 +17,7 @@ namespace backend.Controllers
         }
 
         [HttpPost("users")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateUser([FromBody] AdminCreateUserDto dto)
         {
             await _adminService.AdminCreateUser(dto);
@@ -27,11 +25,19 @@ namespace backend.Controllers
         }
 
         [HttpGet("users")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<List<UserResponseDto>>> GetAllUsers()
         {
             var users = await _adminService.GetAllUsers();
             return Ok(users);
+        }
+
+        [HttpGet("statistics")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetStatistics()
+        {
+            var statistics = await _adminService.GetStatistics();
+            return Ok(statistics);
         }
 
     }

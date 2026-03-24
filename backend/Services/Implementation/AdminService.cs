@@ -1,5 +1,6 @@
-﻿using backend.Exceptions;
+using backend.Exceptions;
 using backend.Models;
+using backend.Models.DTOs.Statistics;
 using backend.Models.DTOs.User;
 using backend.Models.Enums;
 using backend.Services.Admin;
@@ -70,6 +71,30 @@ namespace backend.Services.Implementation
                     Role = u.Role
                 })
                 .ToListAsync();
+        }
+
+        public async Task<StatisticsDto> GetStatistics()
+        {
+            var totalUsers = await _context.Users.CountAsync(u => u.Role == UserRoleEnum.Patient);
+            var totalDoctors = await _context.Users.CountAsync(u => u.Role == UserRoleEnum.Doctor);
+            var totalAppointments = await _context.Appointments.CountAsync();
+
+            var scheduled = await _context.Appointments.CountAsync(a => a.Status == AppointmentStatusEnum.Scheduled);
+            var completed = await _context.Appointments.CountAsync(a => a.Status == AppointmentStatusEnum.Completed);
+            var cancelled = await _context.Appointments.CountAsync(a => a.Status == AppointmentStatusEnum.Cancelled);
+
+            return new StatisticsDto
+            {
+                TotalUsers = totalUsers,
+                TotalDoctors = totalDoctors,
+                TotalAppointments = totalAppointments,
+                AppointmentStatusCount = new AppointmentStatusCountDto
+                {
+                    Scheduled = scheduled,
+                    Completed = completed,
+                    Cancelled = cancelled
+                }
+            };
         }
     }
 }

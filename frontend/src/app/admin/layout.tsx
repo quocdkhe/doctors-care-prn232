@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import {
+  AreaChartOutlined,
   MedicineBoxOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -36,11 +37,17 @@ const AdminLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
     if (pathname?.includes("/admin/profile")) return "profile";
     if (pathname?.includes("/admin/specialty")) return "specialty";
     if (pathname?.includes("/admin/clinic")) return "clinic";
+    if (pathname?.includes("/admin/statistics")) return "statistics";
     return "dashboard";
   };
 
   // Define menu items with proper typing
   const menuItems: MenuProps["items"] = [
+    {
+      key: "statistics",
+      icon: <AreaChartOutlined />,
+      label: "Thống kê",
+    },
     {
       key: "user-management",
       icon: <UsergroupAddOutlined />,
@@ -65,11 +72,11 @@ const AdminLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
 
   // Better approach: use a routing map
   const routeMap: Record<string, string> = {
+    statistics: "/admin/statistics",
     "user-management": "/admin/user-management",
     profile: "/admin/profile",
     specialty: "/admin/specialty",
     clinic: "/admin/clinic",
-    // Add more routes here as needed
   };
 
   const handleMenuClick: MenuProps["onClick"] = ({ key }) => {
