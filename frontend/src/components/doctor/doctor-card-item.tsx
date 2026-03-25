@@ -2,7 +2,11 @@
 
 import { DoctorCard } from "@/src/types/doctor";
 import { useGetSlotsByDoctorAndDay } from "@/src/queries/slot.queries";
-import { EnvironmentOutlined, CalendarOutlined } from "@ant-design/icons";
+import {
+  EnvironmentOutlined,
+  CalendarOutlined,
+  ReloadOutlined,
+} from "@ant-design/icons";
 import {
   Avatar,
   Button,
@@ -11,11 +15,12 @@ import {
   DatePicker,
   Row,
   Spin,
+  Tooltip,
   Typography,
   theme,
 } from "antd";
-import Link from "next/link";
 import { useMemo, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import dayjs, { Dayjs } from "dayjs";
 import { calculatePrice } from "@/src/utils/helper";
 import { useRouter } from "@bprogress/next/app";
@@ -28,8 +33,13 @@ const { Text, Title, Paragraph } = Typography;
 export default function DoctorCardItem({ doctor }: { doctor: DoctorCard }) {
   const { token } = theme.useToken();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const user = useAppSelector((state) => state.auth.user);
   const { openLoginModal } = useAuthModal();
+
+  const handleReload = () => {
+    queryClient.invalidateQueries({ queryKey: ["slots", doctor.doctorId] });
+  };
 
   // Build a Set of available date strings for O(1) lookup
   const availableDateSet = useMemo(
@@ -95,15 +105,20 @@ export default function DoctorCardItem({ doctor }: { doctor: DoctorCard }) {
                 src={doctor.imageUrl || "/default-avatar.png"}
                 style={{ border: "1px solid #d9d9d9" }}
               />
-              <Link
-                href={`/kham-chuyen-khoa/${doctor.specialtySlug}/${doctor.slug}`}
+              <Button
+                type="text"
+                onClick={() =>
+                  router.push(
+                    `/kham-chuyen-khoa/${doctor.specialtySlug}/${doctor.slug}`,
+                  )
+                }
                 style={{
                   color: token.colorPrimary,
                   fontWeight: 500,
                 }}
               >
                 Xem thêm
-              </Link>
+              </Button>
             </Col>
 
             {/* Info */}
@@ -141,7 +156,7 @@ export default function DoctorCardItem({ doctor }: { doctor: DoctorCard }) {
 
         {/* Right Column: Schedule & Booking */}
         <Col xs={24} sm={12} style={{ paddingLeft: "24px" }}>
-          <div style={{ marginBottom: "16px" }}>
+          <div style={{ marginBottom: "16px", display: "flex", gap: "8px" }}>
             <DatePicker
               value={selectedDate ? dayjs(selectedDate) : null}
               onChange={handleDateChange}
@@ -149,6 +164,9 @@ export default function DoctorCardItem({ doctor }: { doctor: DoctorCard }) {
               allowClear={false}
               format="DD/MM/YYYY"
             />
+            <Tooltip title="Lấy lại lịch khám">
+              <Button icon={<ReloadOutlined />} onClick={handleReload} />
+            </Tooltip>
           </div>
 
           <div style={{ marginBottom: "16px" }}>

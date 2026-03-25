@@ -29,6 +29,7 @@ import { useAppSelector } from "@/src/store/hooks";
 import { useEffect } from "react";
 import { useCreateAppointment } from "@/src/queries/appointment.queries";
 import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "@bprogress/next/app";
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -60,7 +61,7 @@ export default function SlotDetail({ slot }: { slot: SlotDetailType }) {
   const queryClient = useQueryClient();
   const [form] = Form.useForm<BookingFormValues>();
   const user = useAppSelector((state) => state.auth.user);
-  // const router = useRouter();
+  const router = useRouter();
   const { message } = App.useApp();
   const { mutate: createAppointment, isPending } = useCreateAppointment();
 
@@ -112,11 +113,12 @@ export default function SlotDetail({ slot }: { slot: SlotDetailType }) {
       onSuccess: () => {
         message.success("Đặt lịch khám thành công!");
         queryClient.invalidateQueries({ queryKey: ["patient-appointments"] });
+        router.push("/lich-hen");
       },
       onError: (error) => {
         message.error(
           error.response?.data?.error ||
-          "Có lỗi xảy ra khi đặt lịch. Vui lòng thử lại.",
+            "Có lỗi xảy ra khi đặt lịch. Vui lòng thử lại.",
         );
       },
     });

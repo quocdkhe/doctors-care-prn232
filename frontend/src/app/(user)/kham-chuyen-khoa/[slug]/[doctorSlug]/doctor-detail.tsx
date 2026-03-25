@@ -5,7 +5,11 @@ import {
   useCheckIfSlotIsAvailable,
   useGetSlotsByDoctorAndDay,
 } from "@/src/queries/slot.queries";
-import { EnvironmentOutlined, CalendarOutlined } from "@ant-design/icons";
+import {
+  EnvironmentOutlined,
+  CalendarOutlined,
+  ReloadOutlined,
+} from "@ant-design/icons";
 import {
   App,
   Avatar,
@@ -15,6 +19,7 @@ import {
   Divider,
   Row,
   Spin,
+  Tooltip,
   Typography,
   theme,
 } from "antd";
@@ -36,6 +41,10 @@ export default function DoctorDetail({ doctor }: { doctor: DoctorDetailType }) {
   const router = useRouter();
   const user = useAppSelector((state) => state.auth.user);
   const { openLoginModal } = useAuthModal();
+
+  const handleReload = () => {
+    queryClient.invalidateQueries({ queryKey: ["slots", doctor.doctorId] });
+  };
 
   // Build a Set of available date strings for O(1) lookup
   const availableDateSet = useMemo(
@@ -110,9 +119,10 @@ export default function DoctorDetail({ doctor }: { doctor: DoctorDetailType }) {
           </Title>
 
           <Paragraph
+            ellipsis={{ rows: 3 }}
             style={{
               marginBottom: "8px",
-              fontSize: "15px",
+              fontSize: "14px",
               color: token.colorTextSecondary,
             }}
           >
@@ -140,7 +150,7 @@ export default function DoctorDetail({ doctor }: { doctor: DoctorDetailType }) {
       <Row gutter={[24, 24]}>
         {/* Left Column: DatePicker & Slots */}
         <Col xs={24} sm={12} style={{ borderRight: "1px solid #f0f0f0" }}>
-          <div style={{ marginBottom: "16px" }}>
+          <div style={{ marginBottom: "16px", display: "flex", gap: "8px" }}>
             <DatePicker
               value={selectedDate ? dayjs(selectedDate) : null}
               onChange={handleDateChange}
@@ -148,6 +158,9 @@ export default function DoctorDetail({ doctor }: { doctor: DoctorDetailType }) {
               allowClear={false}
               format="DD/MM/YYYY"
             />
+            <Tooltip title="Lấy lại lịch khám">
+              <Button icon={<ReloadOutlined />} onClick={handleReload} />
+            </Tooltip>
           </div>
 
           <div style={{ marginBottom: "16px" }}>
