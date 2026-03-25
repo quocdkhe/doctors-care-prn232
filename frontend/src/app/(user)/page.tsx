@@ -11,7 +11,7 @@ import { Specialty } from "@/src/types/specialty";
 import { DoctorTop } from "@/src/types/doctor";
 
 export default async function LandingPage() {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const apiUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
   const specialties: Specialty[] = await fetch(`${apiUrl}/api/specialties`, {
     next: { revalidate: 0 },
   }).then((res) => res.json());

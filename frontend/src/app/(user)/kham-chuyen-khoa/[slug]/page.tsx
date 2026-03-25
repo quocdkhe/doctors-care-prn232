@@ -12,7 +12,7 @@ export default async function SpecialtyDetailsAndDoctorsPage({
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const apiUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
   const { slug } = await params;
   const { city, date } = await searchParams;
   const specialty: SpecialtyInfo = await fetch(

@@ -3,7 +3,7 @@ import AllSpecialties from "./all-specialties";
 import Link from "next/link";
 
 export default async function SpecialtiesPage() {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const apiUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
   const allSpecialties = await fetch(`${apiUrl}/api/specialties`, {
     next: { revalidate: 0 },
   });

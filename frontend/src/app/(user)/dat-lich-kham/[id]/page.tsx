@@ -9,7 +9,7 @@ export default async function BookingPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const apiUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
   const slot: SlotDetailType = await fetch(`${apiUrl}/api/slots/${id}`, {
     next: { revalidate: 0 },
   }).then((res) => res.json());

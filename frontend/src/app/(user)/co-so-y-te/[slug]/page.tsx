@@ -9,7 +9,7 @@ export default async function ClinicDetailServerPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const apiUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
   const { slug } = await params;
   const clinic: ClinicDetail = await fetch(
     `${apiUrl}/api/clinics/${slug}/details`,

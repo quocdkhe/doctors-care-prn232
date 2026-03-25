@@ -3,7 +3,7 @@ import AllClinic from "./all-clinic";
 import Link from "next/link";
 
 export default async function ClinicsPage() {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const apiUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
   const allClinics = await fetch(`${apiUrl}/api/clinics`, {
     next: { revalidate: 0 },
   });

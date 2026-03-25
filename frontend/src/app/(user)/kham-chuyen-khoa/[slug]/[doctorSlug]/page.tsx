@@ -9,7 +9,7 @@ export default async function DoctorDetailPage({
   params: Promise<{ doctorSlug: string }>;
 }) {
   const { doctorSlug } = await params;
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const apiUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
   const doctor: DoctorDetailType = await fetch(
     `${apiUrl}/api/doctors/${doctorSlug}`,
     { next: { revalidate: 0 } },
