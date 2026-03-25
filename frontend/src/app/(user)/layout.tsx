@@ -81,7 +81,7 @@ const UserLayoutInner: React.FC<React.PropsWithChildren> = ({ children }) => {
       >
         {/* Centred inner container — full width on small, 75% on large */}
         <div
-          className="w-full lg:max-w-[75%]"
+          className="w-full lg:max-w-[90%] xl:max-w-[85%] 2xl:max-w-[75%]"
           style={{
             margin: "0 auto",
             display: "flex",
