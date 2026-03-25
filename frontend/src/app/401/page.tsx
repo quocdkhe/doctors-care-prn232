@@ -1,13 +1,34 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "@bprogress/next/app";
 import { useAppSelector } from "@/src/store/hooks";
-import { Button, Result } from "antd";
+import { Button, Result, Spin } from "antd";
 
 const UnauthorizedPage: React.FC = () => {
   const router = useRouter();
-  const { user } = useAppSelector((state) => state.auth);
+  const { user, isLoading } = useAppSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      window.location.href = "/";
+    }
+  }, [user, isLoading]);
+
+  if (isLoading || !user) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Spin size="large" />
+      </div>
+    );
+  }
 
   const roleLabel = user?.role ?? "Unknown";
 
