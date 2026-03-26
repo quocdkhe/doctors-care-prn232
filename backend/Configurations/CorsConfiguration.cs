@@ -16,6 +16,7 @@
                         var host = new Uri(origin).Host;
                         return host == "localhost" || 
                             host == "100.100.56.64" ||
+                            host == "192.168.0.121" ||
                             host == "doctors-care.quocdk.id.vn" || 
                             host.EndsWith(".vercel.app");
                     })

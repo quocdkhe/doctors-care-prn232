@@ -14,7 +14,7 @@ namespace backend
 
             // Add services to the container.
             builder.Services.AddDbContext<DoctorsCareContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("MyCnn")));
+                options.UseNpgsql(builder.Configuration.GetConnectionString("MyCnn")));
 
             builder.Services.AddControllers(options =>
             {
@@ -38,11 +38,6 @@ namespace backend
 
             var app = builder.Build();
 
-            // IMPORTANT: UseCors MUST come before UseHttpsRedirection.
-            // In production, UseHttpsRedirection issues a 301 redirect and redirect
-            // responses do NOT carry CORS headers, causing the browser to block them.
-            // If SSL is terminated at the reverse proxy (Nginx/Caddy), you can also
-            // safely remove UseHttpsRedirection entirely.
             app.UseCors("CorsPolicy");
 
             // Run migration

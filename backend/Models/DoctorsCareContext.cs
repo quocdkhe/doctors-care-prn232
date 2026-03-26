@@ -13,6 +13,7 @@ namespace backend.Models
             : base(options)
         {
         }
+
         public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Specialty> Specialties { get; set; }
@@ -30,7 +31,7 @@ namespace backend.Models
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id)
                       .HasColumnName("id")
-                      .UseIdentityColumn(1, 1);
+                      .UseIdentityAlwaysColumn(); // PostgreSQL identity
 
                 entity.Property(e => e.UserId)
                       .HasColumnName("user_id");
@@ -44,17 +45,15 @@ namespace backend.Models
                       .HasColumnName("expires_at");
 
                 entity.Property(e => e.CreatedAt)
-                      .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                      .HasDefaultValueSql("now()")
                       .HasColumnName("created_at");
 
-                // Indexes
                 entity.HasIndex(e => e.Token)
                       .HasDatabaseName("idx_refresh_tokens_token");
 
                 entity.HasIndex(e => e.UserId)
                       .HasDatabaseName("idx_refresh_tokens_user_id");
 
-                // Foreign key -> Users(Id)
                 entity.HasOne(d => d.User)
                       .WithMany(p => p.RefreshTokens)
                       .HasForeignKey(d => d.UserId)
@@ -69,7 +68,8 @@ namespace backend.Models
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id)
                       .HasColumnName("id")
-                      .HasDefaultValueSql("NEWID()");
+                      .HasColumnType("uuid")
+                      .HasDefaultValueSql("gen_random_uuid()"); // PostgreSQL UUID
 
                 entity.Property(e => e.FullName)
                       .HasColumnName("full_name")
@@ -99,19 +99,17 @@ namespace backend.Models
                       .HasColumnName("role");
 
                 entity.Property(e => e.CreatedAt)
-                      .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                      .HasDefaultValueSql("now()")
                       .HasColumnName("created_at");
 
                 entity.Property(e => e.UpdatedAt)
-                      .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                      .HasDefaultValueSql("now()")
                       .HasColumnName("updated_at");
 
-                // Indexes
                 entity.HasIndex(e => e.Email)
                       .HasDatabaseName("idx_users_email")
                       .IsUnique();
 
-                // Navigation
                 entity.HasMany(e => e.RefreshTokens)
                       .WithOne(rt => rt.User)
                       .HasForeignKey(rt => rt.UserId)
@@ -130,7 +128,8 @@ namespace backend.Models
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id)
                       .HasColumnName("id")
-                      .HasDefaultValueSql("NEWID()");
+                      .HasColumnType("uuid")
+                      .HasDefaultValueSql("gen_random_uuid()");
 
                 entity.Property(e => e.Name)
                       .HasColumnName("name")
@@ -150,18 +149,18 @@ namespace backend.Models
                       .HasColumnName("image_url");
 
                 entity.Property(e => e.CreatedAt)
-                      .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                      .HasDefaultValueSql("now()")
                       .HasColumnName("created_at");
 
                 entity.Property(e => e.UpdatedAt)
-                      .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                      .HasDefaultValueSql("now()")
                       .HasColumnName("updated_at");
 
-                // Indexes
                 entity.HasIndex(e => e.Slug)
                       .HasDatabaseName("idx_specialties_slug")
                       .IsUnique();
             });
+
             modelBuilder.Entity<Clinic>(entity =>
             {
                 entity.ToTable("clinics");
@@ -169,7 +168,8 @@ namespace backend.Models
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
-                    .HasDefaultValueSql("NEWID()");
+                    .HasColumnType("uuid")
+                    .HasDefaultValueSql("gen_random_uuid()");
 
                 entity.Property(e => e.Name)
                     .HasColumnName("name")
@@ -199,14 +199,13 @@ namespace backend.Models
                     .HasMaxLength(255);
 
                 entity.Property(e => e.CreatedAt)
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasDefaultValueSql("now()")
                     .HasColumnName("created_at");
 
                 entity.Property(e => e.UpdatedAt)
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasDefaultValueSql("now()")
                     .HasColumnName("updated_at");
 
-                // Indexes
                 entity.HasIndex(e => e.Slug)
                     .HasDatabaseName("idx_clinics_slug")
                     .IsUnique();
@@ -219,7 +218,8 @@ namespace backend.Models
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
-                    .HasDefaultValueSql("NEWID()");
+                    .HasColumnType("uuid")
+                    .HasDefaultValueSql("gen_random_uuid()");
 
                 entity.Property(e => e.Slug)
                     .HasColumnName("slug")
@@ -228,19 +228,21 @@ namespace backend.Models
 
                 entity.Property(e => e.Biography)
                     .HasColumnName("biography")
-                    .IsRequired(false);  // NULL allowed
+                    .IsRequired(false);
 
                 entity.Property(e => e.ShortDescription)
                     .HasColumnName("short_description")
-                    .IsRequired(false);  // NULL allowed
+                    .IsRequired(false);
 
                 entity.Property(e => e.SpecialtyId)
                     .HasColumnName("specialty_id")
-                    .IsRequired(false);  // NULL allowed
+                    .HasColumnType("uuid")
+                    .IsRequired(false);
 
                 entity.Property(e => e.ClinicId)
                     .HasColumnName("clinic_id")
-                    .IsRequired(false);  // NULL allowed
+                    .HasColumnType("uuid")
+                    .IsRequired(false);
 
                 entity.Property(e => e.PricePerHour)
                     .HasColumnName("price_per_hour")
@@ -248,19 +250,19 @@ namespace backend.Models
 
                 entity.Property(e => e.UserId)
                     .HasColumnName("user_id")
-                    .IsRequired();  // NOT NULL
+                    .HasColumnType("uuid")
+                    .IsRequired();
 
                 entity.Property(e => e.CreatedAt)
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasDefaultValueSql("now()")
                     .HasColumnName("created_at")
-                    .IsRequired();  // NOT NULL
+                    .IsRequired();
 
                 entity.Property(e => e.UpdatedAt)
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasDefaultValueSql("now()")
                     .HasColumnName("updated_at")
-                    .IsRequired();  // NOT NULL
+                    .IsRequired();
 
-                // Indexes
                 entity.HasIndex(e => e.SpecialtyId)
                     .HasDatabaseName("idx_doctor_profiles_specialty_id");
 
@@ -271,7 +273,6 @@ namespace backend.Models
                     .HasDatabaseName("idx_doctor_profiles_user_id")
                     .IsUnique();
 
-                // Foreign keys
                 entity.HasOne(d => d.Specialty)
                     .WithMany(s => s.Doctors)
                     .HasForeignKey(d => d.SpecialtyId)
@@ -298,10 +299,11 @@ namespace backend.Models
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
-                    .UseIdentityColumn(1, 1);
+                    .UseIdentityAlwaysColumn(); // PostgreSQL identity
 
                 entity.Property(e => e.DoctorId)
                     .HasColumnName("doctor_id")
+                    .HasColumnType("uuid")
                     .IsRequired();
 
                 entity.Property(e => e.Date)
@@ -342,10 +344,12 @@ namespace backend.Models
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
-                    .HasDefaultValueSql("NEWID()");
+                    .HasColumnType("uuid")
+                    .HasDefaultValueSql("gen_random_uuid()");
 
                 entity.Property(e => e.BookByUserId)
                     .HasColumnName("book_by_user_id")
+                    .HasColumnType("uuid")
                     .IsRequired();
 
                 entity.Property(e => e.PatientName)
@@ -391,16 +395,16 @@ namespace backend.Models
 
                 entity.Property(e => e.MedicalRecordFileUrl)
                     .HasColumnName("medical_record_file_url")
-                    .IsRequired(false);  // NULL allowed
+                    .IsRequired(false);
 
                 entity.Property(e => e.CreatedAt)
                     .HasColumnName("created_at")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasDefaultValueSql("now()")
                     .IsRequired();
 
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnName("updated_at")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .HasDefaultValueSql("now()")
                     .IsRequired();
 
                 entity.HasIndex(e => e.BookByUserId)
