@@ -19,10 +19,10 @@ export default function Hero() {
 
       {/* Centered text overlay */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-white text-center px-4">
-        <h1 className="text-4xl md:text-5xl lg:text-6xl mb-4">NỀN TẢNG Y TẾ</h1>
-        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-8">
-          CHĂM SÓC SỨC KHOẺ TOÀN DIỆN
-        </h2>
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 uppercase">
+          Nền tảng y tế <br className="hidden md:block" />
+          Chăm sóc sức khỏe toàn diện
+        </h1>
 
         <div className="flex flex-col sm:flex-row gap-4 items-center justify-center mt-8">
           <a
