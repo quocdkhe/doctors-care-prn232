@@ -18,6 +18,10 @@ services:
       dockerfile: Dockerfile
     container_name: nextjs_app
     restart: always
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=https://api-doctors-care.quocdk.id.vn
+      - API_URL=http://backend:8080
     ports:
       - "127.0.0.1:3000:3000"
       - "100.100.56.64:3000:3000"
