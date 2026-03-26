@@ -1,17 +1,6 @@
 version: "3.8"
 
 services:
-  db:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: mssql_db
-    restart: always
-    environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=Quoc2810@
-    ports:
-      - "1433:1433"
-    volumes:
-      - mssql_data:/var/opt/mssql
 
   backend:
     build:
@@ -19,13 +8,9 @@ services:
       dockerfile: Dockerfile
     container_name: dotnet_app
     restart: always
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - "127.0.0.1:8000:8080"
       - "100.100.56.64:8000:8080"
-    depends_on:
-      - db
 
   frontend:
     build:
@@ -36,13 +21,6 @@ services:
         NEXT_PUBLIC_API_URL: http://localhost:8000
     container_name: nextjs_app
     restart: always
-    environment:
-      - NODE_ENV=production
-      # This is the public API endpoint exposed to the client's browser
-      - NEXT_PUBLIC_API_URL=http://localhost:8000
-      # This is internal endpoint close to the source for Server-Side Rendering
-      - API_URL=http://backend:8080
-      - NEXT_PUBLIC_TINYMCE_API_KEY=8izq1o8taaospplqz9ffvf0gg4snmov2zsnqwqz9k0jww4yi
     ports:
       - "127.0.0.1:3000:3000"
       - "100.100.56.64:3000:3000"
