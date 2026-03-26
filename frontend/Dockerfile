@@ -31,7 +31,8 @@ ENV NODE_ENV production
 ENV PORT 3000
 
 # Copy necessary files for production
-# Note: For smaller images, consider using Next.js "standalone" output 
+# Note: For smaller images, consider using Next.js "standalone" output
+COPY --from=builder /app/next.config.ts ./
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
