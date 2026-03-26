@@ -21,7 +21,6 @@ services:
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__MyCnn=Server=db;Database=Doctors_Care;User Id=sa;Password=Quoc2810@;TrustServerCertificate=True;
     ports:
       - "127.0.0.1:8000:8080"
       - "100.100.56.64:8000:8080"
