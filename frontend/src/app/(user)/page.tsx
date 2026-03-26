@@ -16,6 +16,7 @@ export default async function LandingPage() {
     next: { revalidate: 0 },
   }).then((res) => res.json());
 
+  console.log("Fetching data from", apiUrl);
   const clinics: Clinic[] = await fetch(`${apiUrl}/api/clinics`, {
     next: { revalidate: 0 },
   }).then((res) => res.json());
