@@ -27,6 +27,15 @@ services:
       - "100.100.56.64:3000:3000"
     depends_on:
       - backend
+    command: >
+      sh -c "echo 'Waiting for backend...' && 
+             while ! curl -s http://backend:8080/api/specialties > /dev/null; do
+               sleep 2
+             done && 
+             echo 'Backend is up! Starting build...' && 
+             npm run build && 
+             npm run start"
+
 
 volumes:
   mssql_data:

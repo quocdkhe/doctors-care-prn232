@@ -10,34 +10,27 @@ WORKDIR /app
 # Install dependencies
 COPY package.json package-lock.json* ./
 RUN npm install
-# 2. Rebuild the source code only when needed
+# 2. Prepare the source code
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-
-# Environment variables for build time
-ARG NEXT_PUBLIC_API_URL
-ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
-
-# Build Next.js
-RUN npm run build
+# No build at image creation time. Build will happen at startup.
 
 # 3. Production image, copy all the files and run next
 FROM base AS runner
 WORKDIR /app
 
+# Install curl for health checking the backend
+RUN apk add --no-cache curl
+
 ENV NODE_ENV production
 ENV PORT 3000
 
-# Copy necessary files for production
-# Note: For smaller images, consider using Next.js "standalone" output
-COPY --from=builder /app/next.config.ts ./
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
+# Copy all source files and node_modules for runtime build
+COPY --from=builder /app ./
 
 EXPOSE 3000
 
+# Default command if not overridden by docker-compose
 CMD ["npm", "start"]
