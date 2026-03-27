@@ -40,5 +40,11 @@ namespace backend.Controllers
             return Ok(statistics);
         }
 
+        [HttpGet("/ok")]
+        public IActionResult GetOk()
+        {
+            return Ok("Backend is up");
+        }
+
     }
 }

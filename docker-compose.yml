@@ -29,13 +29,9 @@ services:
       - backend
     command: >
       sh -c "echo 'Waiting for backend...' && 
-             while ! curl -s http://backend:8080/api/specialties > /dev/null; do
+             while ! curl -s http://backend:8080/ok > /dev/null; do
                sleep 2
              done && 
              echo 'Backend is up! Starting build...' && 
              npm run build && 
              npm run start"
-
-
-volumes:
-  mssql_data:

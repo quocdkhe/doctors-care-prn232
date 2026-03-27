@@ -14,7 +14,6 @@ export function useNotifications(
 
 		eventSourceRef.current.onmessage = (event) => {
 			const notification: AppointmentItem = JSON.parse(event.data);
-			console.log(notification);
 			onNotification(notification);
 		};
 
@@ -41,7 +40,6 @@ export function useUserNotifications(
 
 		eventSourceRef.current.onmessage = (event) => {
 			const appointmentId: string = JSON.parse(event.data);
-			console.log("[user notification] appointmentId:", appointmentId);
 			onNotification(appointmentId);
 		};
 
@@ -53,4 +51,4 @@ export function useUserNotifications(
 			eventSourceRef.current?.close();
 		};
 	}, [userId, onNotification]);
-}
+}
