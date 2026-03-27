@@ -10,6 +10,8 @@ import { Typography, App } from "antd";
 import { useCreateSpecialty } from "@/src/queries/specialty.queries";
 import { useUploadFile } from "@/src/queries/file.queries";
 import { useQueryClient } from "@tanstack/react-query";
+import { revalidateTagsAction } from "@/src/utils/revalidate";
+
 
 const { Title } = Typography;
 
@@ -42,8 +44,9 @@ const AddNewSpecialtyPage = () => {
           imageUrl: imageUrl,
         },
         {
-          onSuccess: () => {
+          onSuccess: async () => {
             message.success("Tạo chuyên khoa mới thành công!");
+            await revalidateTagsAction("specialties");
             queryClient.invalidateQueries({ queryKey: ["specialties"] });
             router.push("/admin/specialty");
           },

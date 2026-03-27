@@ -13,6 +13,8 @@ import {
 import { useUpdateFile } from "@/src/queries/file.queries";
 import { useRouter } from "@bprogress/next/app";
 import { useQueryClient } from "@tanstack/react-query";
+import { revalidateTagsAction } from "@/src/utils/revalidate";
+
 
 const { Title } = Typography;
 
@@ -45,8 +47,12 @@ const EditSpecialtyPage = ({ params }: { params: Promise<{ id: string }> }) => {
           imageUrl: imageUrl,
         },
         {
-          onSuccess: () => {
+          onSuccess: async () => {
             message.success("Cập nhật chuyên khoa thành công!");
+            await revalidateTagsAction([
+              "specialties",
+              `specialty-${specialty?.id}`,
+            ]);
             queryClient.invalidateQueries({ queryKey: ["specialties"] });
             router.push("/admin/specialty");
           },

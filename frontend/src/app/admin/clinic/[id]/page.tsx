@@ -10,6 +10,8 @@ import { useGetClinic, useUpdateClinic } from "@/src/queries/clinic.queries";
 import { useUpdateFile } from "@/src/queries/file.queries";
 import { useRouter } from "@bprogress/next/app";
 import { useQueryClient } from "@tanstack/react-query";
+import { revalidateTagsAction } from "@/src/utils/revalidate";
+
 
 const { Title } = Typography;
 
@@ -44,8 +46,9 @@ const EditClinicPage = ({ params }: { params: Promise<{ id: string }> }) => {
           address: data.address,
         },
         {
-          onSuccess: () => {
+          onSuccess: async () => {
             message.success("Cập nhật phòng khám thành công!");
+            await revalidateTagsAction(["clinics", `clinic-${clinic?.id}`]);
             queryClient.invalidateQueries({ queryKey: ["clinics"] });
             router.push("/admin/clinic");
           },

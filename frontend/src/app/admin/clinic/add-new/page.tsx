@@ -10,6 +10,8 @@ import { Typography, App } from "antd";
 import { useCreateClinic } from "@/src/queries/clinic.queries";
 import { useUploadFile } from "@/src/queries/file.queries";
 import { useQueryClient } from "@tanstack/react-query";
+import { revalidateTagsAction } from "@/src/utils/revalidate";
+
 
 const { Title } = Typography;
 
@@ -44,8 +46,9 @@ const AddNewClinicPage = () => {
           address: data.address,
         },
         {
-          onSuccess: () => {
+          onSuccess: async () => {
             message.success("Tạo phòng khám mới thành công!");
+            await revalidateTagsAction("clinics");
             queryClient.invalidateQueries({ queryKey: ["clinics"] });
             router.push("/admin/clinic");
           },

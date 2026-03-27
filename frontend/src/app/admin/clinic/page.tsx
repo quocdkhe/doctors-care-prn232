@@ -28,7 +28,9 @@ import { Clinic } from "@/src/types/clinic";
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useRouter } from "@bprogress/next/app";
+import { revalidateTagsAction } from "@/src/utils/revalidate";
 import { AxiosError } from "axios";
+
 import { Error } from "@/src/types/common";
 
 const { Title } = Typography;
@@ -59,8 +61,9 @@ export default function ClinicPage() {
 
   const handleDelete = async (id: string, name: string) => {
     deleteMutation.mutate(id, {
-      onSuccess: () => {
+      onSuccess: async () => {
         message.success(`Đã xóa phòng khám "${name}" thành công!`);
+        await revalidateTagsAction("clinics");
         queryClient.invalidateQueries({ queryKey: ["clinics"] });
       },
       onError: (error: AxiosError<Error>) => {

@@ -13,7 +13,7 @@ export default async function ClinicDetailServerPage({
   const { slug } = await params;
   const clinic: ClinicDetail = await fetch(
     `${apiUrl}/api/clinics/${slug}/details`,
-    { next: { revalidate: 0 } },
+    { next: { tags: ["clinics", `clinic-${slug}`] } },
   ).then((res) => res.json());
 
   const doctors: DoctorCard[] = await fetch(

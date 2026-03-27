@@ -24,9 +24,9 @@ export default async function LandingPage() {
 
   // Parallelize data fetching to eliminate waterfalls (Best Practice 1.4)
   const [specialties, clinics, topDoctors] = await Promise.all([
-    fetch(`${apiUrl}/api/specialties`, { next: { revalidate: 0 } }).then((res) => res.json()),
-    fetch(`${apiUrl}/api/clinics`, { next: { revalidate: 0 } }).then((res) => res.json()),
-    fetch(`${apiUrl}/api/doctors/top`, { next: { revalidate: 0 } }).then((res) => res.json()),
+    fetch(`${apiUrl}/api/specialties`, { next: { tags: ["specialties"] } }).then((res) => res.json()),
+    fetch(`${apiUrl}/api/clinics`, { next: { tags: ["clinics"] } }).then((res) => res.json()),
+    fetch(`${apiUrl}/api/doctors/top`, { next: { tags: ["top-doctors"] } }).then((res) => res.json()),
   ]);
 
   return (

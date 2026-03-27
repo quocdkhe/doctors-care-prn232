@@ -28,7 +28,9 @@ import { Specialty } from "@/src/types/specialty";
 import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useRouter } from "@bprogress/next/app";
+import { revalidateTagsAction } from "@/src/utils/revalidate";
 import { AxiosError } from "axios";
+
 import { Error } from "@/src/types/common";
 
 const { Title } = Typography;
@@ -61,8 +63,9 @@ export default function SpecialtyPage() {
 
   const handleDelete = async (id: string, name: string) => {
     deleteMutation.mutate(id, {
-      onSuccess: () => {
+      onSuccess: async () => {
         message.success(`Đã xóa chuyên khoa "${name}" thành công!`);
+        await revalidateTagsAction("specialties");
         queryClient.invalidateQueries({ queryKey: ["specialties"] });
       },
       onError: (error: AxiosError<Error>) => {

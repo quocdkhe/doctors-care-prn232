@@ -1,13 +1,14 @@
 import MainContentWrapper from "@/src/components/commons/main-content-wrapper";
 import AllSpecialties from "./all-specialties";
 import Link from "next/link";
+import { Specialty } from "@/src/types/specialty";
 
 export default async function SpecialtiesPage() {
   const apiUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
   const allSpecialties = await fetch(`${apiUrl}/api/specialties`, {
-    next: { revalidate: 0 },
+    next: { tags: ["specialties"] },
   });
-  const specialties = await allSpecialties.json();
+  const specialties: Specialty[] = await allSpecialties.json();
   return (
     <MainContentWrapper
       breadcrumbItems={[

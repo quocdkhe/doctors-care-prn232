@@ -17,7 +17,7 @@ export default async function SpecialtyDetailsAndDoctorsPage({
   const { city, date } = await searchParams;
   const specialty: SpecialtyInfo = await fetch(
     `${apiUrl}/api/specialties/${slug}/details`,
-    { next: { revalidate: 0 } },
+    { next: { tags: ["specialties", `specialty-${slug}`] } },
   ).then((res) => res.json());
 
   const doctors: DoctorCard[] = await fetch(

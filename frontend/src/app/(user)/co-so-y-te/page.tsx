@@ -5,7 +5,7 @@ import Link from "next/link";
 export default async function ClinicsPage() {
   const apiUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
   const allClinics = await fetch(`${apiUrl}/api/clinics`, {
-    next: { revalidate: 0 },
+    next: { tags: ["clinics"] },
   });
   const clinics = await allClinics.json();
   return (
